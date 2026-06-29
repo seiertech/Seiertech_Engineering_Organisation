@@ -1,6 +1,6 @@
 # SeierTech Engineering Management System Architecture
 
-**Version:** 0.1.0  
+**Version:** 0.2.0  
 **Status:** Draft  
 **Classification:** EMS Architecture
 
@@ -21,11 +21,14 @@ The EMS is organised into the following domains:
 5. Workforce
 6. Platforms
 7. Standards
-8. Work Products
+8. Verification
+9. Work Products
 
 ## Principle
 
 Every durable engineering object shall be identifiable, traceable and reviewable.
+
+No build shall be considered deployable until it has passed Engineering Verification and Release Assurance.
 
 ## Authorities
 
@@ -33,7 +36,7 @@ Authorities define doctrine and controlling rules.
 
 ## Registers
 
-Registers provide indexed truth for decisions, missions, platforms, roles, standards, risks, changes and requirements.
+Registers provide indexed truth for decisions, missions, platforms, roles, standards, risks, changes, releases and requirements.
 
 ## Libraries
 
@@ -41,7 +44,7 @@ Libraries contain reusable knowledge, patterns, evidence, vocabulary, lessons an
 
 ## Operations
 
-Operations contain live engineering activity including missions, reviews, approvals, builds, releases and audits.
+Operations contain live engineering activity including missions, reviews, approvals, builds, verification, release assurance, releases and audits.
 
 ## Workforce
 
@@ -55,10 +58,48 @@ Platforms contain onboarded SeierTech products and their operating context.
 
 Standards define detailed engineering expectations derived from authorities.
 
+## Verification
+
+Verification is a first-class EMS domain.
+
+It governs post-build engineering assurance, including code quality review, architecture conformance, security review, debt review, documentation review, standards compliance, performance review, regression review and release readiness.
+
+Implementation systems do not self-certify. The EMS certifies release readiness through evidence-based verification.
+
 ## Work Products
 
-Work Products are outputs produced during engineering missions.
+Work Products are outputs produced during engineering missions, reviews, verification activities, release assurance and outcomes.
+
+## EMS Lifecycle
+
+```text
+Mission
+  ↓
+Analysis
+  ↓
+Architecture
+  ↓
+Technical Design Authority
+  ↓
+Technical Delivery Authority
+  ↓
+Implementation
+  ↓
+Engineering Verification
+  ↓
+Engineering Release Assurance Board
+  ↓
+Deployment Approval
+  ↓
+Knowledge Capture
+  ↓
+Registers Updated
+  ↓
+Baseline Updated
+```
 
 ## Status
 
 This architecture supersedes the earlier folder-first repository design and establishes the EMS capability model.
+
+Version 0.2.0 adds Verification and Release Assurance as mandatory EMS capabilities.
