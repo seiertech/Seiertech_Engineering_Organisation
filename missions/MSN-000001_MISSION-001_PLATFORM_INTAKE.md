@@ -6,7 +6,7 @@
 | Artefact Class | Mission |
 | Title | Platform Intake |
 | Status | ACTIVE |
-| Version | 1.0.0 |
+| Version | 2.0.0 |
 | Classification | FOUNDATIONAL |
 | Owner | SeierTech Engineering Organisation |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -16,174 +16,227 @@
 
 ## 1. Mission Statement
 
-Complete the intake of a named platform into the SeierTech EMS. Read the platform repository autonomously. Build the Platform Record. Extract the Mission Spine. Satisfy all Readiness Gates. No mission may be issued against the platform until this mission completes with all gates PASSED and all founder questions resolved.
+Complete the full intake of a named platform into the SeierTech EMS. Read the platform repository autonomously. Find what exists. Derive what is implied. Create what is missing. Produce 20+ conformant EMS artefacts across 4 layers. Every artefact must pass the Standards Engineer before it is committed. No mission may be issued against the platform until this mission completes with all readiness gates PASSED, all founder questions resolved, and the Master Technical Specification approved.
 
 ---
 
-## 2. How to Issue This Mission
+## 2. The Mandatory Creation Rule
 
-The Founder issues this mission by creating a GitHub Issue with the following free text format:
+The intake chain does not ask "does this exist?" It asks "do I have this?" If not — it builds it.
+
+| Artefact | If Found in Repo | If Not Found |
+|---|---|---|
+| Knowledge Graph | Ingest, validate, enrich | CREATE from Data Model, Use Cases, Architecture Document |
+| Use Case Register | Harvest and normalise | DERIVE from routes, features, README, user stories |
+| Data Model | Extract and formalise | GENERATE from schemas, migrations, ORM models, DB configs |
+| Architecture Document | Ingest | GENERATE from folder structure, dependencies, service boundaries |
+| API Register | Parse existing docs | GENERATE from routes, controllers, endpoints in code |
+| Test Strategy | Assess coverage, identify gaps | SCAFFOLD — create strategy, document coverage gap as debt |
+| Security Posture | Extract from auth model | GENERATE from auth patterns, dependency scan, API exposure |
+| Knowledge Graph | Ingest | CREATE — this is mandatory, not optional |
+| All other artefacts | Same pattern | Same pattern — create from evidence |
+
+No platform exits intake with a missing artefact. Every platform reaches the same baseline quality regardless of prior state.
+
+---
+
+## 3. How to Issue This Mission
+
+The Founder issues this mission by creating a GitHub Issue in any format:
 
 ```
 Complete intake for [PLATFORM_NAME] — repo: [REPO_URL]
 ```
+
+Or free text — the Mission Control Director and NIM chain normalise any instruction into a structured intake mission.
 
 Example:
 ```
 Complete intake for COMMANDER_C2 — repo: github.com/seiertech/commander-c2
 ```
 
-The mission chain detects the issue, parses the platform name and repo URL, and begins execution automatically.
+The chain detects the issue, parses intent, and begins execution automatically via the GitHub Actions workflow.
 
 ---
 
-## 3. Trigger
+## 4. Trigger
 
-GitHub Issue created containing platform name and repo URL. Webhook fires. Chain activates.
-
----
-
-## 4. Objectives
-
-1. Create Platform Record at `platforms/[PLATFORM_NAME]/PLATFORM_RECORD.md`
-2. Scan the repository and extract: data model, schema, tech stack, existing documentation, current build state
-3. Populate use case register for the platform
-4. Build knowledge graph (or confirm it does not yet exist)
-5. Execute persona extraction pass — each active persona extracts what it requires from the platform
-6. Populate `platforms/[PLATFORM_NAME]/spine/` with one file per persona
-7. Identify all gaps the chain cannot resolve autonomously
-8. Output Questions to Founder for all unresolved gaps
-9. Update REG-000001 Readiness Register
-10. When all founder questions resolved — flip platform to READY status
+GitHub Issue created. Webhook fires. NIM chain activates via `.github/workflows/ems-mission-chain.yml`.
 
 ---
 
-## 5. Scope In
+## 5. Execution — Full Intake Sequence
 
-- Repository structure analysis
-- Data model and schema extraction
-- Tech stack identification
-- Existing documentation ingestion
-- Current build state assessment (what is built, partial, missing)
-- Use case extraction
-- Knowledge graph creation
-- All persona spine extractions
-- Readiness gate assessment
-- Founder question generation
+See OPR-000002 Platform Intake Operation for the complete step-by-step execution sequence.
 
 ---
 
-## 6. Scope Out
+## 6. Mandatory Output Set
 
-- No code changes to the platform during intake
-- No missions against the platform until READY
-- No assumptions substituted for missing information — all gaps go to Questions to Founder
+### Layer 1 — Discovery & Creation (17 artefacts)
 
----
+Every artefact is produced by its designated persona, assessed by the Standards Engineer, and committed only on PASS.
 
-## 7. Persona Assignments
+| # | Artefact | Producing Persona | Location |
+|---|---|---|---|
+| 1 | Use Case Register | Use Case Analyst | platforms/[NAME]/USE_CASE_REGISTER.md |
+| 2 | Data Model | Data Architect | platforms/[NAME]/DATA_MODEL.md |
+| 3 | Integration Map | Integration Engineer | platforms/[NAME]/INTEGRATION_MAP.md |
+| 4 | API Register | Integration Engineer | platforms/[NAME]/API_REGISTER.md |
+| 5 | Deployment Architecture | Platform Engineer | platforms/[NAME]/DEPLOYMENT_ARCHITECTURE.md |
+| 6 | Architecture Document | Chief Architect | platforms/[NAME]/ARCHITECTURE_DOCUMENT.md |
+| 7 | Enterprise Architecture Context | Enterprise Architect | platforms/[NAME]/ENTERPRISE_ARCHITECTURE_CONTEXT.md |
+| 8 | Security Posture Document | Security Architect | platforms/[NAME]/SECURITY_POSTURE.md |
+| 9 | Risk Register entries | Security Architect | registers/RISK_REGISTER.md |
+| 10 | Frontend Engineering Assessment | Frontend Engineering Lead | platforms/[NAME]/FRONTEND_ASSESSMENT.md |
+| 11 | Backend Engineering Assessment | Backend Engineering Lead | platforms/[NAME]/BACKEND_ASSESSMENT.md |
+| 12 | UX Assessment | UI/UX Director | platforms/[NAME]/UX_ASSESSMENT.md |
+| 13 | AI Capability Map | AI Architect | platforms/[NAME]/AI_CAPABILITY_MAP.md |
+| 14 | Knowledge Graph | Knowledge Graph Architect | platforms/[NAME]/KNOWLEDGE_GRAPH.md |
+| 15 | Domain Vocabulary | Knowledge Graph Architect | platforms/[NAME]/DOMAIN_VOCABULARY.md |
+| 16 | Requirements Register | Senior Business Analyst | platforms/[NAME]/REQUIREMENTS_REGISTER.md |
+| 17 | Technical Debt Register | Technical Debt Auditor | platforms/[NAME]/TECHNICAL_DEBT_REGISTER.md |
+| 18 | Test Strategy | QA & Governance Director | platforms/[NAME]/TEST_STRATEGY.md |
+| 19 | Documentation Assessment | Documentation & Knowledge Curator | platforms/[NAME]/DOCUMENTATION_ASSESSMENT.md |
 
-All active personas in `agents/` are activated during intake. Each performs its spine extraction pass.
+### Layer 2 — Engineering Documentation
 
-| Persona | Spine Extraction Responsibility |
-|---|---|
-| Architecture Engineer | Data model, entity relationships, system boundaries, integration points |
-| Standards Engineer | Tech stack, standards compliance posture, deviation identification |
-| Security Engineer | Security posture, authentication model, data classification, risk surface |
-| Data Engineer | Schema, data flows, storage patterns, data quality |
-| Integration Engineer | Connectors, APIs, external dependencies, MCP hooks |
-| Test Engineer | Existing test coverage, acceptance criteria, test strategy gaps |
-| Platform Engineer | Infrastructure, deployment model, environments, CI/CD state |
-| Knowledge Engineer | Documentation quality, knowledge gaps, vocabulary alignment |
+| # | Artefact | Producing Persona | Location |
+|---|---|---|---|
+| 20 | Spine files (one per persona) | All Layer 1 personas | platforms/[NAME]/spine/ |
 
----
+### Layer 3 — Commercial & Strategic Synthesis
 
-## 8. Mission Spine Output
+Activates only after ALL Layer 1 artefacts have passed the Standards Engineer.
 
-Each persona writes its extraction to:
+| # | Artefact | Producing Persona | Location |
+|---|---|---|---|
+| 21 | Proposition Document | Proposition Analyst | platforms/[NAME]/PROPOSITION_DOCUMENT.md |
+| 22 | Platform Value Assessment | Proposition Analyst | platforms/[NAME]/PLATFORM_VALUE_ASSESSMENT.md |
+| 23 | Product Roadmap Scaffold | Proposition Analyst | platforms/[NAME]/PRODUCT_ROADMAP_SCAFFOLD.md |
 
-```
-platforms/[PLATFORM_NAME]/spine/[PERSONA_NAME]_SPINE.md
-```
+### Layer 4 — Master Synthesis
 
-The combined spine is the Mission Spine — the pre-loaded context for all subsequent missions against this platform.
+Activates only after ALL Layer 3 artefacts have passed the Standards Engineer. The final intake output.
 
----
-
-## 9. Authority References
-
-- AUTH-001 — Engineering Constitution
-- AUTH-002 — Platform Governance Authority (when created)
-
----
-
-## 10. Standard References
-
-- STD-000001 — EMS Foundation Conformance Standard
-- STD-000002 — Engineering Artefact Metadata Standard
-- STD-000003 — Engineering Artefact Structure Standard
-- STD-000004 — Engineering Vocabulary Standard
-- STD-000005 — Traceability Standard
-
----
-
-## 11. Acceptance Criteria
-
-| Criterion | Gate |
-|---|---|
-| Platform Record created and conformant | RG-001 |
-| Repo scan completed | RG-002 |
-| Data model extracted | RG-003 |
-| Tech stack identified | RG-004 |
-| Use case register populated | RG-005 |
-| Knowledge graph created or absence confirmed | RG-006 |
-| All persona spine files present | RG-007 |
-| All founder questions resolved | RG-008 |
-| Platform Record reviewed | RG-009 |
-| Platform registered in Platform Register | RG-010 |
+| # | Artefact | Producing Persona | Location |
+|---|---|---|---|
+| 24 | Master Technical Specification | Master Spec Author | platforms/[NAME]/MASTER_TECHNICAL_SPECIFICATION.md |
 
 ---
 
-## 12. Questions to Founder
+## 7. Master Technical Specification — 15 Required Sections
 
-The chain outputs this section when it cannot determine information from the repo alone. Format:
+The MTS is the crown jewel of the intake. Every subsequent mission reads it first. It must contain all 15 sections:
+
+1. Executive Summary
+2. Architecture Specification
+3. Data Model Specification
+4. API Specification
+5. Integration Specification
+6. Frontend Specification
+7. Backend Specification
+8. Security Specification
+9. Deployment Specification
+10. AI Capability Specification
+11. Test Specification
+12. Knowledge Architecture
+13. Technical Debt Schedule
+14. Proposition Summary
+15. Mission Readiness Declaration
+
+Every section must cite its source persona output. No invented content.
+
+---
+
+## 8. Standards Engineer Gate
+
+The Standards Engineer runs after EVERY persona output — not just at end of intake. No artefact proceeds to the next step until it passes:
+
+- STD-000001 — all 10 quality gates
+- STD-000002 — complete metadata block
+- STD-000003 — correct subclass structure
+- STD-000004 — no prohibited vocabulary
+- STD-000005 — all relationships declared and resolvable
+
+FAIL → persona revises → re-assessed. No exceptions. No waivers.
+
+---
+
+## 9. Questions to Founder
+
+When the chain cannot determine information from the repo alone, it posts a structured Questions to Founder comment on the GitHub Issue:
 
 ```markdown
 ## Questions to Founder
 
-The following information could not be determined from the repository and requires your input before platform readiness can be confirmed:
+The following information could not be determined from the repository:
 
-1. [QUESTION] — Context: [why the chain needs this]
-2. [QUESTION] — Context: [why the chain needs this]
+1. [QUESTION] — Context: [why the chain needs this] — Blocking: [which artefact]
+2. [QUESTION] — Context: [why the chain needs this] — Blocking: [which artefact]
 ```
 
-The Founder responds by commenting on the GitHub Issue. The chain reads the response, updates the Platform Record, and re-checks readiness gates.
+The Founder responds by commenting on the issue. The chain reads the response, updates the relevant artefact, re-runs Standards Engineer, and continues.
+
+No question may remain unresolved when the platform reaches READY.
 
 ---
 
-## 13. Status
+## 10. Readiness Gates
 
-| State | Description |
+All 10 must pass before platform status is set to READY:
+
+| Gate | Description |
 |---|---|
-| ISSUED | GitHub Issue created |
-| IN_PROGRESS | Chain activated, repo scan underway |
-| QUESTIONS_PENDING | Scan complete, awaiting founder responses |
-| COMPLETE | All gates passed, platform at READY |
-| CANCELLED | Intake abandoned |
+| RG-001 | Platform Record created and metadata complete |
+| RG-002 | Repo scan completed |
+| RG-003 | Data model extracted or created |
+| RG-004 | Tech stack identified |
+| RG-005 | Use case register populated or created |
+| RG-006 | Knowledge graph created or enriched |
+| RG-007 | All persona spine files present |
+| RG-008 | All founder questions resolved |
+| RG-009 | Master Technical Specification reviewed and approved |
+| RG-010 | Platform registered in Readiness Register at READY |
+
+---
+
+## 11. Persona Sequence
+
+24 personas activate in the defined intake sequence. See agents/README.md for the complete sequence with dependency ordering.
+
+The Standards Engineer is the only persona that runs after every other persona — it is the continuous quality gate throughout intake.
+
+---
+
+## 12. Authority References
+
+- AUTH-001 — Engineering Constitution
+- AUTH-002 — Platform Governance Authority
+- AUTH-003 — Mission Governance Authority
+- AUTH-006 — Data Governance Authority
+- AUTH-007 — Security Governance Authority
+- AUTH-008 — AI Governance Authority
+- AUTH-010 — Knowledge Governance Authority
+
+---
+
+## 13. Standard References
+
+- STD-000001 through STD-000005 — all applied to every artefact produced
 
 ---
 
 ## 14. Relationships
 
-| Relationship | Artefact ID | Artefact Title |
+| Relationship | Artefact ID | Title |
 |---|---|---|
 | Governed By | AUTH-001 | Engineering Constitution |
-| Produces | Platform Record | platforms/[PLATFORM_NAME]/PLATFORM_RECORD.md |
-| Produces | Mission Spine | platforms/[PLATFORM_NAME]/spine/ |
+| Implements | OPR-000002 | Platform Intake Operation |
+| Produces | 24+ artefacts | platforms/[NAME]/ |
 | Updates | REG-000001 | Readiness Register |
 | Updates | REG-000002 | Mission Register |
-| Depends On | STD-000001 | EMS Foundation Conformance Standard |
-| Required By | All platform missions | — |
+| Required By | All platform missions | No mission fires without intake complete |
 
 ---
 
@@ -191,4 +244,5 @@ The Founder responds by commenting on the GitHub Issue. The chain reads the resp
 
 | Version | Date | Change | Author |
 |---|---|---|---|
-| 1.0.0 | 2026-06-29 | Initial creation — EF-1 Sprint 1.5 | SeierTech EMS |
+| 1.0.0 | 2026-06-29 | Initial creation | SeierTech EMS |
+| 2.0.0 | 2026-06-29 | Full rebuild — 4-layer output mandate, mandatory creation rule, 24 personas, 15-section MTS | SeierTech EMS |
