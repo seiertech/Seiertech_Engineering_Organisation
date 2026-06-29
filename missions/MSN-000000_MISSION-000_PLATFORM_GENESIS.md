@@ -67,6 +67,8 @@ The `.ems/` folder is created before any application code. This is the defining 
 
 See OPR-000011 Platform Genesis Operation for the complete 7-phase execution sequence.
 
+**Team 2 — Forward Build Force** activates for this mission. In greenfield genesis, Team 2 both establishes the baseline AND operates as the permanent forward force. No handoff needed — they hold the baseline from the start.
+
 ---
 
 ## 7. Mandatory Output Set

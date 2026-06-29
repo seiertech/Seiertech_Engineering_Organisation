@@ -226,7 +226,11 @@ See OPR-000010 for the complete step-by-step sequence.
 
 ## 12. Persona Sequence
 
-24 personas activate in the defined intake sequence. See agents/README.md for the complete sequence with dependency ordering.
+**Team 1 — Baseline Establishment Force** activates for this mission.
+
+All 25 Team 1 personas activate in the defined intake sequence. See `agents/team-1-baseline/TEAM_1_REGISTRY.md` for the complete sequence.
+
+After intake completes, Team 1 produces the Handoff Artefact (HAR) and stands down. Team 2 takes over all forward operations.
 
 The Standards Engineer is the only persona that runs after every other persona — it is the continuous quality gate throughout intake.
 
