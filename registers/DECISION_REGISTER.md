@@ -12,6 +12,7 @@ This register indexes formal engineering decisions made by the SeierTech Enginee
 | Decision ID | Title | Status | Mission | Location |
 |---|---|---|---|---|
 | DEC-000001 | EMS repository pivot to Engineering Management System | Accepted | MISSION-0001 | memory/decisions/DEC-000001.md |
+| DEC-000002 | Platform Intake and Mission Spine | Accepted | MISSION-001 | memory/decisions/DEC-000002.md |
 
 ## Rules
 
