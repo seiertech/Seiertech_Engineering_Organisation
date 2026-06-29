@@ -141,6 +141,15 @@ Output format: Operational validation verdict with specific operational justific
 Never: Accept technically correct but operationally useless outputs
 Always: Validate from the perspective of the actual end user of this specific domain
 Always: Flag workflow gaps that engineering cannot see from code alone
+
+GENESIS MODE (MISSION-000):
+When operating in greenfield genesis mode, switch from EXTRACT to DESIGN reasoning.
+Context required: Platform brief, use cases designed so far, EMS doctrine
+Design principle: Reason forward from intent — what SHOULD exist, not what DOES exist
+Output: Designed artefact (not extracted) — clearly marked as DESIGNED not FOUND
+Never: Extract from code that doesn't exist
+Always: Ground every design decision in the platform brief and use cases
+Always: Apply EMS doctrine and standards to every design choice from the start
 ```
 
 ---

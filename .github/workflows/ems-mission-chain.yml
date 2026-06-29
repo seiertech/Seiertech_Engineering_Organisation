@@ -212,3 +212,82 @@ jobs:
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
               body: `## ✅ Engineering Delivery Package Ready\n\nThe EDP has been produced and dropped to \`work-products/\`.\n\n**Next step:** Kiro picks up the EDP and executes the build.\n\nVerification agents will assert the build against standards on completion.\n\n*Powered by Loop Engineering — SeierTech EMS*`
             })
+
+  execute-genesis:
+    needs: detect-mission
+    if: needs.detect-mission.outputs.mission_type == 'GENESIS'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout EMS repo
+        uses: actions/checkout@v4
+
+      - name: Label issue as genesis mission
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+              labels: ['mission:genesis', 'status:in-progress']
+            })
+
+      - name: Execute Platform Genesis Chain via NIM
+        env:
+          NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Load EMS doctrine for injection
+          CONSTITUTION=$(cat authorities/AUTH-001_ENGINEERING_CONSTITUTION.md 2>/dev/null || echo "")
+          GENESIS_MISSION=$(cat missions/MSN-000000_MISSION-000_PLATFORM_GENESIS.md)
+          VOCAB=$(cat standards/STD-000004_ENGINEERING_VOCABULARY_STANDARD.md)
+          EMS_SYNC_STD=$(cat standards/STD-000006_PLATFORM_BASELINE_SYNC_STANDARD.md)
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+
+          # Call NIM Super in GENESIS MODE
+          RESPONSE=$(curl -s -X POST https://integrate.api.nvidia.com/v1/chat/completions \
+            -H "Authorization: Bearer ${NIM_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              "model": "nvidia/nemotron-3-super",
+              "max_tokens": 8000,
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are the SeierTech EMS Mission Chain executing MISSION-000 Platform Genesis in GENESIS MODE. You design forward from intent — not backward from code. You are governed by:\n\nENGINEERING CONSTITUTION:\n${CONSTITUTION}\n\nVOCABULARY STANDARD:\n${VOCAB}\n\nPLATFORM BASELINE SYNC STANDARD:\n${EMS_SYNC_STD}\n\nGENESIS MISSION SPECIFICATION:\n${GENESIS_MISSION}\n\nYour task: Design the complete platform artefact set from the brief. Produce the Platform Record, all Layer 1 designed artefacts, Proposition Document, and Master Technical Specification. Design the .ems/ folder contents. Output in structured markdown. GENESIS MODE — design forward, never extract."
+                },
+                {
+                  "role": "user",
+                  "content": "Execute MISSION-000 Platform Genesis.\nIssue title: ${ISSUE_TITLE}\nIssue body: ${ISSUE_BODY}\nPlatform name: ${PLATFORM_NAME}\n\nDesign the complete platform. Produce all required artefacts. Begin."
+                }
+              ]
+            }")
+
+          GENESIS_OUTPUT=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['choices'][0]['message']['content'])")
+
+          # Create platform directory in EMS
+          mkdir -p "platforms/${PLATFORM_NAME}"
+          echo "${GENESIS_OUTPUT}" > "platforms/${PLATFORM_NAME}/GENESIS_OUTPUT.md"
+
+          git config user.name "SeierTech EMS"
+          git config user.email "ems@seiertech.com"
+          git add .
+          git commit -m "EMS: MISSION-000 genesis initiated for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}]"
+          git push
+
+      - name: Comment on issue with genesis status
+        uses: actions/github-script@v7
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+              body: \`## 🌱 EMS Genesis Chain Activated\n\n**Mission:** MISSION-000 Platform Genesis\n**Platform:** ${process.env.PLATFORM_NAME}\n**Mode:** GENESIS — designing forward from brief\n**Status:** IN_PROGRESS\n\nAll personas activating in GENESIS MODE. Designing artefacts from intent. .ems/ folder will be created before any application code.\n\nQuestions about the brief will be posted here for your input.\n\n*Powered by Loop Engineering — SeierTech EMS*\`
+            })

@@ -94,6 +94,15 @@ Never: Invent capabilities — every capability claim must cite its evidence sou
 Always: Classify every capability as BUILT / PARTIAL / MISSING
 Always: Be brutally honest about debt burden and capability gaps
 Always: The Proposition Document is for the Founder to understand what they own — not to impress anyone
+
+GENESIS MODE (MISSION-000):
+When operating in greenfield genesis mode, switch from EXTRACT to DESIGN reasoning.
+Context required: Platform brief, use cases designed so far, EMS doctrine
+Design principle: Reason forward from intent — what SHOULD exist, not what DOES exist
+Output: Designed artefact (not extracted) — clearly marked as DESIGNED not FOUND
+Never: Extract from code that doesn't exist
+Always: Ground every design decision in the platform brief and use cases
+Always: Apply EMS doctrine and standards to every design choice from the start
 ```
 
 ---

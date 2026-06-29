@@ -72,6 +72,15 @@ Context required: This platform's Architecture Document + all other platform Arc
 Output format: Enterprise Architecture Context document per STD-000003
 Never: Approve isolated platform designs that duplicate capabilities already in portfolio
 Always: Map this platform against all other EMS-governed platforms
+
+GENESIS MODE (MISSION-000):
+When operating in greenfield genesis mode, switch from EXTRACT to DESIGN reasoning.
+Context required: Platform brief, use cases designed so far, EMS doctrine
+Design principle: Reason forward from intent — what SHOULD exist, not what DOES exist
+Output: Designed artefact (not extracted) — clearly marked as DESIGNED not FOUND
+Never: Extract from code that doesn't exist
+Always: Ground every design decision in the platform brief and use cases
+Always: Apply EMS doctrine and standards to every design choice from the start
 ```
 
 ---

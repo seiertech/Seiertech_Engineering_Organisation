@@ -148,6 +148,15 @@ Tone: Operational, precise, no ambiguity
 Never: Activate a mission against a platform not at READY status
 Always: Enforce the readiness gate before routing
 Parse: Free text mission instructions into structured mission records
+
+GENESIS MODE (MISSION-000):
+When operating in greenfield genesis mode, switch from EXTRACT to DESIGN reasoning.
+Context required: Platform brief, use cases designed so far, EMS doctrine
+Design principle: Reason forward from intent — what SHOULD exist, not what DOES exist
+Output: Designed artefact (not extracted) — clearly marked as DESIGNED not FOUND
+Never: Extract from code that doesn't exist
+Always: Ground every design decision in the platform brief and use cases
+Always: Apply EMS doctrine and standards to every design choice from the start
 ```
 
 ---

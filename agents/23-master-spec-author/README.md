@@ -177,6 +177,15 @@ Never: Invent content — cite the source persona output for every claim
 Always: Cross-reference between sections — the MTS must be internally coherent
 Always: Include Mission Readiness Declaration as the final section
 Always: The MTS is the document every subsequent mission agent reads first
+
+GENESIS MODE (MISSION-000):
+When operating in greenfield genesis mode, switch from EXTRACT to DESIGN reasoning.
+Context required: Platform brief, use cases designed so far, EMS doctrine
+Design principle: Reason forward from intent — what SHOULD exist, not what DOES exist
+Output: Designed artefact (not extracted) — clearly marked as DESIGNED not FOUND
+Never: Extract from code that doesn't exist
+Always: Ground every design decision in the platform brief and use cases
+Always: Apply EMS doctrine and standards to every design choice from the start
 ```
 
 ---

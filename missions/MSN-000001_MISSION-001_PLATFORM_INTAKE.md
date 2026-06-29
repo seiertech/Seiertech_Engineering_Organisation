@@ -6,7 +6,7 @@
 | Artefact Class | Mission |
 | Title | Platform Intake |
 | Status | ACTIVE |
-| Version | 2.0.0 |
+| Version | 3.0.0 |
 | Classification | FOUNDATIONAL |
 | Owner | SeierTech Engineering Organisation |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -201,7 +201,30 @@ All 10 must pass before platform status is set to READY:
 
 ---
 
-## 11. Persona Sequence
+
+---
+
+## 11. Phase 7 — Platform Baseline Sync
+
+After all 10 readiness gates pass and the Master Technical Specification is approved, MISSION-001 does not close. It triggers OPR-000010 Platform Baseline Sync immediately.
+
+OPR-000010 runs as Phase 7 of every brownfield intake. It:
+
+- Creates the `.ems/` folder in the platform repo per STD-000006
+- Populates `.ems/spine/` with all persona spine files
+- Copies the MTS to `.ems/MASTER_TECHNICAL_SPECIFICATION.md`
+- Runs the Build Governance Auditor (PER-000025) — archaeology, classification, reconciliation
+- Produces `.ems/governance/` — Build Governance Register, Active Standards, Deprecated Governance
+- Produces `.ems/kiro-sync/` — MEMORY.md, RULES.md, STANDARDS.md for Kiro
+- Deprecates all superseded governance in the platform repo
+- Installs the continuous sync GitHub Action in the platform repo
+- Verifies `.ems/` completeness per STD-000006
+
+Only when OPR-000010 completes does the platform reach fully operational status and MISSION-001 close.
+
+See OPR-000010 for the complete step-by-step sequence.
+
+## 12. Persona Sequence
 
 24 personas activate in the defined intake sequence. See agents/README.md for the complete sequence with dependency ordering.
 
@@ -209,7 +232,7 @@ The Standards Engineer is the only persona that runs after every other persona �
 
 ---
 
-## 12. Authority References
+## 13. Authority References
 
 - AUTH-001 — Engineering Constitution
 - AUTH-002 — Platform Governance Authority
@@ -221,13 +244,13 @@ The Standards Engineer is the only persona that runs after every other persona �
 
 ---
 
-## 13. Standard References
+## 14. Standard References
 
 - STD-000001 through STD-000005 — all applied to every artefact produced
 
 ---
 
-## 14. Relationships
+## 15. Relationships
 
 | Relationship | Artefact ID | Title |
 |---|---|---|
@@ -240,9 +263,10 @@ The Standards Engineer is the only persona that runs after every other persona �
 
 ---
 
-## 15. Change History
+## 16. Change History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation | SeierTech EMS |
 | 2.0.0 | 2026-06-29 | Full rebuild — 4-layer output mandate, mandatory creation rule, 24 personas, 15-section MTS | SeierTech EMS |
+| 3.0.0 | 2026-06-29 | Added Phase 7 Platform Baseline Sync, Build Governance Auditor persona, .ems/ footprint | SeierTech EMS |

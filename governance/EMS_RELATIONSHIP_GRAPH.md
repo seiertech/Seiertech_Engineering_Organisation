@@ -471,3 +471,90 @@ None of the above constitute orphans — they are pending population. Orphan sta
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation — EF-1.7 | SeierTech EMS |
+
+
+---
+
+## 14. Post-BASELINE-1.0 Additions
+
+The following artefacts were added after BASELINE-1.0 certification:
+
+### New Standards
+```
+STD-000006 Platform Baseline Sync Standard
+├── Governed By: AUTH-001, AUTH-002
+├── Defines: .ems/ folder structure and contents
+├── Required By: OPR-000010, OPR-000011
+├── Required By: PER-000025 Build Governance Auditor
+├── Required By: All builders (kiro-sync/ compliance)
+```
+
+### New Registers
+```
+REG-000007 Build Governance Register
+├── Governed By: AUTH-001
+├── Owned By: PER-000025 Build Governance Auditor
+├── Updated By: MSN-000000, MSN-000001, OPR-000010, OPR-000008
+├── Required By: STD-000006
+├── Stored In: .ems/governance/ per platform
+```
+
+### New Persona
+```
+PER-000025 Build Governance Auditor
+├── Governed By: AUTH-001, AUTH-004, STD-000006
+├── Produces: REG-000007 Build Governance Register
+├── Produces: .ems/kiro-sync/ (builder instruction set)
+├── Produces: .ems/governance/ folder
+├── Activates In: MISSION-001 Phase 2b, OPR-000010, OPR-000008
+├── Solves: Governance drift problem permanently
+```
+
+### New Operations
+```
+OPR-000010 Platform Baseline Sync Operation
+├── Governed By: AUTH-002, STD-000006
+├── Triggered By: MSN-000001 Phase 7 (after READY)
+├── Uses: PER-000025 Build Governance Auditor
+├── Produces: .ems/ folder in platform repo
+├── Updates: REG-000001, REG-000007
+├── Installs: Continuous sync GitHub Action in platform repo
+
+OPR-000011 Platform Genesis Operation
+├── Governed By: AUTH-002, AUTH-003, STD-000006
+├── Implements: MSN-000000 MISSION-000
+├── Creates: GitHub repository from scratch
+├── Creates: .ems/ folder before application code
+├── Activates: All 25 personas in GENESIS MODE
+├── Produces: Full platform artefact set (designed not extracted)
+├── Assigns: Builder to governed platform
+```
+
+### New Mission
+```
+MSN-000000 MISSION-000 Platform Genesis
+├── Governed By: AUTH-001, AUTH-002, AUTH-003
+├── Implements: OPR-000011
+├── Counterpart: MSN-000001 MISSION-001 (brownfield)
+├── Trigger: GitHub Issue: "Genesis: [NAME] — [brief]"
+├── Mode: GENESIS — all personas design forward from intent
+├── Creates: New GitHub repository
+├── Produces: Full EMS artefact set (designed)
+├── Produces: .ems/ folder (before application code)
+├── Updates: REG-000001, REG-000002
+```
+
+### Updated Missions
+```
+MSN-000001 MISSION-001 Platform Intake v3.0
+├── Added: Phase 7 — triggers OPR-000010 after readiness gates pass
+├── Added: PER-000025 Build Governance Auditor in Phase 2b
+├── .ems/ folder now established as part of every brownfield intake
+```
+
+### The Two-Origin Model
+```
+BROWNFIELD → MSN-000001 → OPR-000002 (extract) → OPR-000010 (sync) → .ems/ → READY
+GREENFIELD → MSN-000000 → OPR-000011 (design) → .ems/ first → builder assigned → READY
+Both → identical READY state → all subsequent missions identical
+```

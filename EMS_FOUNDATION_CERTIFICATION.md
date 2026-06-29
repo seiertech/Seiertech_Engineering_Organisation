@@ -75,3 +75,22 @@ This document records the result of the EMS Foundation Conformance Audit perform
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1.0 | 2026-06-29 | Scaffold created — awaiting EF-1.8 audit | SeierTech EMS |
+
+---
+
+## Post-BASELINE-1.0 Additions
+
+The following artefacts were added after BASELINE-1.0 certification. They extend the EMS without breaking any existing artefacts.
+
+| Artefact | ID | Description |
+|---|---|---|
+| Platform Baseline Sync Standard | STD-000006 | .ems/ folder structure standard |
+| Build Governance Register | REG-000007 | Per-platform governance tracking |
+| Build Governance Auditor | PER-000025 | Governance archaeology and kiro-sync |
+| Platform Baseline Sync Operation | OPR-000010 | .ems/ creation for brownfield platforms |
+| Platform Genesis Operation | OPR-000011 | Greenfield platform creation |
+| MISSION-000 Platform Genesis | MSN-000000 | Greenfield counterpart to MISSION-001 |
+| MISSION-001 v3.0 | MSN-000001 | Added Phase 7 Platform Baseline Sync |
+| Genesis mode | All 25 personas | GENESIS MODE added to all AI Reasoning Profiles |
+
+**BASELINE-1.0 remains valid.** These additions are forward extensions — no existing artefact was modified in a breaking way.

@@ -102,6 +102,25 @@ The intake sequence defines the order in which personas activate during MISSION-
 | PER-000022 | 21 | Platform Engineer | Layer 1 | ACTIVE |
 | PER-000023 | 22 | Proposition Analyst | Layer 3 | ACTIVE |
 | PER-000024 | 23 | Master Spec Author | Layer 3 | ACTIVE |
+| PER-000025 | 24 | Build Governance Auditor | Layer 1 (Phase 2b) | ACTIVE |
+| PER-000020 | 19 | Standards Engineer | Gate (all layers) | ACTIVE |
+| PER-000021 | 20 | Integration Engineer | Layer 1 | ACTIVE |
+| PER-000022 | 21 | Platform Engineer | Layer 1 | ACTIVE |
+| PER-000023 | 22 | Proposition Analyst | Layer 3 | ACTIVE |
+| PER-000024 | 23 | Master Spec Author | Layer 3 | ACTIVE |
+
+---
+
+## Mission Types Served
+
+| Mission | Description | All Personas Mode |
+|---|---|---|
+| MISSION-000 Platform Genesis | Greenfield — design forward from brief | GENESIS MODE |
+| MISSION-001 Platform Intake | Brownfield — extract from existing code | EXTRACT MODE |
+| All other missions | Build, Rehab, Strategic, Agentic etc | EXECUTE MODE |
+
+Every persona AI Reasoning Profile contains both EXTRACT and GENESIS mode instructions.
+
 
 ---
 
@@ -121,3 +140,4 @@ The intake sequence defines the order in which personas activate during MISSION-
 |---|---|---|---|
 | 1.0.0 | 2026-06-01 | Initial stub registry | SeierTech EMS |
 | 2.0.0 | 2026-06-29 | Full EF-1.4 rewrite — 24 personas, full intake sequence | SeierTech EMS |
+| 3.0.0 | 2026-06-29 | Added PER-000025 Build Governance Auditor, genesis mode all personas, MISSION-000 | SeierTech EMS |
