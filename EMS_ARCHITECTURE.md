@@ -1,6 +1,6 @@
 # SeierTech Engineering Management System Architecture
 
-**Version:** 0.2.0  
+**Version:** 0.3.0  
 **Status:** Draft  
 **Classification:** EMS Architecture
 
@@ -28,6 +28,10 @@ The EMS is organised into the following domains:
 
 Every durable engineering object shall be identifiable, traceable and reviewable.
 
+No mission shall directly authorise implementation.
+
+No build pack shall be created until an engineering proposal has passed the EMS review chain.
+
 No build shall be considered deployable until it has passed Engineering Verification and Release Assurance.
 
 ## Authorities
@@ -36,7 +40,7 @@ Authorities define doctrine and controlling rules.
 
 ## Registers
 
-Registers provide indexed truth for decisions, missions, platforms, roles, standards, risks, changes, releases and requirements.
+Registers provide indexed truth for decisions, missions, proposals, platforms, roles, standards, risks, changes, releases and requirements.
 
 ## Libraries
 
@@ -44,7 +48,7 @@ Libraries contain reusable knowledge, patterns, evidence, vocabulary, lessons an
 
 ## Operations
 
-Operations contain live engineering activity including missions, reviews, approvals, builds, verification, release assurance, releases and audits.
+Operations contain live engineering activity including missions, proposals, reviews, approvals, builds, verification, release assurance, releases and audits.
 
 ## Workforce
 
@@ -68,28 +72,36 @@ Implementation systems do not self-certify. The EMS certifies release readiness 
 
 ## Work Products
 
-Work Products are outputs produced during engineering missions, reviews, verification activities, release assurance and outcomes.
+Work Products are outputs produced during engineering missions, proposals, reviews, verification activities, release assurance and outcomes.
 
 ## EMS Lifecycle
 
 ```text
 Mission
   ↓
-Analysis
+Platform readiness check
   ↓
-Architecture
+Engineering Proposal
+  ↓
+Specialist Persona Review
   ↓
 Technical Design Authority
   ↓
-Technical Delivery Authority
+Approved Design Package
+  ↓
+Build Pack
+  ↓
+Builder Branch
   ↓
 Implementation
   ↓
 Engineering Verification
   ↓
-Engineering Release Assurance Board
+Scorecard
   ↓
-Deployment Approval
+Release Authority
+  ↓
+Final Merge or Commit Instruction
   ↓
 Knowledge Capture
   ↓
@@ -98,8 +110,22 @@ Registers Updated
 Baseline Updated
 ```
 
+## Operating Gates
+
+Mission does not authorise build.
+
+Mission authorises proposal generation.
+
+Proposal does not authorise build.
+
+Approved proposal authorises build pack generation.
+
+Build does not authorise release.
+
+Verification and scoring support the final merge or commit instruction.
+
 ## Status
 
 This architecture supersedes the earlier folder-first repository design and establishes the EMS capability model.
 
-Version 0.2.0 adds Verification and Release Assurance as mandatory EMS capabilities.
+Version 0.3.0 adds the mandatory proposal gate, scorecard gate and final merge or commit instruction.
