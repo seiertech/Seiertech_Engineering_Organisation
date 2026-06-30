@@ -95,6 +95,20 @@ Founder-requested sweep "right to left and back again" across all active doctrin
 
 
 
+## v7 Update Summary — Intake Depth Closes 64% Team 2 Gap to ~36%
+
+Direct response to a founder question: "how exhaustive is the intake questionnaire and is what it's producing sufficient for Team 2 to use." Forced a precise cross-reference of the real v2 intake output (6 artefacts) against all 25 Team 2 personas' stated Inputs — found 16 of 25 (64%) had at least one unsatisfiable input, a significantly worse gap than the chain "running without error" had suggested.
+
+**Fixed:** `run_intake_chain.py` v2 → v3, adding 5 new gated passes (Data Model, API Register, Requirements Register, AI Capability Map, Test Strategy) plus a Handoff Artefact write, expanding MTS synthesis from 5 to 10 sources. Closes 7 of the 16 broken personas, including both top-level Team 2 governance personas (Executive Director, Mission Control Director) which had expected a Handoff Artefact never previously produced.
+
+**Honest scope, not full closure:** 9 of the original 16 gaps remain open (Integration Map, Enterprise Architecture Context, Frontend/Backend Assessment, UX Assessment, Domain Vocabulary, Documentation Assessment, Proposition Document, Deployment Architecture) — named precisely in `DAM-000010` rather than left vague, since claiming full closure would repeat the exact overclaiming this lesson exists to correct.
+
+**Backward compatibility tested:** built a fixture simulating a platform onboarded under the old v2 chain (missing the 3 new files `run_build_chain.py` now reads) and confirmed the BUILD chain still works correctly against it — the new reads are defensive (`read_file_safe` degrades to a marker, not a crash), so older platforms aren't broken by this expansion.
+
+---
+
+
+
 ## What Actually Works Today (v2)
 
 | Component | Status |
@@ -102,7 +116,7 @@ Founder-requested sweep "right to left and back again" across all active doctrin
 | Issue parsing (INTAKE / GENESIS detection) | WORKING — deterministic regex, tested against 3 real format cases |
 | NIM API call mechanism | FIXED — Python `json.dumps()` construction, immune to content-based quoting failures. As of DAM-000007, consolidated to a single canonical implementation (`call_nim.py`), imported by all three chain scripts rather than triplicated |
 | Real repo scanning | WORKING — shallow clone, file walk, schema/manifest/governance/test file detection and content extraction |
-| Intake chain — v2 (5 passes + MTS) | WORKING — 5 grouped persona passes + synthesis, each gated by a real Standards Engineer NIM call |
+| Intake chain — v3 (10 passes + MTS + Handoff Artefact) | WORKING — 10 grouped persona passes + synthesis, each gated by a real Standards Engineer NIM call. Expanded from v2's 5 passes per DAM-000010, closing 7 of 16 Team 2 persona input gaps found by LES-000018; 9 remain open, named in DAM-000010 Section 4 |
 | Readiness gate check | WORKING — deterministic, tested to correctly FAIL on empty/missing artefacts and correctly PASS on populated ones |
 | Artefact commit to EMS repo | WORKING — real files in `platforms/[NAME]/`, including `SCAN_RESULT.json` and `READINESS_GATE_RESULT.json` |
 | GitHub Issue status comments | WORKING — reports actual gate status and named failing gates, not generic text |
@@ -166,3 +180,4 @@ Each increment is additive — the v2 chain keeps working while these are built.
 | 4.0.0 | 2026-06-30 | v4 — first Team 2 loop-closing executor. Built run_build_chain.py (BUILD missions, OPR-000003 through OPR-000008, TDA enforced as a real halt, hard FAIL-verification-to-RELEASE prevention in code). Found and fixed a real gap in a prior amendment: v3's brief fix was script-level only and never got the required GitHub Actions job-level outputs: mapping, so it had never actually worked end to end — logged as LES-000010, fixed here alongside applying the same pattern correctly for the new instruction field | SeierTech EMS |
 | 5.0.0 | 2026-06-30 | v5 — cross-repo delivery. Built deliver_to_target_repo.py, wired into execute-build on RELEASE, requires a new TARGET_REPO_TOKEN secret (not yet provided). Delivers the EDP as a committed proposal + real PR, explicitly NOT applied code — that gap is named precisely as the next increment. Found and fixed a related doctrine gap: the target repo URL was never persisted anywhere for forward missions to read after intake — logged as LES-000011, fixed by writing PLATFORM_REPO_URL.txt during intake | SeierTech EMS |
 | 6.0.0 | 2026-06-30 | v6 — full doctrine sweep (DAM-000007). Found and fixed a false self-citation in EMS_OPERATING_MODEL.md, two stale persona references to a since-built operation, an un-updated step table in OPR-000002, and triplicated dead-letter code (call_nim.py never imported, copied identically into three chain scripts). Consolidated to a single import; caught and fixed an IndentationError introduced mid-consolidation before it shipped | SeierTech EMS |
+| 7.0.0 | 2026-06-30 | v7 — intake depth gap closed from 64% to ~36% of Team 2 personas (DAM-000010). A direct founder question cross-referencing real intake output against all 25 Team 2 personas' stated Inputs found 16 of 25 unsatisfiable. Expanded run_intake_chain.py v2->v3: 5 new passes (Data Model, API Register, Requirements Register, AI Capability Map, Test Strategy) + Handoff Artefact, MTS synthesis 5->10 sources. run_build_chain.py updated to read the new artefacts where genuinely useful, with defensive degradation tested against a simulated old-v2-platform fixture for backward compatibility. 9 of 16 original gaps remain open, named precisely rather than claimed closed | SeierTech EMS |

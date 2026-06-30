@@ -152,6 +152,15 @@ def main():
 
     mts = read_file_safe(f"{platform_dir}/MASTER_TECHNICAL_SPECIFICATION.md")
     architecture = read_file_safe(f"{platform_dir}/ARCHITECTURE_DOCUMENT.md")
+    # Added per DAM-000010 / LES-000018: these now genuinely exist after the
+    # v3 intake chain expansion. Read defensively (read_file_safe degrades
+    # to a [NOT FOUND] marker, not a crash) since a platform onboarded
+    # under the OLD v2 intake chain before this fix will not have them —
+    # the BUILD chain must keep working against older platforms, not
+    # assume every platform was onboarded with the latest intake depth.
+    data_model = read_file_safe(f"{platform_dir}/DATA_MODEL.md")
+    api_register = read_file_safe(f"{platform_dir}/API_REGISTER.md")
+    requirements = read_file_safe(f"{platform_dir}/REQUIREMENTS_REGISTER.md")
     constitution = read_file_safe("authorities/AUTH-001_ENGINEERING_CONSTITUTION.md")
 
     print(f"=== Confirming {platform_name} is genuinely READY before proceeding ===")
@@ -188,7 +197,12 @@ def main():
         "claim in the Master Technical Specification provided — never invent platform details not "
         "evidenced there."
     )
-    pass1_user = f"Platform: {platform_name}\nMission instruction: {args.instruction}\n\nMTS:\n{mts[:4000]}"
+    pass1_user = (
+        f"Platform: {platform_name}\nMission instruction: {args.instruction}\n\n"
+        f"MTS:\n{mts[:3500]}\n\n"
+        f"Requirements Register (if available — degrades gracefully if this platform was "
+        f"onboarded before DAM-000010):\n{requirements[:1500]}"
+    )
     print("\n=== Pass 1: Engineering Proposal (OPR-000003) ===")
     proposal_output = call_nim(api_key, args.model, pass1_system, pass1_user, max_tokens=2000)
     passed1, issues1 = standards_engineer_gate(api_key, args.model, proposal_output, "Engineering Proposal")
@@ -239,7 +253,12 @@ def main():
         "instructions, standards applied, and explicit test assertions for each acceptance criterion. "
         "The EDP must be specific enough that a builder could act on it — not a restatement of the proposal."
     )
-    pass3_user = f"Approved Engineering Proposal:\n{proposal_output[:2000]}\n\nTDA Rationale:\n{tda_result.get('rationale', '')[:500]}"
+    pass3_user = (
+        f"Approved Engineering Proposal:\n{proposal_output[:1800]}\n\n"
+        f"TDA Rationale:\n{tda_result.get('rationale', '')[:400]}\n\n"
+        f"Data Model (if available):\n{data_model[:1200]}\n\n"
+        f"API Register (if available):\n{api_register[:1200]}"
+    )
     print("\n=== Pass 3: Engineering Delivery Package (OPR-000005) ===")
     edp_output = call_nim(api_key, args.model, pass3_system, pass3_user, max_tokens=2500)
     passed3, issues3 = standards_engineer_gate(api_key, args.model, edp_output, "Engineering Delivery Package")
