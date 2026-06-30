@@ -158,10 +158,15 @@ Not part of the markdown doctrine — this is the executable layer. See `PYTHON_
 
 | Document | Purpose |
 |---|---|
-| `EMS_OPERATING_MODEL.md` | **New** — the authoritative synthesis answering how engineering work enters, progresses, is decided, governed by authority, and completes. Produced by DAM-000004 in direct response to an external review's primary finding that no such single document existed |
+| `EMS_OPERATING_MODEL.md` | The authoritative synthesis answering how engineering work enters, progresses, is decided, governed by authority, and completes. Produced by DAM-000004 in direct response to an external review's primary finding that no such single document existed |
 | `IMPLEMENTATION_STATUS.md` | What actually executes today vs what's designed but not built — the honest ledger for the GitHub Actions chain |
+| `PLATFORM_ONBOARDING_CHECKLIST.md` | Generic per-platform prerequisite checklist (repo URL/visibility, `NIM_API_KEY`, `TARGET_REPO_TOKEN`) before firing MISSION-001/MISSION-000 for real. Renamed from `COMMANDER_ONBOARDING_CHECKLIST.md` — found to have been left platform-specific while everything else was generalised, see this document's own Section 2 changelog |
+| `HOW_TO_FIRE_A_MISSION.md` | Quick-reference for the exact GitHub Issue formats that work (INTAKE/GENESIS/BUILD), verified by running the actual parser, not written from memory |
 | `PYTHON_ENGINE_BUILD_PLAN.md` | The ems_engine package build plan and decision record |
 | `EMS_FOUNDATION_CERTIFICATION.md` | BASELINE-1.0 certification record (38 PASS, 0 FAIL) plus post-baseline additions |
+| `PLATFORM_AGNOSTIC_AUDIT.md` | Audit and fix record for Commander hardcoding that had leaked into core Team 2 persona doctrine — 22 real instances found and fixed |
+| `EMS_VOCABULARY_AUDIT.md` | Programmatic scan against STD-000004's prohibited vocabulary list across the full corpus — found the QA persona title violation among other findings |
+| `PERSONA_SENSE_CHECK_REPORT.md` | Structural sense-check across all 50 personas — found and fixed an 8-persona depth gap in Team 1 |
 | `governance/EMS_RELATIONSHIP_GRAPH.md` | The full artefact relationship graph — every node, every edge |
 | `EMS_ARCHITECTURE.md` | The 8-domain EMS architecture model |
 | `EMS_DOCTRINE_INVENTORY.md` | This document |

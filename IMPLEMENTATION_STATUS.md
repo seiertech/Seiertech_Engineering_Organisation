@@ -143,7 +143,7 @@ You will **still not** get `.ems/` created in the Commander repo itself, a Found
 
 ## Recommended Next Build Increments (in priority order, updated 2026-06-30)
 
-1. **Provide `TARGET_REPO_TOKEN`** — the one remaining piece a human must do for cross-repo delivery (`DAM-000006`) to actually run against a real platform. Fine-grained PAT scoped to the target repo, `contents:write` + `pull-requests:write`. See `COMMANDER_ONBOARDING_CHECKLIST.md`.
+1. **Provide `TARGET_REPO_TOKEN`** — the one remaining piece a human must do for cross-repo delivery (`DAM-000006`) to actually run against a real platform. Fine-grained PAT scoped to the target repo, `contents:write` + `pull-requests:write`. See `PLATFORM_ONBOARDING_CHECKLIST.md`.
 2. **Close the proposal-to-applied-code gap** — `DAM-000006` delivers the EDP as a committed proposal and PR, not applied code. The next increment is either wiring an actual builder (Kiro) to read the committed EDP and write real code, or making a real live NIM call to validate the EDP's content quality is good enough to act on in the first place.
 3. **Founder Questions mechanism** — when scan or build evidence is insufficient for a claim, accumulate structured questions and post them as an issue comment, track resolution. Still the one gate (RG-008) blocking every platform from full certification, currently worked around rather than fixed.
 4. **REHAB mission executor** — same grouped-pass pattern as BUILD, targeting the Technical Debt Register a completed intake already produces.

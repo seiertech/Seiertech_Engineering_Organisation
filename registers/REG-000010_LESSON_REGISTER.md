@@ -6,7 +6,7 @@
 | Artefact Class | Register |
 | Title | Lesson Register |
 | Status | ACTIVE |
-| Version | 1.4.0 |
+| Version | 1.5.0 |
 | Classification | OPERATIONAL |
 | Owner | Documentation and Knowledge Curator (PER-000018 / T2-PER-000018) |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -88,6 +88,8 @@ CAPTURED → SUPERSEDED (a later, more complete lesson replaces this one)
 | LES-000012 | EMS_OPERATING_MODEL.md's own Section 8 Relationships table claimed to cite "AUTH-001 through AUTH-010" and "REG-000001 through REG-000010" but actually only referenced 6 of 10 authorities and 6 of 10 registers — a false self-claim caught only by a full left-to-right/right-to-left sweep checking every cited ID against what actually exists | DOCTRINE_GAP | DAM-000007 | AMENDED |
 | LES-000013 | The Documentation and Knowledge Curator personas (both teams) — whose entire job is lesson curation — never referenced OPR-000012 Doctrine Amendment, because the persona files were written before that operation existed and were never retrofitted when it was built | DOCTRINE_GAP | DAM-000007 | AMENDED |
 | LES-000014 | call_nim.py exists as a standalone provider wrapper but every real chain script (run_intake_chain.py, run_genesis_chain.py, run_build_chain.py) defines its own identical inline copy of the same function rather than importing it — currently undrifted by luck, not by structure, and a latent risk that a future edit to one copy silently fails to propagate to the others | STRUCTURAL_BUG | DAM-000007 | AMENDED |
+| LES-000015 | COMMANDER_ONBOARDING_CHECKLIST.md was never swept into the platform-agnostic generalisation effort despite being root-level doctrine — it remained Commander-specific by name and content while every other piece of doctrine this session was deliberately made reusable, including a dedicated audit (PLATFORM_AGNOSTIC_AUDIT.md) that fixed the same class of issue in personas but never checked root-level documents | DOCTRINE_GAP | DAM-000008 | AMENDED |
+| LES-000016 | EMS_DOCTRINE_INVENTORY.md's "Other Key Documents" table — the section of the document whose entire purpose is completeness — was itself missing 5 of 12 actual root-level documents, including the checklist renamed in this same fix | DOCTRINE_GAP | DAM-000008 | AMENDED |
 
 See full detail for each in `memory/lessons/LES-NNNNNN.md` (one file per lesson, created as part of this same change).
 
@@ -122,3 +124,4 @@ Continuous — updated as lessons are found. Audited at the start of every signi
 | 1.2.0 | 2026-06-30 | Added LES-000010 — found while building the BUILD chain executor, confirming a prior amendment (DAM-000001) had been incomplete: GITHUB_OUTPUT writes alone do not expose a value to other jobs without an explicit job-level mapping, so the genesis chain's brief had never actually been working despite the prior fix | SeierTech EMS |
 | 1.3.0 | 2026-06-30 | Added LES-000011 — found while solving the cross-repo delivery fundamental: no prior doctrine specified where a platform's target repo URL persists for later forward missions to read, despite intake being handed that URL directly | SeierTech EMS |
 | 1.4.0 | 2026-06-30 | Added LES-000012/013/014 — found during a full left-to-right/right-to-left sweep across all doctrine: EMS_OPERATING_MODEL.md's own relationships table made a false citation claim, the Documentation Curator personas never referenced OPR-000012 despite owning lesson curation, and call_nim.py is dead/duplicated code | SeierTech EMS |
+| 1.5.0 | 2026-06-30 | Added LES-000015/016 — found via direct founder challenge: COMMANDER_ONBOARDING_CHECKLIST.md was never generalised despite the platform-agnostic audit covering personas; EMS_DOCTRINE_INVENTORY.md's own "Other Key Documents" table was missing 5 of 12 actual root-level files | SeierTech EMS |
