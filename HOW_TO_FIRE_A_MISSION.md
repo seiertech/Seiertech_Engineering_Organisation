@@ -4,14 +4,14 @@
 |---|---|
 | Document | How To Fire A Mission |
 | Status | ACTIVE |
-| Last Updated | 2026-06-29 |
+| Last Updated | 2026-06-30 |
 | Purpose | The exact issue formats that work, what happens after you create the issue, and where to find results |
 
 ---
 
 ## Where To Create The Issue
 
-GitHub Issues in **`seiertech/Seiertech_Engineering_Organisation`** (the EMS repo) — not in the platform's own repo (e.g. not in Commander's repo).
+GitHub Issues in **`seiertech/Seiertech_Engineering_Organisation`** (the EMS repo) — not in the target platform's own repo.
 
 ---
 
@@ -43,7 +43,7 @@ Complete intake for COMMANDER_C2 — repo: https://github.com/your-org/commander
 
 ## Format 2 — Platform Genesis (Greenfield)
 
-For a brand new platform with no code yet. This activates Team 2 directly — **but note the honest status below.**
+For a brand new platform with no code yet. This activates Team 2 directly.
 
 **Exact format that works:**
 ```
@@ -55,30 +55,45 @@ Genesis: [PLATFORM_NAME] — [one line brief]
 Genesis: COMPASS — personal growth operating system for consumer mobile
 ```
 
-**⚠️ HONEST STATUS:** the issue parser correctly detects GENESIS missions, but **no executor has been built for them yet**. As of the last check, firing a Genesis issue gets you a GitHub Actions run that posts a comment explaining the chain is designed but not yet executable, and applies a `status:not-yet-implemented` label. It does not error or fail silently — it tells you honestly. Do not expect a real genesis run until this is built (see `IMPLEMENTATION_STATUS.md`).
+**Status (updated since this doc was first written):** Genesis now has a real v1 executor (`run_genesis_chain.py`, per `DAM-000005`). It runs 3 grouped DESIGN-mode persona passes (Use Case+Requirements, Architecture+Data Model, Knowledge Graph — fewer than intake's 5, since there's no repository to scan, only a brief to design from), then the same real readiness gate check used for brownfield. No actual GitHub repository is created for the new platform yet — output lands in the EMS repo's `platforms/[NAME]/` the same as intake.
 
 ---
 
-## What Happens After You Create An Intake Issue
+## Format 3 — Build (Forward Mission)
+
+For an existing platform that has already reached READY (via either intake or genesis). This activates Team 2's forward build chain — Proposal, Technical Design Authority, Engineering Delivery Package, Verification, Release.
+
+**Exact format that works:**
+```
+Build for [PLATFORM_NAME] — [instruction]
+```
+
+**Real example:**
+```
+Build for PULSE — add a password reset endpoint
+```
+
+**Status:** v1 executor (`run_build_chain.py`, per `DAM-000005`). A Technical Design Authority verdict of REJECTED or REVISION_REQUIRED is a genuine halt — the chain stops there, not a soft warning. A RELEASE decision triggers `deliver_to_target_repo.py` (per `DAM-000006`), which opens a real branch and Pull Request in the target platform repo containing the Engineering Delivery Package. **This is a committed proposal, not applied code** — no source file in the target repo is modified by this step. Requires `TARGET_REPO_TOKEN` to actually deliver (see `PLATFORM_ONBOARDING_CHECKLIST.md`); without it, the BUILD chain still completes normally, it just doesn't produce a PR.
+
+---
+
+## What Happens After You Create An Issue
 
 1. GitHub Actions workflow `ems-mission-chain.yml` triggers automatically on issue creation
 2. `detect-mission` job runs the deterministic parser — usually completes in seconds
-3. If parsed as `INTAKE`: `execute-intake` job runs
-   - Labels the issue `mission:intake`, `status:in-progress`, `chain:v2`
-   - Real shallow clone of the target repo
-   - 5 grouped persona passes (Use Case+Requirements, Architecture+Data Model, Security Posture, Technical Debt Register, Knowledge Graph)
-   - MTS synthesis pass
-   - Real deterministic readiness gate check
-   - Commits all artefacts to the EMS repo
-   - Posts a comment on the issue with the actual READY/BLOCKED status and which gates failed (if any)
-   - Updates the issue label to `status:draft-needs-review`
-4. If the title/body is genuinely ambiguous (doesn't match either pattern): a comment is posted explaining the expected formats, no chain runs
+3. Depending on what was parsed:
+   - **INTAKE** → `execute-intake` job: labels `mission:intake`, `status:in-progress`, `chain:v2`; real shallow clone; 5 grouped persona passes; MTS synthesis; real readiness gate check; commits artefacts; posts the actual READY/BLOCKED status with named failing gates
+   - **GENESIS** → `execute-genesis` job: labels `mission:genesis`, `status:in-progress`, `chain:v1`; 3 grouped DESIGN-mode passes (no repo to scan); MTS synthesis; same real gate check; commits artefacts; posts the same kind of honest status comment
+   - **BUILD** → `execute-build` job: labels `mission:build`, `status:in-progress`, `chain:v1`; confirms the platform is genuinely READY first; runs Proposal → TDA → EDP → Verification → Release; on a RELEASE decision, attempts cross-repo delivery (requires `TARGET_REPO_TOKEN`); posts the final status (RELEASE/HOLD/REJECT, or a TDA halt)
+4. If the title/body is genuinely ambiguous (doesn't match any of the three patterns): a comment is posted explaining the expected formats, no chain runs
 
 ---
 
 ## Where To Find Results
 
-All output lands in the **EMS repo**, under `platforms/[PLATFORM_NAME]/`:
+All output lands in the **EMS repo**, under `platforms/[PLATFORM_NAME]/`. Exact filenames depend on mission type:
+
+**INTAKE (brownfield):**
 
 | File | What it is |
 |---|---|
@@ -89,11 +104,25 @@ All output lands in the **EMS repo**, under `platforms/[PLATFORM_NAME]/`:
 | `KNOWLEDGE_GRAPH.md` | Pass 5 output |
 | `MASTER_TECHNICAL_SPECIFICATION.md` | Synthesis of all 5 passes |
 | `SCAN_RESULT.json` | Raw real scan evidence — languages, manifests, schema files, governance files found, test counts |
+| `PLATFORM_REPO_URL.txt` | Persisted target repo URL — what any later BUILD mission delivers back to |
 | `READINESS_GATE_RESULT.json` | The real RG-001 to RG-010 gate check result — this is the actual READY/BLOCKED verdict |
-| `INTAKE_RUN_LOG.md` | Human-readable summary of the whole run, including honest scope disclosure and the Standards Engineer verdict per artefact |
-| `spine/SCAN_EVIDENCE_SPINE.md` | The shared scan evidence used across passes |
+| `INTAKE_RUN_LOG.md` | Human-readable summary, including honest scope disclosure and Standards Engineer verdict per artefact |
 
-**Also check:** the GitHub Issue itself — the bot comment posted after the run states the real `overall_status` and lists `failing_gates` by name directly, you don't need to open any files to get the headline result.
+**GENESIS (greenfield):** same artefact set minus `SCAN_RESULT.json`/`SECURITY_POSTURE.md`/`TECHNICAL_DEBT_REGISTER.md`/`PLATFORM_REPO_URL.txt` (no repo to scan or deliver to yet), plus `GENESIS_RUN_LOG.md` instead of `INTAKE_RUN_LOG.md`.
+
+**BUILD (forward):**
+
+| File | What it is |
+|---|---|
+| `_BUILD_PROPOSAL_LATEST.md` | The Engineering Proposal |
+| `_BUILD_TDA_LATEST.md` | The TDA verdict and rationale |
+| `_BUILD_EDP_LATEST.md` | The Engineering Delivery Package (only produced if TDA approved) |
+| `_BUILD_VERIFICATION_LATEST.md` | The Verification result and criteria checked |
+| `_BUILD_SCORECARD_LATEST.md` | The Release Scorecard and decision |
+| `_BUILD_DELIVERY_LATEST.md` | The target-repo branch/PR record (only if delivery succeeded) |
+| `BUILD_RUN_LOG_{issue}.md` | Human-readable summary of the whole BUILD run |
+
+**Also check:** the GitHub Issue itself — the bot comment posted after every run states the real outcome directly, you don't need to open any files to get the headline result.
 
 ---
 
@@ -113,3 +142,4 @@ All output lands in the **EMS repo**, under `platforms/[PLATFORM_NAME]/`:
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial quick-reference, formats verified by running the actual parser, not assumed from memory | SeierTech EMS |
+| 2.0.0 | 2026-06-30 | Document had gone stale relative to real progress: Genesis status corrected (now has a real v1 executor, was previously "not yet built"), BUILD format added entirely (didn't exist when this doc was first written), results tables expanded to cover all three mission types, Commander-specific phrasing in the intro generalised | SeierTech EMS |
