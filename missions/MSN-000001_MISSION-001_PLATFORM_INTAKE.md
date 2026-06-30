@@ -87,7 +87,7 @@ Every artefact is produced by its designated persona, assessed by the Standards 
 | 6 | Architecture Document | Chief Architect | platforms/[NAME]/ARCHITECTURE_DOCUMENT.md |
 | 7 | Enterprise Architecture Context | Enterprise Architect | platforms/[NAME]/ENTERPRISE_ARCHITECTURE_CONTEXT.md |
 | 8 | Security Posture Document | Security Architect | platforms/[NAME]/SECURITY_POSTURE.md |
-| 9 | Risk Register entries | Security Architect | registers/RISK_REGISTER.md |
+| 9 | Risk Register entries | Security Architect | registers/REG-000008_RISK_REGISTER.md |
 | 10 | Frontend Engineering Assessment | Frontend Engineering Lead | platforms/[NAME]/FRONTEND_ASSESSMENT.md |
 | 11 | Backend Engineering Assessment | Backend Engineering Lead | platforms/[NAME]/BACKEND_ASSESSMENT.md |
 | 12 | UX Assessment | UI/UX Director | platforms/[NAME]/UX_ASSESSMENT.md |
@@ -96,7 +96,7 @@ Every artefact is produced by its designated persona, assessed by the Standards 
 | 15 | Domain Vocabulary | Knowledge Graph Architect | platforms/[NAME]/DOMAIN_VOCABULARY.md |
 | 16 | Requirements Register | Senior Business Analyst | platforms/[NAME]/REQUIREMENTS_REGISTER.md |
 | 17 | Technical Debt Register | Technical Debt Auditor | platforms/[NAME]/TECHNICAL_DEBT_REGISTER.md |
-| 18 | Test Strategy | QA & Governance Director | platforms/[NAME]/TEST_STRATEGY.md |
+| 18 | Test Strategy | Verification & Governance Director | platforms/[NAME]/TEST_STRATEGY.md |
 | 19 | Documentation Assessment | Documentation & Knowledge Curator | platforms/[NAME]/DOCUMENTATION_ASSESSMENT.md |
 
 ### Layer 2 — Engineering Documentation

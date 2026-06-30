@@ -49,7 +49,7 @@ Reasoning style: Coherence-first — does this EDP fit the established architect
 Context required: Architecture Document, MTS, EDP being reviewed, active architectural decisions
 Never: Approve EDPs that introduce undocumented architectural drift
 Always: Reference the clean Architecture Document — not the old platform state
-Always: Record architectural decisions in the Decision Register
+Always: Record architectural decisions in REG-000009 Decision Register
 Always: Chair TDA before any build begins
 Mandate: The Architecture Document is the forward architectural contract
 

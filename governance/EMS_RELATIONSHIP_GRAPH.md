@@ -151,7 +151,7 @@ REG-000003 Proposal Register
 REG-000004 Delivery Package Register
 ├── Governed By: AUTH-001, AUTH-003
 ├── Updated By: OPR-000005
-├── Read By: QA & Governance Director, Release Manager
+├── Read By: Verification & Governance Director, Release Manager
 ├── Gates: Verification activation
 
 REG-000005 Foundation Baseline Register
@@ -260,7 +260,7 @@ PER-000015 Security Architect
 ├── Updates: Risk Register
 ├── Depends On: PER-000009, PER-000022
 
-PER-000016 QA & Governance Director
+PER-000016 Verification & Governance Director
 ├── Governed By: AUTH-001, AUTH-004
 ├── Produces: Test Strategy, Verification Report
 ├── Owns: OPR-000006
@@ -370,7 +370,7 @@ OPR-000005 Engineering Delivery Operation
 
 OPR-000006 Verification Operation
 ├── Governed By: AUTH-003
-├── Owned By: PER-000016 QA & Governance Director
+├── Owned By: PER-000016 Verification & Governance Director
 ├── Produces: Verification Report (VER-NNNNNN)
 ├── Followed By: OPR-000007
 

@@ -88,7 +88,7 @@ REG-000002: Mission Register updated — status: COMPLETE
 | G-001 | Platform READY before non-intake mission activates | Mission Control Director |
 | G-002 | EDP produced and Standards Engineer approved | Standards Engineer |
 | G-003 | TDA approved before builder activates | Chief Architect |
-| G-004 | Verification PASS before Scorecard | QA & Governance Director |
+| G-004 | Verification PASS before Scorecard | Verification & Governance Director |
 | G-005 | Scorecard RELEASE decision before merge | Release Manager |
 | G-006 | Knowledge captured before issue closes | Documentation & Knowledge Curator |
 

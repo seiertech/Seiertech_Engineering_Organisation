@@ -113,7 +113,7 @@ The .ems/kiro-sync/ files are the definitive builder instruction set. They are p
 1. All COMPATIBLE governance that survived classification
 2. All EMS standards relevant to build execution
 3. Platform-specific constraints from the MTS
-4. Active architectural decisions from the Decision Register
+4. Active architectural decisions from REG-000009 Decision Register
 5. Known errors and constraints from the Technical Debt Register
 
 The result is a single, coherent, non-contradictory instruction set that Kiro reads at session start. It replaces everything Kiro previously accumulated on its own.

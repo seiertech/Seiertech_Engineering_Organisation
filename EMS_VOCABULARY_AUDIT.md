@@ -16,22 +16,17 @@ This was run as an actual scan, not eyeballed — `re.findall(r'\bTERM\b', conte
 
 ---
 
-## Finding 1 — "QA" Is Not Incidental Usage, It's a Persona's Actual Title (the big one)
+## Finding 1 — "QA" Was a Persona's Actual Title — ✅ RESOLVED 2026-06-29
 
-**21 of the 23 flagged instances are "QA."** This is not scattered casual usage — it is the formal title of **PER-000016 / T2-PER-000016**, used as:
+**21 of the 23 originally flagged instances were "QA."** This was not scattered casual usage — it was the formal title of **PER-000016 / T2-PER-000016**, used as:
 
 - The persona title itself: "QA and Governance Director" (Team 1) / "QA & Governance Director" (Team 2)
 - The folder name: `agents/team-1-baseline/15-qa-governance-director/`, `agents/team-2-forward/15-qa-and-governance-director/`
 - Referenced by name in: `TEAM_1_REGISTRY.md`, `TEAM_2_REGISTRY.md`, `AUTH-003`, `AUTH-007`, `AUTH-009`, `EMS_RELATIONSHIP_GRAPH.md`, `MSN-000000`, `MSN-000001`, `OPR-000001`, `OPR-000002`, `OPR-000006` (9 instances alone), `OPR-000011`, `registers/PERSONA_REGISTER.md` (legacy file)
 
-**This is a real STD-000004 violation, not a false positive.** STD-000004 explicitly says "QA (use: Verification)" — the persona that chairs Verification is currently named after the very term the standard prohibits.
+**This was a real STD-000004 violation, not a false positive.** STD-000004 explicitly says "QA (use: Verification)" — the persona that chairs Verification was named after the very term the standard prohibits.
 
-**This was NOT fixed during this audit.** Renaming a persona referenced in ~21 places across authorities, operations, missions, and both team registries is a real, rippling change — every cross-reference, every "Activates: QA Governance Director" line, the folder names themselves, would need updating consistently. That's a deliberate decision, not something to silently auto-correct.
-
-**Recommended path, not yet actioned:**
-- Rename to **"Verification & Governance Director"** (cleanest direct application of the standard's own suggested replacement)
-- Update: persona title in both team files, both folder names (`15-qa-governance-director` → `15-verification-governance-director`), all ~19 cross-references
-- This is a single, mechanical, well-defined rename — safe to do once confirmed, but flagged here rather than done silently since it touches both team folder structures
+**Fix applied:** Renamed to **"Verification and Governance Director"** (Team 1) / **"Verification & Governance Director"** (Team 2) — the cleanest direct application of the standard's own suggested replacement. Both persona folders renamed via `git mv` (history preserved): `15-qa-governance-director` → `15-verification-governance-director`, `15-qa-and-governance-director` → `15-verification-and-governance-director`. All ~21 cross-references updated individually after confirming exact context in each file — not a blind global find-replace. Re-scanned afterward: zero remaining "QA" instances outside the legacy `PERSONA_REGISTER.md` (which was itself archived to `registers/legacy/` in the same session — see `EMS_DOCTRINE_INVENTORY.md`).
 
 ---
 

@@ -1,10 +1,10 @@
-# PER-000016 — QA AND GOVERNANCE DIRECTOR
+# PER-000016 — VERIFICATION AND GOVERNANCE DIRECTOR
 
 | Field | Value |
 |---|---|
 | Artefact ID | PER-000016 |
 | Artefact Class | Persona |
-| Title | QA and Governance Director |
+| Title | Verification and Governance Director |
 | Status | ACTIVE |
 | Version | 2.0.0 |
 | Classification | FOUNDATIONAL |
@@ -22,7 +22,7 @@ Own quality assurance governance across all missions. During intake produce Test
 
 ## 2. Outputs
 
-Test Strategy (platforms/[NAME]/TEST_STRATEGY.md), Verification Report (VER-NNNNNN), coverage gap analysis, QA verdicts
+Test Strategy (platforms/[NAME]/TEST_STRATEGY.md), Verification Report (VER-NNNNNN), coverage gap analysis, Verification verdicts
 
 ---
 

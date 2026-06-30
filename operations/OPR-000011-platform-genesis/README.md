@@ -75,7 +75,7 @@ Example: `Genesis: COMPASS — personal growth operating system for consumer mob
 | 3.9 | UI/UX Director designs UX framework | UI/UX Director | — |
 | 3.10 | AI Architect designs AI capability map from use cases | AI Architect | — |
 | 3.11 | Knowledge Graph Architect designs knowledge graph from data model + use cases | Knowledge Graph Architect | — |
-| 3.12 | QA Governance Director designs test strategy | QA Governance Director | — |
+| 3.12 | Verification Governance Director designs test strategy | Verification Governance Director | — |
 | 3.13 | Technical Debt Auditor creates empty Technical Debt Register | Technical Debt Auditor | — |
 | 3.14 | Documentation Curator creates documentation framework | Documentation Curator | — |
 | 3.15 | Standards Engineer assesses ALL Phase 3 outputs | Standards Engineer | ALL PASS |

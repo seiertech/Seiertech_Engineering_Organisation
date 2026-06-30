@@ -44,7 +44,7 @@ MISSION-001: `Complete intake for [PLATFORM_NAME] — repo: [REPO_URL]`
 | 12 | Frontend Engineering Lead | Frontend codebase assessment |
 | 13 | Backend Engineering Lead | Backend codebase assessment |
 | 14 | Security Architect | Security posture extraction |
-| 15 | QA & Governance Director | Test coverage assessment |
+| 15 | Verification & Governance Director | Test coverage assessment |
 | 16 | Technical Debt Auditor | Debt archaeology |
 | 17 | Documentation & Knowledge Curator | Documentation assessment |
 | 18 | Release Manager | Release posture assessment |

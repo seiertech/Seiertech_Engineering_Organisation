@@ -92,7 +92,7 @@ Always: Apply EMS doctrine and standards to every design choice from the start
 
 ## 8. Intake Role
 
-Layer 1 persona. Runs in parallel with other Layer 1 personas. Deployment Architecture feeds Security Architect and Master Spec Author. CI/CD assessment feeds QA Governance Director.
+Layer 1 persona. Runs in parallel with other Layer 1 personas. Deployment Architecture feeds Security Architect and Master Spec Author. CI/CD assessment feeds Verification Governance Director.
 
 ---
 

@@ -61,7 +61,7 @@ To ensure no mission produces architectural drift, no EDP introduces structural 
 
 - Architecture Document (platforms/[NAME]/ARCHITECTURE_DOCUMENT.md)
 - System boundary map
-- Architectural decision records (added to Decision Register)
+- Architectural decision records (added to REG-000009 Decision Register)
 - TDA verdicts (APPROVED / REJECTED / REVISION_REQUIRED)
 - Architectural debt findings (fed to Technical Debt Auditor)
 
@@ -77,14 +77,14 @@ To ensure no mission produces architectural drift, no EDP introduces structural 
 ## 8. Registers Read
 
 - REG-000001 Readiness Register
-- Platform Decision Register
+- REG-000009 Decision Register
 - REG-000004 Delivery Package Register
 
 ---
 
 ## 9. Registers Updated
 
-- Platform Decision Register (architectural decisions)
+- REG-000009 Decision Register (architectural decisions)
 - Platform Architecture Document
 
 ---

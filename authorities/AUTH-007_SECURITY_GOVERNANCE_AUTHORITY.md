@@ -55,7 +55,7 @@ Applies to all security artefacts and security considerations across all platfor
 | Role | Responsibility |
 |---|---|
 | Security Architect | Own Security Posture Document, review all EDPs, maintain Risk Register |
-| QA Governance Director | Ensure security assertions are included in Verification |
+| Verification Governance Director | Ensure security assertions are included in Verification |
 | Release Manager | Enforce automatic REJECT on CRITICAL findings |
 | Data Architect | Flag PII entities to Security Architect during intake |
 
@@ -109,7 +109,7 @@ Security veto is absolute — no appeal mechanism. CRITICAL findings block relea
 
 ## 13. Related Registers
 
-- Risk Register
+- REG-000008 Risk Register
 - Security Posture Documents
 
 ---

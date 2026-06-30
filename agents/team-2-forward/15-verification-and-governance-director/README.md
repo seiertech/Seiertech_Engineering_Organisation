@@ -1,10 +1,10 @@
-# T2-PER-000016 — QA AND GOVERNANCE DIRECTOR (TEAM 2)
+# T2-PER-000016 — VERIFICATION AND GOVERNANCE DIRECTOR (TEAM 2)
 
 | Field | Value |
 |---|---|
 | Artefact ID | T2-PER-000016 |
 | Artefact Class | Persona |
-| Title | QA and Governance Director |
+| Title | Verification and Governance Director |
 | Team | Team 2 — Forward Build Force |
 | Status | ACTIVE |
 | Version | 1.0.0 |

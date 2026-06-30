@@ -37,7 +37,7 @@ Engineering Proposal status APPROVED in REG-000003.
 | 5 | Assess data model impact | Data Architect | — |
 | 6 | Assess integration impact | Integration Engineer | — |
 | 7 | Produce TDA verdict: APPROVED / REJECTED / REVISION_REQUIRED | Chief Architect | — |
-| 8 | Record architectural decisions in Decision Register | Chief Architect | — |
+| 8 | Record architectural decisions in REG-000009 Decision Register | Chief Architect | — |
 | 9 | APPROVED → proceed to OPR-000005 Engineering Delivery | — | APPROVED |
 | 10 | REVISION_REQUIRED → return to Proposal with specific revision requirements | Chief Architect | — |
 | 11 | REJECTED → return to Mission Control Director — mission does not proceed | Chief Architect | — |
@@ -55,7 +55,7 @@ Engineering Proposal status APPROVED in REG-000003.
 ## 5. Outputs
 
 - TDA verdict (APPROVED / REJECTED / REVISION_REQUIRED)
-- Architectural decision records in Decision Register
+- Architectural decision records in REG-000009 Decision Register
 - Approved design brief for EDP generation
 
 ---
@@ -68,6 +68,7 @@ Engineering Proposal status APPROVED in REG-000003.
 | Chaired By | PER-000007 | Chief Architect |
 | Follows | OPR-000003 | Engineering Proposal Operation |
 | Followed By | OPR-000005 | Engineering Delivery Operation |
+| Updates | REG-000009 | Decision Register |
 
 ---
 

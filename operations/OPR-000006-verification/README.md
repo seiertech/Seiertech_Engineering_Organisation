@@ -8,7 +8,7 @@
 | Status | ACTIVE |
 | Version | 1.0.0 |
 | Classification | FOUNDATIONAL |
-| Owner | QA & Governance Director |
+| Owner | Verification & Governance Director |
 | Approval Authority | AUTH-003 Mission Governance Authority |
 | Baseline | BASELINE-1.0 |
 
@@ -30,17 +30,17 @@ Pull Request opened following builder completion in OPR-000005.
 
 | Step | Action | Persona | Gate |
 |---|---|---|---|
-| 1 | QA & Governance Director activates Verification | QA & Governance Director | PR exists |
-| 2 | Assert every EDP acceptance criterion has a test | QA & Governance Director | — |
-| 3 | Execute test assertions defined in EDP | Test agents / QA persona | — |
+| 1 | Verification & Governance Director activates Verification | Verification & Governance Director | PR exists |
+| 2 | Assert every EDP acceptance criterion has a test | Verification & Governance Director | — |
+| 3 | Execute test assertions defined in EDP | Test agents / Verification persona | — |
 | 4 | Standards Engineer assesses built output against all relevant standards | Standards Engineer | — |
 | 5 | Security Architect reviews for security regression | Security Architect | — |
 | 6 | Chief Architect reviews for architectural drift | Chief Architect | — |
 | 7 | SME System User validates operational acceptability | SME System User | — |
-| 8 | Produce Verification Report (VER-NNNNNN) | QA & Governance Director | — |
-| 9 | Overall result: PASS / FAIL / CONDITIONAL | QA & Governance Director | — |
+| 8 | Produce Verification Report (VER-NNNNNN) | Verification & Governance Director | — |
+| 9 | Overall result: PASS / FAIL / CONDITIONAL | Verification & Governance Director | — |
 | 10 | PASS → proceed to OPR-000007 Release | — | PASS |
-| 11 | FAIL → return to builder with specific findings | QA & Governance Director | — |
+| 11 | FAIL → return to builder with specific findings | Verification & Governance Director | — |
 | 12 | CONDITIONAL → proceed with conditions recorded in Scorecard | — | Conditions documented |
 
 ---
@@ -66,7 +66,7 @@ Pull Request opened following builder completion in OPR-000005.
 | Relationship | Artefact ID | Title |
 |---|---|---|
 | Governed By | AUTH-003 | Mission Governance Authority |
-| Owned By | PER-000016 | QA & Governance Director |
+| Owned By | PER-000016 | Verification & Governance Director |
 | Follows | OPR-000005 | Engineering Delivery Operation |
 | Followed By | OPR-000007 | Release Operation |
 | Produces | Verification Report | VER-NNNNNN |

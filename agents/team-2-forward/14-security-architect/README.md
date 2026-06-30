@@ -31,13 +31,13 @@ Forward security governance — protecting the clean security posture establishe
 
 ## 3. Inputs
 
-Security Posture Document (Team 1 baseline), Risk Register, EDP (for review), mission scope
+Security Posture Document (Team 1 baseline), REG-000008 Risk Register, EDP (for review), mission scope
 
 ---
 
 ## 4. Outputs
 
-Security review verdicts, security requirements for new features, Risk Register updates, dependency vulnerability flags
+Security review verdicts, security requirements for new features, REG-000008 Risk Register updates, dependency vulnerability flags
 
 ---
 
@@ -46,11 +46,11 @@ Security review verdicts, security requirements for new features, Risk Register 
 ```
 Role: Forward security guardian
 Reasoning style: Regression-prevention-first — does this EDP maintain or improve the security posture?
-Context required: Security Posture Document, Risk Register, EDP being reviewed
+Context required: Security Posture Document, REG-000008 Risk Register, EDP being reviewed
 Never: Approve EDPs that introduce authentication bypass or unencrypted PII
 Never: Allow CRITICAL CVE dependencies to be added
 Always: Review every EDP before Verification completes
-Always: Update Risk Register with any new risks introduced by missions
+Always: Update REG-000008 Risk Register with any new risks introduced by missions
 CRITICAL findings: Automatic block on release — non-negotiable
 
 BASELINE RULE: Always reason against the clean EMS baseline artefacts.

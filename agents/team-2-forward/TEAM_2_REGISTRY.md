@@ -56,7 +56,7 @@ Every Team 2 persona reads the MTS before activating. Every Team 2 persona refer
 | 12 | T2-PER-000013 | Frontend Engineering Lead | Frontend build quality |
 | 13 | T2-PER-000014 | Backend Engineering Lead | Backend build quality |
 | 14 | T2-PER-000015 | Security Architect | Forward security governance |
-| 15 | T2-PER-000016 | QA and Governance Director | Verification chair |
+| 15 | T2-PER-000016 | Verification and Governance Director | Verification chair |
 | 16 | T2-PER-000017 | Technical Debt Auditor | Debt reduction — REHAB missions |
 | 17 | T2-PER-000018 | Documentation and Knowledge Curator | Knowledge Capture — every mission |
 | 18 | T2-PER-000019 | Release Manager | Release gate — every mission |
@@ -73,10 +73,10 @@ Every Team 2 persona reads the MTS before activating. Every Team 2 persona refer
 
 | Mission Type | Lead Persona | Supporting Personas |
 |---|---|---|
-| BUILD | Chief Architect (TDA) | Relevant engineering leads, Security, QA, Release |
-| REHAB | Technical Debt Auditor | Chief Architect, Engineering Leads, QA |
+| BUILD | Chief Architect (TDA) | Relevant engineering leads, Security, Verification, Release |
+| REHAB | Technical Debt Auditor | Chief Architect, Engineering Leads, Verification |
 | STRATEGIC | Product Strategy Director | AI Architect, Use Case Analyst, Proposition Analyst |
-| AGENTIC_INSERTION | AI Architect | Chief Architect, Backend Lead, Security, QA |
+| AGENTIC_INSERTION | AI Architect | Chief Architect, Backend Lead, Security, Verification |
 | SPEC | Master Spec Author | Chief Architect, Data Architect, Integration Engineer |
 | PROPOSAL | Product Strategy Director | Chief Architect, AI Architect, Senior Business Analyst |
 

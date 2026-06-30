@@ -78,7 +78,7 @@ Each step: Persona produces artefact → Standards Engineer assesses → PASS pr
 | 3.13 | SME System User | Operational validation of Use Cases |
 | 3.14 | Senior Business Analyst | Requirements Register |
 | 3.15 | Technical Debt Auditor | Technical Debt Register |
-| 3.16 | QA & Governance Director | Test Strategy |
+| 3.16 | Verification & Governance Director | Test Strategy |
 | 3.17 | Documentation & Knowledge Curator | Documentation Assessment |
 
 **Standards Engineer gate after every artefact — PASS or REVISE**

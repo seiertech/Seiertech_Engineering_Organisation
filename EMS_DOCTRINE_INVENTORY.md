@@ -49,7 +49,7 @@ Clean — no legacy duplicates found in `authorities/`.
 
 ---
 
-## Registers — 7 active (REG-NNNNNN), 19 legacy (unprefixed)
+## Registers — 9 active (REG-NNNNNN), 0 unprefixed remaining (archived)
 
 ### Active — use these
 
@@ -62,16 +62,16 @@ Clean — no legacy duplicates found in `authorities/`.
 | REG-000005 | Foundation Baseline Register |
 | REG-000006 | Release Register |
 | REG-000007 | Build Governance Register |
+| REG-000008 | Risk Register — **new**, closes a gap that existed at the time of the original audit |
+| REG-000009 | Decision Register — **new**, closes a gap that existed at the time of the original audit |
 
-### Legacy — do NOT use, superseded by the above (see cleanup section)
+### Archived — `registers/legacy/`
 
-`ANTI_PATTERN_INDEX.md`, `AUTHORITY_REGISTER.md`, `CAPABILITY_REGISTER.md`, `CHANGE_REGISTER.md`, `DEBT_REGISTER.md`, `DECISION_REGISTER.md`, `KNOWLEDGE_REGISTER.md`, `LESSON_REGISTER.md`, `MISSION_REGISTER.md`, `PATTERN_INDEX.md`, `PERSONA_REGISTER.md`, `PLATFORM_REGISTER.md`, `PROPOSAL_REGISTER.md`, `READINESS_REGISTER.md`, `RELEASE_REGISTER.md`, `REQUIREMENT_REGISTER.md`, `REVIEW_REGISTER.md`, `RISK_REGISTER.md`, `STANDARD_REGISTER.md`
-
-All 19 are short (15-32 lines), all carry `**Status:** Draft`, none carry the proper STD-000002 metadata block. These are GPT's early scaffolding pass, before the EF-1 sprint formalised the 7 registers above. **Several of these legacy registers track concepts (Risk, Debt, Decision, Knowledge, Capability, Pattern, Anti-Pattern, Lesson, Review) that have NO corresponding REG-NNNNNN equivalent yet** — that's a real gap, not just duplication. See cleanup section.
+All 19 originally-flagged unprefixed draft registers have been moved to `registers/legacy/` (not deleted — Git history and the files themselves are preserved, just out of the active path). Before archiving, every legacy register was checked for live doctrine references (`grep` across all authorities, operations, standards, missions, and both team persona folders). Two genuinely had live references — Risk Register and Decision Register — and were formally rebuilt as REG-000008 and REG-000009 before archiving the drafts. The remaining 17 had zero live references anywhere in active doctrine and were archived as-is.
 
 ---
 
-## Operations (OPR-NNNNNN) — 11 active, 2 legacy
+## Operations (OPR-NNNNNN) — 11 active, 0 unprefixed remaining (archived)
 
 ### Active — use these
 
@@ -89,24 +89,24 @@ All 19 are short (15-32 lines), all carry `**Status:** Draft`, none carry the pr
 | OPR-000010 | Platform Baseline Sync Operation |
 | OPR-000011 | Platform Genesis Operation |
 
-### Legacy — early placeholders, superseded
+### Archived — `operations/legacy/`
 
-`operations/release-approval/README.md`, `operations/verification/README.md` — both are one-line placeholders ("Future contents will record review areas..."), fully superseded by OPR-000006 and OPR-000007.
+`release-approval/`, `verification/` — both were one-line placeholders, fully superseded by OPR-000007 and OPR-000006 respectively. Moved, not deleted.
 
 ---
 
-## Missions (MSN-NNNNNN) — 2 active, 1 legacy
+## Missions (MSN-NNNNNN) — 2 active, 0 unprefixed remaining (archived)
 
 | ID | Title | Status |
 |---|---|---|
 | MSN-000000 | MISSION-000 Platform Genesis | Active |
 | MSN-000001 | MISSION-001 Platform Intake | Active, v3.0 (Phase 7 added) |
 
-**Legacy:** `missions/MISSION-001_PLATFORM_INTAKE.md` (69 lines, no proper ID prefix) — an early draft of what MSN-000001 became (276 lines, v3.0, proper metadata). Superseded.
+**Archived** to `missions/legacy/`: `MISSION-001_PLATFORM_INTAKE.md` (69 lines, no proper ID prefix) — an early draft of what MSN-000001 became (276 lines, v3.0, proper metadata). Moved, not deleted.
 
 ---
 
-## Templates (TPL-NNNNNN + HAR) — 11 active, 4 legacy
+## Templates (TPL-NNNNNN + HAR) — 11 active, 0 unprefixed remaining (archived)
 
 ### Active — use these
 
@@ -124,15 +124,17 @@ All 19 are short (15-32 lines), all carry `**Status:** Draft`, none carry the pr
 | TPL-000010 | Register Template |
 | HAR-000001 | Platform Handoff Artefact Template (Team 1 → Team 2 baton) |
 
-### Legacy — superseded
+### Archived — `templates/legacy/`
 
-`engineering-proposal-template.md`, `mission-order-template.md`, `platform-intake-mission-template.md`, `scorecard-template.md` — early drafts, superseded by TPL-000003, TPL-000002, TPL-000001, and TPL-000006 respectively.
+`engineering-proposal-template.md`, `mission-order-template.md`, `platform-intake-mission-template.md`, `scorecard-template.md` — superseded by TPL-000003, TPL-000002, TPL-000001, and TPL-000006 respectively. Moved, not deleted.
 
 ---
 
 ## Personas — 50 active (25 Team 1 + 25 Team 2), 0 legacy
 
 Clean — `agents/` has no legacy duplication. Full detail in `agents/README.md`, `agents/team-1-baseline/TEAM_1_REGISTRY.md`, `agents/team-2-forward/TEAM_2_REGISTRY.md`.
+
+**Note:** PER-000016 / T2-PER-000016 was renamed from "QA and Governance Director" to "Verification and Governance Director" on 2026-06-29, resolving a confirmed STD-000004 prohibited-vocabulary violation (see `EMS_VOCABULARY_AUDIT.md`). Folder names, persona titles, and all ~21 cross-references across both teams, three authorities, the relationship graph, both missions, and four operations were updated consistently.
 
 | Team | Count | Purpose | Activates On |
 |---|---|---|---|
@@ -160,24 +162,17 @@ Not part of the markdown doctrine — this is the executable layer. See `PYTHON_
 
 ---
 
-## Legacy Artefact Cleanup Needed
+## Legacy Artefact Cleanup — RESOLVED
 
-Found while compiling this inventory — **not yet actioned**, flagged here for a decision rather than silently deleted:
+Originally flagged as 26 unactioned legacy files/dirs requiring a decision. **Resolved on 2026-06-29:**
 
-**26 legacy files/dirs total**, all early GPT scaffolding drafts, all marked `Draft` or clearly superseded by a properly-built, STD-000002-conformant equivalent:
+**Decision made:** every legacy artefact was checked for live doctrine references before being touched — not blindly deleted, not blindly kept.
 
-- 19 unprefixed registers in `registers/`
-- 4 unprefixed templates in `templates/`
-- 2 unprefixed operation dirs in `operations/` (`release-approval/`, `verification/`)
-- 1 unprefixed mission in `missions/`
+- **Risk Register and Decision Register** were found to have genuine, load-bearing live references across multiple authorities (AUTH-006, AUTH-007) and personas (Security Architect in both teams, Chief Architect in both teams, Build Governance Auditor, OPR-000004). These were formally built as **REG-000008** and **REG-000009** respectively, with full STD-000002/STD-000003 conformant structure, before any archiving happened. Every place that referenced them informally (e.g. "the Risk Register," "Platform Decision Register") was updated to cite the proper artefact ID.
+- **All other 17 legacy registers, 4 legacy templates, 2 legacy operation placeholders, and 1 legacy mission file** were confirmed to have **zero** live references anywhere in active doctrine (checked via repo-wide grep, not assumed), and were moved to `legacy/` subfolders within their respective directories (`registers/legacy/`, `templates/legacy/`, `operations/legacy/`, `missions/legacy/`) — preserved via `git mv`, not deleted, so history and content remain recoverable.
+- One stale reference was caught during this cleanup that the original audit missed: `MSN-000001` itself pointed at the legacy `registers/RISK_REGISTER.md` path — corrected to `REG-000008_RISK_REGISTER.md`.
 
-**Two real findings buried in this, worth a decision:**
-
-1. **Should the legacy files just be deleted, or archived to a `legacy/` folder?** Deleting loses zero functional content (everything is superseded), but Git history preserves them either way if you want to be cautious.
-
-2. **Several legacy registers track concepts with no current REG-NNNNNN equivalent** — specifically Risk, Debt, Decision, Knowledge, Capability, Pattern/Anti-Pattern, Lesson, and Review. Some of these are partially covered elsewhere (e.g. debt is tracked per-platform in `TECHNICAL_DEBT_REGISTER.md` artefacts, decisions are meant to go in a Decision Register per several operations referencing `Platform Decision Register`) but **there is currently no REG-0000NN Decision Register, Risk Register, or Knowledge Register at the EMS level** — only the legacy drafts and scattered per-platform mentions. This is a genuine doctrine gap, not just file hygiene, and may be worth a proper Sprint EF-2 register expansion rather than just deleting the drafts.
-
-**Recommendation:** don't delete yet. Decide first whether Risk/Decision/Knowledge registers need to be formally built as REG-0000NN artefacts (recommended — several operations already reference "Decision Register" and "Risk Register" as if they exist), then archive or delete the legacy drafts once their useful content (if any) has been carried forward.
+**Net result:** 0 unprefixed legacy artefacts remain in any active doctrine path. 2 real gaps closed with properly built registers. 26 files archived, recoverable, out of the way.
 
 ---
 
@@ -186,3 +181,4 @@ Found while compiling this inventory — **not yet actioned**, flagged here for 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial inventory compiled — surfaced 26 legacy/superseded artefacts and a real gap (no formal Risk/Decision/Knowledge registers at EMS level) requiring a founder decision | SeierTech EMS |
+| 1.1.0 | 2026-06-29 | QA persona rename completed (21 references fixed across both teams). Legacy cleanup resolved: REG-000008 Risk Register and REG-000009 Decision Register built to close real doctrine gaps; remaining 17 registers + 4 templates + 2 operations + 1 mission archived to legacy/ subfolders, confirmed zero live references before archiving | SeierTech EMS |

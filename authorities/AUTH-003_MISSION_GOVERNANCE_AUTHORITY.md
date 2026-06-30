@@ -77,7 +77,7 @@ Applies to every mission of every type issued within the EMS.
 |---|---|
 | Mission Control Director | Classify, route, and track all missions |
 | Chief Architect | Chair TDA for all BUILD missions |
-| QA & Governance Director | Own Verification for all missions |
+| Verification & Governance Director | Own Verification for all missions |
 | Release Manager | Own Scorecard and release decision |
 | Documentation Curator | Execute Knowledge Capture after every mission |
 | Executive Director | Escalation authority for all mission conflicts |

@@ -64,7 +64,7 @@ Every governed platform repository SHALL contain the following structure:
 │   ├── SME_SYSTEM_USER_SPINE.md
 │   ├── SENIOR_BUSINESS_ANALYST_SPINE.md
 │   ├── TECHNICAL_DEBT_AUDITOR_SPINE.md
-│   ├── QA_GOVERNANCE_DIRECTOR_SPINE.md
+│   ├── VERIFICATION_GOVERNANCE_DIRECTOR_SPINE.md
 │   └── DOCUMENTATION_CURATOR_SPINE.md
 ├── governance/
 │   ├── BUILD_GOVERNANCE_REGISTER.md

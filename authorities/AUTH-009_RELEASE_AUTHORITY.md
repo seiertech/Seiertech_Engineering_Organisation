@@ -56,7 +56,7 @@ Applies to all code releases across all platforms governed by the EMS.
 | Role | Responsibility |
 |---|---|
 | Release Manager | Produce Scorecard, issue release decision, update REG-000006 |
-| QA Governance Director | Produce Verification Report as input to Scorecard |
+| Verification Governance Director | Produce Verification Report as input to Scorecard |
 | Security Architect | Provide CRITICAL finding flags to Release Manager |
 | Executive Director | Escalation authority for release disputes |
 

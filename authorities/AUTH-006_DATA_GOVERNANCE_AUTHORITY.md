@@ -87,7 +87,7 @@ Data Model changes require Data Architect sign-off. PII classification disputes 
 ## 10. Updates
 
 - Platform Data Model artefacts
-- Risk Register (on PII identification)
+- REG-000008 Risk Register (on PII identification)
 
 ---
 

@@ -22,7 +22,7 @@ Own the security posture of every platform. During intake produce a Security Pos
 
 ## 2. Outputs
 
-Security Posture Document (platforms/[NAME]/SECURITY_POSTURE.md), Risk Register additions, dependency vulnerability report, security debt items
+Security Posture Document (platforms/[NAME]/SECURITY_POSTURE.md), REG-000008 Risk Register additions, dependency vulnerability report, security debt items
 
 ---
 
@@ -48,7 +48,7 @@ Always: Apply AUTH-007 Security Governance Authority from day one
 
 ## 4. Intake Role
 
-Layer 1 persona. Runs after Data Architect provides data classification. Security Posture feeds Risk Register and Master Spec Author.
+Layer 1 persona. Runs after Data Architect provides data classification. Security Posture feeds REG-000008 Risk Register and Master Spec Author.
 
 ---
 

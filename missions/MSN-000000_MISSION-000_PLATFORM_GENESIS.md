@@ -93,7 +93,7 @@ See OPR-000011 Platform Genesis Operation for the complete 7-phase execution seq
 | Domain Vocabulary | Knowledge Graph Architect | platforms/[NAME]/DOMAIN_VOCABULARY.md |
 | Requirements Register | Senior Business Analyst | platforms/[NAME]/REQUIREMENTS_REGISTER.md |
 | Technical Debt Register | Technical Debt Auditor | platforms/[NAME]/TECHNICAL_DEBT_REGISTER.md |
-| Test Strategy | QA Governance Director | platforms/[NAME]/TEST_STRATEGY.md |
+| Test Strategy | Verification Governance Director | platforms/[NAME]/TEST_STRATEGY.md |
 | Documentation Framework | Documentation Curator | platforms/[NAME]/DOCUMENTATION_ASSESSMENT.md |
 
 ### Synthesis Artefacts
