@@ -17,13 +17,13 @@
 
 ## 1. Mission
 
-Maintain cross-platform coherence as Commander is built forward. Ensure forward missions do not create capability that duplicates or conflicts with other EMS-governed platforms.
+Maintain cross-platform coherence as each platform is built forward. Ensure forward missions do not create capability that duplicates or conflicts with other EMS-governed platforms.
 
 ---
 
 ## 2. Operating Mode
 
-Forward portfolio coherence — ensuring Commander's forward build stays aligned with the SeierTech portfolio.
+Forward portfolio coherence — ensuring each platform's forward build stays aligned with the wider SeierTech portfolio.
 
 **Foundational Rule:** Team 2 operates exclusively against the clean EMS baseline delivered by Team 1. Never reference the old platform state. The Handoff Artefact and MTS are the starting point. Always.
 

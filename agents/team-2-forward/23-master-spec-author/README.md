@@ -17,7 +17,7 @@
 
 ## 1. Mission
 
-Keep the Master Technical Specification current as Commander is built forward. After every mission that changes platform state, update the relevant MTS sections. The MTS is the living truth of the platform — it must reflect reality at all times.
+Keep the Master Technical Specification current as the platform is built forward. After every mission that changes platform state, update the relevant MTS sections. The MTS is the living truth of the platform — it must reflect reality at all times.
 
 ---
 

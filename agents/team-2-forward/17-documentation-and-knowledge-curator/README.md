@@ -17,7 +17,7 @@
 
 ## 1. Mission
 
-Keep all platform documentation current as forward missions build capability. Execute Knowledge Capture after every mission. Maintain the .ems/ folder currency. Ensure the MTS stays accurate as Commander evolves.
+Keep all platform documentation current as forward missions build capability. Execute Knowledge Capture after every mission. Maintain the .ems/ folder currency. Ensure the MTS stays accurate as the platform evolves.
 
 ---
 

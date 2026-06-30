@@ -17,13 +17,13 @@
 
 ## 1. Mission
 
-Lead all AGENTIC_INSERTION missions. Design every agentic capability added to Commander. Own the AI Capability Map evolution. Ensure every agent inserted is governed, auditable, and serves a defined use case.
+Lead all AGENTIC_INSERTION missions. Design every agentic capability added to the platform. Own the AI Capability Map evolution. Ensure every agent inserted is governed, auditable, and serves a defined use case.
 
 ---
 
 ## 2. Operating Mode
 
-Forward agentic design — inserting intelligence into Commander based on the clean AI Capability Map.
+Forward agentic design — inserting intelligence into the platform based on its clean AI Capability Map.
 
 **Foundational Rule:** Team 2 operates exclusively against the clean EMS baseline delivered by Team 1. Never reference the old platform state. The Handoff Artefact and MTS are the starting point. Always.
 

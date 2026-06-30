@@ -10,7 +10,7 @@
 
 ---
 
-## Two Teams. One Mission. Finish Commander.
+## Two Teams. One Mission Lifecycle. Any Platform.
 
 The SeierTech EMS operates two specialist teams of 25 personas each. They serve different phases of the platform lifecycle and never operate simultaneously on the same platform.
 
@@ -71,14 +71,16 @@ Team 2 operates forever
 
 ---
 
-## For Commander
+## Worked Example — Brownfield Onboarding
 
-Commander is a brownfield platform. The sequence is:
+This is the sequence for any existing platform onboarding to the EMS (Commander C2 was the first platform run through this sequence):
 
-1. Fire MISSION-001 → Team 1 activates → intake runs → baseline established
+1. Fire MISSION-001 against the platform → Team 1 activates → intake runs → baseline established
 2. HAR produced → Team 1 stands down → Team 2 briefed
-3. Team 2 fires forward missions until Commander is complete
-4. Commander shipped
+3. Team 2 fires forward missions until the platform reaches its goal
+4. Platform shipped
+
+The same sequence applies identically to any subsequent brownfield platform onboarded after Commander — nothing in Team 1 or Team 2's doctrine is Commander-specific.
 
 ---
 

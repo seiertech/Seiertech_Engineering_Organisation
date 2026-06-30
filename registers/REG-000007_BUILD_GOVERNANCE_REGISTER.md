@@ -72,20 +72,22 @@ PER-000025 Build Governance Auditor
 
 ---
 
-## 6. The Commander Expected Findings
+## 6. Illustrative Findings Pattern
 
-Based on known Commander build history, intake is expected to find and classify:
+This is a worked example of what a typical brownfield intake's Build Governance Discovery Pass tends to find and how it classifies — the actual findings and classifications depend entirely on what exists in the specific platform's repository. The Build Governance Auditor (PER-000025) builds the real findings table for each platform from scratch during its own intake run; nothing here is pre-determined for any specific platform.
 
-| File | Expected Classification | Expected EMS Mapping |
+| Common Pattern | Typical Classification | Typical EMS Mapping |
 |---|---|---|
-| MEMORY.md | ABSORBED | Platform spine |
-| ERRORS.md | ABSORBED | Technical Debt Register |
-| Performance Doctrine PD-1.0 | COMPATIBLE → MIGRATED_TO_EMS | Platform-specific standard |
-| Conformance lattice ARCH-005 to ARCH-009 | ABSORBED | Architecture Document + Standards |
-| 50-unit readiness state machine | ABSORBED | REG-000001 Readiness Register |
-| Kiro skill packages | COMPATIBLE → kiro-sync | .ems/kiro-sync/RULES.md |
-| GitHub Actions workflows | COMPATIBLE | Integration Map |
-| Scattered .md governance files | CLASSIFIED per content | Various |
+| A persistent memory/context file (e.g. `MEMORY.md`) | ABSORBED | Platform spine |
+| A known-issues/error log file (e.g. `ERRORS.md`) | ABSORBED | Technical Debt Register |
+| A standalone performance or quality doctrine document | COMPATIBLE → MIGRATED_TO_EMS | Platform-specific standard |
+| An informal conformance/architecture rule set | ABSORBED | Architecture Document + Standards |
+| An ad hoc readiness/maturity state machine | ABSORBED | REG-000001 Readiness Register |
+| Builder-specific skill packages or instruction files (e.g. Kiro rules) | COMPATIBLE → kiro-sync | `.ems/kiro-sync/RULES.md` |
+| Existing CI/CD workflow definitions | COMPATIBLE | Integration Map |
+| Scattered, unindexed `.md` governance files of any kind | CLASSIFIED per content | Various |
+
+For Commander specifically, the actual pre-intake known governance artefacts (MEMORY.md, ERRORS.md, Performance Doctrine PD-1.0, the ARCH-005–ARCH-009 conformance lattice, the 50-unit readiness state machine, Kiro skill packages) are recorded in `platforms/COMMANDER_C2/` once MISSION-001 has actually run against it — not predicted here in the generic doctrine register.
 
 ---
 

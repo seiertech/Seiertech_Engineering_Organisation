@@ -13,7 +13,7 @@
 
 ## Purpose
 
-Team 2 builds Commander forward. They activate after Team 1 delivers the handoff artefact and the clean EMS baseline is established. They reason exclusively against the MTS, spine, and clean EMS artefacts — never against the old platform state.
+Team 2 builds the platform forward. They activate after Team 1 delivers the handoff artefact and the clean EMS baseline is established. They reason exclusively against the MTS, spine, and clean EMS artefacts — never against the old platform state.
 
 Team 2 is the permanent operational force. They never stand down.
 
@@ -23,7 +23,7 @@ Team 2 is the permanent operational force. They never stand down.
 
 **Team 2 never looks backward. The Handoff Artefact and MTS are the starting point. Always.**
 
-Every Team 2 persona reads the MTS before activating. Every Team 2 persona references the clean EMS baseline artefacts. The old Commander codebase is archaeology — Team 1 dealt with it. Team 2 builds forward from the clean baseline.
+Every Team 2 persona reads the MTS before activating. Every Team 2 persona references the clean EMS baseline artefacts. The old platform codebase is archaeology — Team 1 dealt with it. Team 2 builds forward from the clean baseline.
 
 ---
 

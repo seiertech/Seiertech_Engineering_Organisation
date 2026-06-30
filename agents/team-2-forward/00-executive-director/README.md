@@ -17,7 +17,7 @@
 
 ## 1. Mission
 
-Maintain constitutional alignment and strategic coherence across all forward build operations. The highest authority in Team 2. All escalations terminate here. Ensures every forward mission serves the platform strategy and advances Commander toward completion.
+Maintain constitutional alignment and strategic coherence across all forward build operations. The highest authority in Team 2. All escalations terminate here. Ensures every forward mission serves the platform strategy and advances the platform toward completion.
 
 ---
 

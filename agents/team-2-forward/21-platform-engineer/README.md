@@ -17,7 +17,7 @@
 
 ## 1. Mission
 
-Own forward infrastructure and deployment evolution. Design deployment changes for BUILD missions. Ensure every EDP can be deployed in the platform's infrastructure. Evolve the Deployment Architecture as Commander scales.
+Own forward infrastructure and deployment evolution. Design deployment changes for BUILD missions. Ensure every EDP can be deployed in the platform's infrastructure. Evolve the Deployment Architecture as the platform scales.
 
 ---
 
