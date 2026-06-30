@@ -6,7 +6,7 @@
 | Artefact Class | Register |
 | Title | Lesson Register |
 | Status | ACTIVE |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Classification | OPERATIONAL |
 | Owner | Documentation and Knowledge Curator (PER-000018 / T2-PER-000018) |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -81,6 +81,8 @@ CAPTURED → SUPERSEDED (a later, more complete lesson replaces this one)
 | LES-000005 | Persona title "QA and Governance Director" violated STD-000004's own prohibited vocabulary list | VOCABULARY_DRIFT | DAM-000002 | AMENDED |
 | LES-000006 | Batch-written personas silently end up thin unless structural completeness is checked immediately, not at next audit | DOCTRINE_GAP | DAM-000003 | AMENDED |
 | LES-000007 | Lessons captured in commit messages and session audit docs are not load-bearing — no register existed to make them reusable doctrine | DOCTRINE_GAP | DAM-000003 | AMENDED |
+| LES-000008 | No single authoritative document defines how autonomous engineering work actually flows end to end — the operating model exists only as the sum of 12 separate Operations documents, inferred by reading all of them | DOCTRINE_GAP | DAM-000004 | AMENDED |
+| LES-000009 | The system has produced substantially more governance documentation than executed work — doctrine depth and execution throughput are out of balance, consistent with the "best in class scaffold, not yet best in class loop" verdict given prior to this review | DOCTRINE_GAP | DAM-000004 | AMENDED |
 
 See full detail for each in `memory/lessons/LES-NNNNNN.md` (one file per lesson, created as part of this same change).
 
@@ -111,3 +113,4 @@ Continuous — updated as lessons are found. Audited at the start of every signi
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation — closes the doctrine gap where OPR-000008 instructed lesson capture but no conformant register existed to receive it. Backfilled 7 lessons from this session's actual findings | SeierTech EMS |
+| 1.1.0 | 2026-06-30 | Added LES-000008/009 — first lessons sourced from an external review document rather than an internal audit, proving the mechanism accepts founder-supplied findings on equal footing with self-discovered ones | SeierTech EMS |

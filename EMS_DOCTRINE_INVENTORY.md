@@ -158,6 +158,7 @@ Not part of the markdown doctrine — this is the executable layer. See `PYTHON_
 
 | Document | Purpose |
 |---|---|
+| `EMS_OPERATING_MODEL.md` | **New** — the authoritative synthesis answering how engineering work enters, progresses, is decided, governed by authority, and completes. Produced by DAM-000004 in direct response to an external review's primary finding that no such single document existed |
 | `IMPLEMENTATION_STATUS.md` | What actually executes today vs what's designed but not built — the honest ledger for the GitHub Actions chain |
 | `PYTHON_ENGINE_BUILD_PLAN.md` | The ems_engine package build plan and decision record |
 | `EMS_FOUNDATION_CERTIFICATION.md` | BASELINE-1.0 certification record (38 PASS, 0 FAIL) plus post-baseline additions |
@@ -198,3 +199,4 @@ See `REG-000010` for the live register, `memory/lessons/` for individual lesson 
 | 1.0.0 | 2026-06-29 | Initial inventory compiled — surfaced 26 legacy/superseded artefacts and a real gap (no formal Risk/Decision/Knowledge registers at EMS level) requiring a founder decision | SeierTech EMS |
 | 1.1.0 | 2026-06-29 | QA persona rename completed (21 references fixed across both teams). Legacy cleanup resolved: REG-000008 Risk Register and REG-000009 Decision Register built to close real doctrine gaps; remaining 17 registers + 4 templates + 2 operations + 1 mission archived to legacy/ subfolders, confirmed zero live references before archiving | SeierTech EMS |
 | 1.2.0 | 2026-06-29 | Lesson/Doctrine Amendment mechanism built — REG-000010, TPL-000011, OPR-000012 — closing the gap where OPR-000008 instructed lesson capture with no register to receive it. 7 lessons from this build session backfilled and resolved via 3 Doctrine Amendments, including the mechanism's own lesson resolving itself | SeierTech EMS |
+| 1.3.0 | 2026-06-30 | EMS_OPERATING_MODEL.md produced via DAM-000004, in direct response to an external review's primary finding (no single document explains how autonomous engineering work flows end to end). First lessons sourced from an external document rather than internal audit (LES-000008, LES-000009) | SeierTech EMS |
