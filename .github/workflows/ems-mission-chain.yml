@@ -1,5 +1,14 @@
 name: EMS Mission Chain
 
+# HONEST STATUS (see .github/scripts/run_intake_chain.py header):
+# This workflow executes a v1 REDUCED intake chain — grouped persona passes,
+# Standards Engineer gated, real files written to platforms/[NAME]/.
+# It does NOT yet execute the full 25-persona Team 1 sequence individually,
+# does NOT yet perform deep code scanning, and does NOT yet create .ems/
+# in the TARGET platform repo (cross-repo write — requires additional token
+# scope and is flagged as a follow-up, not done here).
+# Treat all v1 intake output as DRAFT requiring human review before READY.
+
 on:
   issues:
     types: [opened, edited]
@@ -13,48 +22,39 @@ jobs:
       mission_type: ${{ steps.parse.outputs.mission_type }}
       platform_name: ${{ steps.parse.outputs.platform_name }}
       repo_url: ${{ steps.parse.outputs.repo_url }}
-      issue_number: ${{ steps.parse.outputs.issue_number }}
+      issue_number: ${{ github.event.issue.number }}
 
     steps:
       - name: Checkout EMS repo
         uses: actions/checkout@v4
 
-      - name: Parse issue for mission intent
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Parse issue deterministically
         id: parse
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
         run: |
-          echo "issue_number=${ISSUE_NUMBER}" >> $GITHUB_OUTPUT
+          python3 .github/scripts/issue_parser.py \
+            --title "$ISSUE_TITLE" \
+            --body "$ISSUE_BODY" \
+            --output-file parsed_mission.json
 
-          # Call NIM to parse mission type and extract parameters
-          RESPONSE=$(curl -s -X POST https://integrate.api.nvidia.com/v1/chat/completions \
-            -H "Authorization: Bearer ${NIM_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"model\": \"nvidia/nemotron-3-super\",
-              \"max_tokens\": 500,
-              \"messages\": [
-                {
-                  \"role\": \"system\",
-                  \"content\": \"You are the SeierTech EMS Mission Parser. Extract mission type and parameters from GitHub Issues. Respond ONLY with JSON: {\\\"mission_type\\\": \\\"\\\", \\\"platform_name\\\": \\\"\\\", \\\"repo_url\\\": \\\"\\\"}. Mission types: INTAKE, BUILD, STRATEGIC, REHAB, AGENTIC_INSERTION, PROPOSAL, SPEC. For INTAKE missions detect pattern: 'Complete intake for [NAME] repo: [URL]'\"
-                },
-                {
-                  \"role\": \"user\",
-                  \"content\": \"Issue title: ${ISSUE_TITLE}\nIssue body: ${ISSUE_BODY}\"
-                }
-              ]
-            }")
-
-          MISSION_TYPE=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['choices'][0]['message']['content'])" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('mission_type','UNKNOWN'))")
-          PLATFORM_NAME=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['choices'][0]['message']['content'])" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('platform_name',''))")
-          REPO_URL=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['choices'][0]['message']['content'])" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('repo_url',''))")
-
-          echo "mission_type=${MISSION_TYPE}" >> $GITHUB_OUTPUT
-          echo "platform_name=${PLATFORM_NAME}" >> $GITHUB_OUTPUT
-          echo "repo_url=${REPO_URL}" >> $GITHUB_OUTPUT
+      - name: Fail loudly if mission type is ambiguous
+        if: steps.parse.outputs.mission_type == 'AMBIGUOUS'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "Could not deterministically parse this issue as a known mission type.\n\nExpected formats:\n- `Complete intake for [NAME] — repo: [URL]`\n- `Genesis: [NAME] — [brief]`\n\nNo chain has been activated. Please reformat and reopen, or edit this issue."
+            })
 
   execute-intake:
     needs: detect-mission
@@ -65,6 +65,11 @@ jobs:
       - name: Checkout EMS repo
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Label issue as intake mission
         uses: actions/github-script@v7
         with:
@@ -73,145 +78,65 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              labels: ['mission:intake', 'status:in-progress']
+              labels: ['mission:intake', 'status:in-progress', 'chain:v1-reduced']
             })
 
-      - name: Execute Platform Intake Chain via NIM
+      - name: Run Team 1 intake chain (v1 reduced)
+        id: intake
         env:
           NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
-          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
-          REPO_URL: ${{ needs.detect-mission.outputs.repo_url }}
-          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Load EMS doctrine for injection
-          CONSTITUTION=$(cat authorities/AUTH-001_ENGINEERING_CONSTITUTION.md 2>/dev/null || echo "AUTH-001 not yet created")
-          INTAKE_MISSION=$(cat missions/MSN-000001_MISSION-001_PLATFORM_INTAKE.md)
-          VOCAB=$(cat standards/STD-000004_ENGINEERING_VOCABULARY_STANDARD.md)
+          python3 .github/scripts/run_intake_chain.py \
+            --platform-name "${{ needs.detect-mission.outputs.platform_name }}" \
+            --repo-url "${{ needs.detect-mission.outputs.repo_url }}" \
+            --issue-number "${{ needs.detect-mission.outputs.issue_number }}" \
+            2>&1 | tee intake_run_output.log
 
-          # Call NIM Super with full doctrine injection
-          RESPONSE=$(curl -s -X POST https://integrate.api.nvidia.com/v1/chat/completions \
-            -H "Authorization: Bearer ${NIM_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"model\": \"nvidia/nemotron-3-super\",
-              \"max_tokens\": 4000,
-              \"messages\": [
-                {
-                  \"role\": \"system\",
-                  \"content\": \"You are the SeierTech EMS Mission Chain executing MISSION-001 Platform Intake. You are governed by the following doctrine:\n\nENGINEERING CONSTITUTION:\n${CONSTITUTION}\n\nVOCABULARY STANDARD:\n${VOCAB}\n\nINTAKE MISSION SPECIFICATION:\n${INTAKE_MISSION}\n\nYour task is to perform a platform intake for the named platform and repo. Produce a structured Platform Record in markdown following STD-000003. Include a Questions to Founder section for anything you cannot determine. Use only vocabulary from STD-000004.\"
-                },
-                {
-                  \"role\": \"user\",
-                  \"content\": \"Execute MISSION-001 Platform Intake for platform: ${PLATFORM_NAME}, repo: ${REPO_URL}. Produce the complete Platform Record and spine extraction plan.\"
-                }
-              ]
-            }")
-
-          # Extract the platform record content
-          PLATFORM_RECORD=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['choices'][0]['message']['content'])")
-
-          # Write platform record to repo
-          mkdir -p "platforms/${PLATFORM_NAME}/spine"
-          echo "${PLATFORM_RECORD}" > "platforms/${PLATFORM_NAME}/PLATFORM_RECORD.md"
-
-          # Update readiness register
-          echo "Platform ${PLATFORM_NAME} intake initiated — $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> registers/REG-000001_READINESS_REGISTER.md
-
-          # Commit and push
+      - name: Commit artefacts
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+        run: |
           git config user.name "SeierTech EMS"
           git config user.email "ems@seiertech.com"
-          git add .
-          git commit -m "EMS: MISSION-001 intake initiated for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}]"
+          git add "platforms/${PLATFORM_NAME}" || true
+          git commit -m "EMS: v1 intake DRAFT for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — requires human review" || echo "Nothing to commit"
           git push
 
-      - name: Comment on issue with intake status
+      - name: Comment honest status on issue
         uses: actions/github-script@v7
         env:
           PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
         with:
           script: |
+            const platformName = process.env.PLATFORM_NAME;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              body: `## 🔄 EMS Mission Chain Activated\n\n**Mission:** MISSION-001 Platform Intake\n**Platform:** ${process.env.PLATFORM_NAME}\n**Status:** IN_PROGRESS\n\nPlatform Record is being built. Spine extraction running across all personas. Any questions the chain cannot resolve will be posted here for your input.\n\n*Powered by Loop Engineering — SeierTech EMS*`
+              body: `## EMS v1 Intake Chain — DRAFT Output\n\n**Platform:** ${platformName}\n**Status:** DRAFT — requires human review\n\nThis ran a v1 REDUCED chain (grouped persona passes, Standards Engineer gated) — not yet the full 25-persona depth. See \`platforms/${platformName}/INTAKE_RUN_LOG.md\` for honest scope disclosure and what was actually executed.\n\n**This is not yet a certified READY platform.** Review the draft artefacts before proceeding to forward missions.\n\n*SeierTech EMS — Loop Engineering*`
             })
 
-  execute-build:
-    needs: detect-mission
-    if: needs.detect-mission.outputs.mission_type == 'BUILD'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout EMS repo
-        uses: actions/checkout@v4
-
-      - name: Validate platform readiness before build
-        env:
-          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
-        run: |
-          # Check readiness register
-          if ! grep -q "${PLATFORM_NAME}.*READY" registers/REG-000001_READINESS_REGISTER.md; then
-            echo "ERROR: Platform ${PLATFORM_NAME} is not at READY status. Run MISSION-001 intake first."
-            exit 1
-          fi
-          echo "Platform ${PLATFORM_NAME} confirmed READY. Build mission proceeding."
-
-      - name: Execute Build Mission Chain via NIM
-        env:
-          NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
-          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
-          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Load doctrine and spine
-          CONSTITUTION=$(cat authorities/AUTH-001_ENGINEERING_CONSTITUTION.md 2>/dev/null || echo "")
-          PLATFORM_RECORD=$(cat "platforms/${PLATFORM_NAME}/PLATFORM_RECORD.md" 2>/dev/null || echo "")
-          SPINE_FILES=$(cat platforms/${PLATFORM_NAME}/spine/*.md 2>/dev/null || echo "No spine files found")
-          ISSUE_BODY="${{ github.event.issue.body }}"
-
-          # Call NIM Super with spine-loaded context
-          RESPONSE=$(curl -s -X POST https://integrate.api.nvidia.com/v1/chat/completions \
-            -H "Authorization: Bearer ${NIM_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"model\": \"nvidia/nemotron-3-super\",
-              \"max_tokens\": 8000,
-              \"messages\": [
-                {
-                  \"role\": \"system\",
-                  \"content\": \"You are the SeierTech EMS Mission Chain executing a BUILD mission. You are governed by:\n\nCONSTITUTION:\n${CONSTITUTION}\n\nPLATFORM RECORD:\n${PLATFORM_RECORD}\n\nMISSION SPINE:\n${SPINE_FILES}\n\nProduce a complete Engineering Delivery Package (EDP) conformant to STD-000003. The EDP must include: build instructions for Kiro, standards applied, test assertions for test agents.\"
-                },
-                {
-                  \"role\": \"user\",
-                  \"content\": \"Execute BUILD mission: ${ISSUE_BODY}\"
-                }
-              ]
-            }")
-
-          EDP_CONTENT=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['choices'][0]['message']['content'])")
-          EDP_ID="EDP-$(date +%s)"
-
-          mkdir -p work-products
-          echo "${EDP_CONTENT}" > "work-products/${EDP_ID}_${PLATFORM_NAME}.md"
-
-          git config user.name "SeierTech EMS"
-          git config user.email "ems@seiertech.com"
-          git add .
-          git commit -m "EMS: EDP produced for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — ${EDP_ID}"
-          git push
-
-      - name: Comment EDP ready for Kiro
+      - name: Update status label
+        if: always()
         uses: actions/github-script@v7
         with:
           script: |
-            await github.rest.issues.createComment({
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+                name: 'status:in-progress'
+              });
+            } catch (e) { console.log('Label removal skipped:', e.message); }
+            await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              body: `## ✅ Engineering Delivery Package Ready\n\nThe EDP has been produced and dropped to \`work-products/\`.\n\n**Next step:** Kiro picks up the EDP and executes the build.\n\nVerification agents will assert the build against standards on completion.\n\n*Powered by Loop Engineering — SeierTech EMS*`
-            })
+              labels: ['status:draft-needs-review']
+            });
 
   execute-genesis:
     needs: detect-mission
@@ -222,7 +147,7 @@ jobs:
       - name: Checkout EMS repo
         uses: actions/checkout@v4
 
-      - name: Label issue as genesis mission
+      - name: Comment — genesis not yet operationalised
         uses: actions/github-script@v7
         with:
           script: |
@@ -230,64 +155,11 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              labels: ['mission:genesis', 'status:in-progress']
+              labels: ['mission:genesis', 'status:not-yet-implemented']
             })
-
-      - name: Execute Platform Genesis Chain via NIM
-        env:
-          NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
-          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
-          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Load EMS doctrine for injection
-          CONSTITUTION=$(cat authorities/AUTH-001_ENGINEERING_CONSTITUTION.md 2>/dev/null || echo "")
-          GENESIS_MISSION=$(cat missions/MSN-000000_MISSION-000_PLATFORM_GENESIS.md)
-          VOCAB=$(cat standards/STD-000004_ENGINEERING_VOCABULARY_STANDARD.md)
-          EMS_SYNC_STD=$(cat standards/STD-000006_PLATFORM_BASELINE_SYNC_STANDARD.md)
-          ISSUE_BODY="${{ github.event.issue.body }}"
-          ISSUE_TITLE="${{ github.event.issue.title }}"
-
-          # Call NIM Super in GENESIS MODE
-          RESPONSE=$(curl -s -X POST https://integrate.api.nvidia.com/v1/chat/completions \
-            -H "Authorization: Bearer ${NIM_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              "model": "nvidia/nemotron-3-super",
-              "max_tokens": 8000,
-              "messages": [
-                {
-                  "role": "system",
-                  "content": "You are the SeierTech EMS Mission Chain executing MISSION-000 Platform Genesis in GENESIS MODE. You design forward from intent — not backward from code. You are governed by:\n\nENGINEERING CONSTITUTION:\n${CONSTITUTION}\n\nVOCABULARY STANDARD:\n${VOCAB}\n\nPLATFORM BASELINE SYNC STANDARD:\n${EMS_SYNC_STD}\n\nGENESIS MISSION SPECIFICATION:\n${GENESIS_MISSION}\n\nYour task: Design the complete platform artefact set from the brief. Produce the Platform Record, all Layer 1 designed artefacts, Proposition Document, and Master Technical Specification. Design the .ems/ folder contents. Output in structured markdown. GENESIS MODE — design forward, never extract."
-                },
-                {
-                  "role": "user",
-                  "content": "Execute MISSION-000 Platform Genesis.\nIssue title: ${ISSUE_TITLE}\nIssue body: ${ISSUE_BODY}\nPlatform name: ${PLATFORM_NAME}\n\nDesign the complete platform. Produce all required artefacts. Begin."
-                }
-              ]
-            }")
-
-          GENESIS_OUTPUT=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['choices'][0]['message']['content'])")
-
-          # Create platform directory in EMS
-          mkdir -p "platforms/${PLATFORM_NAME}"
-          echo "${GENESIS_OUTPUT}" > "platforms/${PLATFORM_NAME}/GENESIS_OUTPUT.md"
-
-          git config user.name "SeierTech EMS"
-          git config user.email "ems@seiertech.com"
-          git add .
-          git commit -m "EMS: MISSION-000 genesis initiated for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}]"
-          git push
-
-      - name: Comment on issue with genesis status
-        uses: actions/github-script@v7
-        env:
-          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
-        with:
-          script: |
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              body: \`## 🌱 EMS Genesis Chain Activated\n\n**Mission:** MISSION-000 Platform Genesis\n**Platform:** ${process.env.PLATFORM_NAME}\n**Mode:** GENESIS — designing forward from brief\n**Status:** IN_PROGRESS\n\nAll personas activating in GENESIS MODE. Designing artefacts from intent. .ems/ folder will be created before any application code.\n\nQuestions about the brief will be posted here for your input.\n\n*Powered by Loop Engineering — SeierTech EMS*\`
+              body: "MISSION-000 Genesis chain is designed (OPR-000011, MSN-000000, Team 2 personas) but the executable GitHub Actions job for genesis is **not yet built** — only the intake chain (v1 reduced) has a working executor.\n\nThis issue is correctly classified as GENESIS but no automated chain ran. Genesis execution is the next workflow to build.\n\n*SeierTech EMS — honest status reporting*"
             })
