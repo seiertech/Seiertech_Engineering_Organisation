@@ -109,6 +109,22 @@ Direct response to a founder question: "how exhaustive is the intake questionnai
 
 
 
+## v8 Update Summary — Intake Depth Fully Closed (All 16 Original Gaps)
+
+Direct follow-up to v7: founder instruction "proceed with the rest" after `DAM-000010` explicitly named 9 remaining unsatisfiable Team 2 persona inputs rather than claiming full closure.
+
+**Fixed:** `run_intake_chain.py` v3 → v4, adding the remaining 9 gated passes (Integration Map, Enterprise Architecture Context, Frontend Assessment, Backend Assessment, UX Assessment, Domain Vocabulary, Documentation Assessment, Proposition Document, Deployment Architecture). MTS synthesis expanded from 10 to 19 source passes, now genuinely covering all 15 doctrine-specified MTS sections rather than ~6. `run_build_chain.py` updated to use Test Strategy and Deployment Architecture where genuinely useful.
+
+**Result:** all 16 of the original Team 2 persona input gaps identified in `LES-000018` are now closed — 7 via `DAM-000010`, 9 via `DAM-000011`. `LES-000018` updated to AMENDED — FULLY RESOLVED.
+
+**Backward compatibility tested again:** built a fixture missing all 5 of the newest artefacts (the v3 *and* v4 additions together) and confirmed `run_build_chain.py` still works correctly — proving the full chain of compatibility holds across both amendments stacked, not just the most recent one in isolation.
+
+**Still honestly open, unrelated to this fix:** no live NIM call has ever validated content quality (only orchestration logic has been tested); execution remains 19 grouped passes, not the doctrine's literal 25 individual persona calls; `.ems/` cross-repo artefact placement and Founder Questions (RG-008) remain unimplemented.
+
+---
+
+
+
 ## What Actually Works Today (v2)
 
 | Component | Status |
@@ -116,7 +132,7 @@ Direct response to a founder question: "how exhaustive is the intake questionnai
 | Issue parsing (INTAKE / GENESIS detection) | WORKING — deterministic regex, tested against 3 real format cases |
 | NIM API call mechanism | FIXED — Python `json.dumps()` construction, immune to content-based quoting failures. As of DAM-000007, consolidated to a single canonical implementation (`call_nim.py`), imported by all three chain scripts rather than triplicated |
 | Real repo scanning | WORKING — shallow clone, file walk, schema/manifest/governance/test file detection and content extraction |
-| Intake chain — v3 (10 passes + MTS + Handoff Artefact) | WORKING — 10 grouped persona passes + synthesis, each gated by a real Standards Engineer NIM call. Expanded from v2's 5 passes per DAM-000010, closing 7 of 16 Team 2 persona input gaps found by LES-000018; 9 remain open, named in DAM-000010 Section 4 |
+| Intake chain — v4 (19 passes + MTS + Handoff Artefact) | WORKING — 19 grouped persona passes + synthesis, each gated by a real Standards Engineer NIM call. Expanded from v3's 10 passes per DAM-000011, closing the remaining 9 of 16 Team 2 persona input gaps found by LES-000018. All 16 original gaps now closed (7 via DAM-000010, 9 via DAM-000011). MTS now covers all 15 doctrine-specified sections with real source material |
 | Readiness gate check | WORKING — deterministic, tested to correctly FAIL on empty/missing artefacts and correctly PASS on populated ones |
 | Artefact commit to EMS repo | WORKING — real files in `platforms/[NAME]/`, including `SCAN_RESULT.json` and `READINESS_GATE_RESULT.json` |
 | GitHub Issue status comments | WORKING — reports actual gate status and named failing gates, not generic text |
@@ -181,3 +197,4 @@ Each increment is additive — the v2 chain keeps working while these are built.
 | 5.0.0 | 2026-06-30 | v5 — cross-repo delivery. Built deliver_to_target_repo.py, wired into execute-build on RELEASE, requires a new TARGET_REPO_TOKEN secret (not yet provided). Delivers the EDP as a committed proposal + real PR, explicitly NOT applied code — that gap is named precisely as the next increment. Found and fixed a related doctrine gap: the target repo URL was never persisted anywhere for forward missions to read after intake — logged as LES-000011, fixed by writing PLATFORM_REPO_URL.txt during intake | SeierTech EMS |
 | 6.0.0 | 2026-06-30 | v6 — full doctrine sweep (DAM-000007). Found and fixed a false self-citation in EMS_OPERATING_MODEL.md, two stale persona references to a since-built operation, an un-updated step table in OPR-000002, and triplicated dead-letter code (call_nim.py never imported, copied identically into three chain scripts). Consolidated to a single import; caught and fixed an IndentationError introduced mid-consolidation before it shipped | SeierTech EMS |
 | 7.0.0 | 2026-06-30 | v7 — intake depth gap closed from 64% to ~36% of Team 2 personas (DAM-000010). A direct founder question cross-referencing real intake output against all 25 Team 2 personas' stated Inputs found 16 of 25 unsatisfiable. Expanded run_intake_chain.py v2->v3: 5 new passes (Data Model, API Register, Requirements Register, AI Capability Map, Test Strategy) + Handoff Artefact, MTS synthesis 5->10 sources. run_build_chain.py updated to read the new artefacts where genuinely useful, with defensive degradation tested against a simulated old-v2-platform fixture for backward compatibility. 9 of 16 original gaps remain open, named precisely rather than claimed closed | SeierTech EMS |
+| 8.0.0 | 2026-06-30 | v8 — intake depth gap fully closed, all 16 of 16 original Team 2 persona input gaps resolved (DAM-000011, following up on DAM-000010's explicit "9 remain open"). Expanded run_intake_chain.py v3->v4: 9 more passes (Integration Map, Enterprise Architecture Context, Frontend/Backend Assessment, UX Assessment, Domain Vocabulary, Documentation Assessment, Proposition Document, Deployment Architecture), MTS synthesis 10->19 sources, now genuinely covering all 15 doctrine-specified MTS sections. Backward compatibility re-tested against a fixture missing all 5 newest (v3+v4) artefacts together. Also logged LES-000019: the same str_replace header-drop mistake recurred a 4th time in this file during this same update, caught and fixed each time before commit | SeierTech EMS |

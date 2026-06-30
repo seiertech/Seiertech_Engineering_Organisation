@@ -1,47 +1,55 @@
 #!/usr/bin/env python3
 """
-EMS Team 1 Intake Chain Orchestrator — v3
+EMS Team 1 Intake Chain Orchestrator — v4
 
-Honest scope of this version (upgraded from v2 per DAM-000010 / LES-000018):
+Honest scope of this version (upgraded from v3 per DAM-000011 / LES-000018):
 
-WHY v3 EXISTS: a direct founder check ("how exhaustive is the intake
-questionnaire and is it sufficient for Team 2 to use") found the v2 chain
-(5 passes, 6 artefacts) left 16 of 25 Team 2 personas (64%) with at least
-one stated input the chain never produced — including Data Architect,
-every engineering lead, AI Architect, Verification, and both top-level
-Team 2 governance personas (which expected a Handoff Artefact that was
-never written). v3 closes the highest-leverage 5 of those 16 gaps plus
-the Handoff Artefact gap. It does NOT close all 16 — see "STILL DOES NOT
-DO" below for what remains, named precisely.
+WHY v3 EXISTED, AND WHY v4 NOW EXISTS: a direct founder check ("how
+exhaustive is the intake questionnaire and is it sufficient for Team 2
+to use") found the v2 chain (5 passes, 6 artefacts) left 16 of 25 Team 2
+personas (64%) with at least one stated input the chain never produced.
+v3 (DAM-000010) closed the highest-leverage 5 of those 16. v4 (this
+version, DAM-000011) closes the remaining 9, resolving all 16 of the
+original gaps identified in LES-000018.
 
-NOW DOES (10 grouped passes, up from 5 in v2):
+NOW DOES (19 grouped passes, up from 10 in v3, 5 in v2):
 - Pass 1: Use Case Register + Requirements
 - Pass 2: Architecture Document + Data Model summary
 - Pass 3: Security Posture
 - Pass 4: Technical Debt Register
 - Pass 5: Knowledge Graph
-- Pass 6: Data Model (NEW — separated as its own artefact, closes Data
-  Architect / Backend Lead / Integration Engineer input gaps)
-- Pass 7: API Register (NEW — closes Backend Lead / Integration Engineer)
-- Pass 8: Requirements Register (NEW — closes Senior Business Analyst)
-- Pass 9: AI Capability Map (NEW — closes AI Architect / Product Strategy)
-- Pass 10: Test Strategy (NEW — closes Verification and Governance Director)
-- Master Technical Specification synthesis from all 10 passes (up from 5)
-- Handoff Artefact (NEW — closes Executive Director / Mission Control
-  Director input gap)
+- Pass 6: Data Model (separated as its own artefact)
+- Pass 7: API Register
+- Pass 8: Requirements Register
+- Pass 9: AI Capability Map
+- Pass 10: Test Strategy
+- Pass 11: Integration Map (NEW — closes remaining Integration Engineer gap)
+- Pass 12: Enterprise Architecture Context (NEW — closes Enterprise Architect)
+- Pass 13: Frontend Engineering Assessment (NEW — closes Frontend Lead)
+- Pass 14: Backend Engineering Assessment (NEW — closes remaining Backend Lead gap)
+- Pass 15: UX Assessment (NEW — closes UI/UX Director)
+- Pass 16: Domain Vocabulary (NEW — closes Knowledge Graph Architect)
+- Pass 17: Documentation Assessment (NEW — closes Documentation Curator)
+- Pass 18: Proposition Document (NEW — closes Product Strategy Director /
+  Proposition Analyst; as-is only, no competitive positioning, every
+  claim traced to evidence — per the founder's own earlier doctrine on
+  this exact artefact class)
+- Pass 19: Deployment Architecture (NEW — closes Platform Engineer)
+- Master Technical Specification synthesis from all 19 passes (up from
+  10, then 5), covering all 15 doctrine-specified sections
+- Handoff Artefact, updated to state all 16 original gaps are now closed
 - Real shallow clone + file walk (scan_repo.py), real readiness gate
   check (RG-001 to RG-010), each artefact Standards-Engineer-gated —
-  all unchanged from v2, still real, not simulated.
+  all unchanged, still real, not simulated.
 
 STILL DOES NOT DO — named precisely, not vaguely:
-- Integration Map, Enterprise Architecture Context, Frontend Assessment,
-  Backend Assessment, UX Assessment, Domain Vocabulary, Documentation
-  Assessment, Proposition Document, Deployment Architecture — still
-  unproduced, still block their respective Team 2 personas
-- Full 25-persona individual depth (10 grouped passes is real progress,
-  still not parity with the doctrine-specified 17+ Layer 1 artefacts)
+- Full 25-persona individual depth (19 grouped passes is real progress —
+  every one of the 25 Team 2 persona role areas now has a corresponding
+  source artefact, but this remains grouped passes, not 25 individual
+  NIM calls as the doctrine literally describes)
 - Create the .ems/ folder in the TARGET platform repo (separate
-  cross-repo write concern, not part of this fix)
+  cross-repo write concern — see DAM-000006 for what cross-repo
+  capability IS wired)
 - Generate/track Founder Questions (RG-008 is honestly marked N/A)
 - Anything for Team 2 forward missions beyond what they consume as input
   (BUILD/REHAB/STRATEGIC executors are separate scripts)
@@ -454,30 +462,218 @@ def main():
         f.write(pass10_output)
     print(f"Standards Engineer verdict: {'PASS' if passed10 else 'FAIL'} — {issues10}")
 
+    # Pass 11: Integration Map — closes the remaining Integration Engineer
+    # gap (API Register alone was insufficient; Integration Engineer also
+    # needs the wider map of external dependencies, not just API endpoints).
+    pass11_system = (
+        f"You are the Integration Engineer persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce an Integration Map conformant to STD-000003 — every external dependency, "
+        "third-party service, and outbound connection found, classified ACTIVE/BROKEN/"
+        "DEPRECATED/PLANNED. Ground every entry in the real manifest evidence below."
+    )
+    pass11_user = (
+        f"Manifests: {json.dumps(scan_result.get('manifests', {}), indent=2)[:3000]}\n"
+        f"Governance files found (may reveal integration config): {scan_result.get('governance_files_found', [])}"
+    )
+    print("\n=== Pass 11: Integration Map ===")
+    pass11_output = call_nim(api_key, args.model, pass11_system, pass11_user, max_tokens=1800)
+    passed11, issues11 = standards_engineer_gate(api_key, args.model, pass11_output, "Integration Map")
+    log.append({"artefact": "Integration Map", "pass": passed11, "issues": issues11})
+    with open(f"{platform_dir}/INTEGRATION_MAP.md", "w") as f:
+        f.write(pass11_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed11 else 'FAIL'} — {issues11}")
+
+    # Pass 12: Enterprise Architecture Context — closes Enterprise Architect.
+    pass12_system = (
+        f"You are the Enterprise Architect persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce an Enterprise Architecture Context document conformant to STD-000003 — how this "
+        "platform relates to the wider SeierTech portfolio, any capability overlap risk with other "
+        "EMS-governed platforms. If this is the only platform onboarded so far, state that plainly "
+        "rather than inventing portfolio relationships that don't exist yet."
+    )
+    pass12_user = f"Platform: {platform_name}\nArchitecture:\n{pass2_output[:2000]}"
+    print("\n=== Pass 12: Enterprise Architecture Context ===")
+    pass12_output = call_nim(api_key, args.model, pass12_system, pass12_user, max_tokens=1500)
+    passed12, issues12 = standards_engineer_gate(api_key, args.model, pass12_output, "Enterprise Architecture Context")
+    log.append({"artefact": "Enterprise Architecture Context", "pass": passed12, "issues": issues12})
+    with open(f"{platform_dir}/ENTERPRISE_ARCHITECTURE_CONTEXT.md", "w") as f:
+        f.write(pass12_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed12 else 'FAIL'} — {issues12}")
+
+    # Pass 13: Frontend Engineering Assessment — closes Frontend Engineering Lead.
+    pass13_system = (
+        f"You are the Frontend Engineering Lead persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce a Frontend Engineering Assessment conformant to STD-000003 — component "
+        "architecture quality, dependency health, build tooling — grounded in the real scan "
+        "evidence below. If no frontend code is detected, state that explicitly."
+    )
+    pass13_user = (
+        f"Languages detected: {scan_result.get('languages_detected', [])}\n"
+        f"Manifests: {json.dumps(scan_result.get('manifests', {}), indent=2)[:2000]}\n"
+        f"Top level structure: {scan_result.get('top_level_structure', [])}"
+    )
+    print("\n=== Pass 13: Frontend Engineering Assessment ===")
+    pass13_output = call_nim(api_key, args.model, pass13_system, pass13_user, max_tokens=1500)
+    passed13, issues13 = standards_engineer_gate(api_key, args.model, pass13_output, "Frontend Engineering Assessment")
+    log.append({"artefact": "Frontend Engineering Assessment", "pass": passed13, "issues": issues13})
+    with open(f"{platform_dir}/FRONTEND_ASSESSMENT.md", "w") as f:
+        f.write(pass13_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed13 else 'FAIL'} — {issues13}")
+
+    # Pass 14: Backend Engineering Assessment — closes the remaining Backend
+    # Engineering Lead gap (Data Model + API Register alone were insufficient;
+    # this assesses service design quality, not just the data/API shape).
+    pass14_system = (
+        f"You are the Backend Engineering Lead persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce a Backend Engineering Assessment conformant to STD-000003 — service design "
+        "quality, data access pattern consistency — grounded in the Data Model and API Register "
+        "below, not invented beyond that evidence."
+    )
+    pass14_user = f"Data Model:\n{pass6_output[:2000]}\n\nAPI Register:\n{pass7_output[:2000]}"
+    print("\n=== Pass 14: Backend Engineering Assessment ===")
+    pass14_output = call_nim(api_key, args.model, pass14_system, pass14_user, max_tokens=1500)
+    passed14, issues14 = standards_engineer_gate(api_key, args.model, pass14_output, "Backend Engineering Assessment")
+    log.append({"artefact": "Backend Engineering Assessment", "pass": passed14, "issues": issues14})
+    with open(f"{platform_dir}/BACKEND_ASSESSMENT.md", "w") as f:
+        f.write(pass14_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed14 else 'FAIL'} — {issues14}")
+
+    # Pass 15: UX Assessment — closes UI/UX Director.
+    pass15_system = (
+        f"You are the UI/UX Director persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce a UX Assessment conformant to STD-000003 — trace user-facing components to use "
+        "cases below, flag orphaned UI components. If no frontend exists, state that explicitly "
+        "rather than inventing a UX assessment with no evidence."
+    )
+    pass15_user = f"Use Case Register:\n{pass1_output[:2000]}\n\nFrontend Assessment:\n{pass13_output[:1500]}"
+    print("\n=== Pass 15: UX Assessment ===")
+    pass15_output = call_nim(api_key, args.model, pass15_system, pass15_user, max_tokens=1500)
+    passed15, issues15 = standards_engineer_gate(api_key, args.model, pass15_output, "UX Assessment")
+    log.append({"artefact": "UX Assessment", "pass": passed15, "issues": issues15})
+    with open(f"{platform_dir}/UX_ASSESSMENT.md", "w") as f:
+        f.write(pass15_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed15 else 'FAIL'} — {issues15}")
+
+    # Pass 16: Domain Vocabulary — closes Knowledge Graph Architect.
+    pass16_system = (
+        f"You are the Knowledge Graph Architect persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\nVOCABULARY:\n{vocab}\n\n"
+        "Extract and normalise the domain vocabulary for this platform, conformant to STD-000003 "
+        "and aligned to STD-000004's vocabulary discipline. Ground every term in the Knowledge "
+        "Graph and Use Case Register below — do not invent domain terminology."
+    )
+    pass16_user = f"Knowledge Graph:\n{pass5_output[:2000]}\n\nUse Case Register:\n{pass1_output[:1500]}"
+    print("\n=== Pass 16: Domain Vocabulary ===")
+    pass16_output = call_nim(api_key, args.model, pass16_system, pass16_user, max_tokens=1500)
+    passed16, issues16 = standards_engineer_gate(api_key, args.model, pass16_output, "Domain Vocabulary")
+    log.append({"artefact": "Domain Vocabulary", "pass": passed16, "issues": issues16})
+    with open(f"{platform_dir}/DOMAIN_VOCABULARY.md", "w") as f:
+        f.write(pass16_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed16 else 'FAIL'} — {issues16}")
+
+    # Pass 17: Documentation Assessment — closes Documentation and Knowledge Curator.
+    pass17_system = (
+        f"You are the Documentation and Knowledge Curator persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce a Documentation Assessment conformant to STD-000003 — what documentation exists "
+        "in this repo, what is missing, quality scored. Ground this in the real governance files "
+        "and top-level structure below."
+    )
+    pass17_user = (
+        f"Governance files found: {scan_result.get('governance_files_found', [])}\n"
+        f"Top level structure: {scan_result.get('top_level_structure', [])}\n"
+        f"Total files: {scan_result.get('total_files', 'unknown')}"
+    )
+    print("\n=== Pass 17: Documentation Assessment ===")
+    pass17_output = call_nim(api_key, args.model, pass17_system, pass17_user, max_tokens=1500)
+    passed17, issues17 = standards_engineer_gate(api_key, args.model, pass17_output, "Documentation Assessment")
+    log.append({"artefact": "Documentation Assessment", "pass": passed17, "issues": issues17})
+    with open(f"{platform_dir}/DOCUMENTATION_ASSESSMENT.md", "w") as f:
+        f.write(pass17_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed17 else 'FAIL'} — {issues17}")
+
+    # Pass 18: Proposition Document — closes Product Strategy Director and
+    # Proposition Analyst. As-is only, per the founder's own earlier
+    # direction on this exact artefact class: no competitive positioning,
+    # no market speculation, every capability claim traced to evidence.
+    pass18_system = (
+        f"You are the Proposition Analyst persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce a Proposition Document conformant to STD-000003 — what this platform does, for "
+        "whom, capability completeness (BUILT/PARTIAL/MISSING per capability) — purely as-is, "
+        "grounded in the Use Case Register and Architecture below. NO competitive positioning, "
+        "NO market speculation, NO invented capabilities. Every claim must cite its source."
+    )
+    pass18_user = f"Use Case Register:\n{pass1_output[:1800]}\n\nArchitecture:\n{pass2_output[:1800]}\n\nTechnical Debt Register:\n{pass4_output[:1000]}"
+    print("\n=== Pass 18: Proposition Document ===")
+    pass18_output = call_nim(api_key, args.model, pass18_system, pass18_user, max_tokens=2000)
+    passed18, issues18 = standards_engineer_gate(api_key, args.model, pass18_output, "Proposition Document")
+    log.append({"artefact": "Proposition Document", "pass": passed18, "issues": issues18})
+    with open(f"{platform_dir}/PROPOSITION_DOCUMENT.md", "w") as f:
+        f.write(pass18_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed18 else 'FAIL'} — {issues18}")
+
+    # Pass 19: Deployment Architecture — closes Platform Engineer, the last
+    # of the original 16 unsatisfiable Team 2 persona inputs from LES-000018.
+    pass19_system = (
+        f"You are the Platform Engineer persona in the SeierTech EMS. "
+        f"GOVERNED BY:\n{constitution}\n\n"
+        "Produce a Deployment Architecture document conformant to STD-000003 — infrastructure, "
+        "environments, CI/CD maturity — grounded in real evidence below. If no IaC/CI config is "
+        "detected, state that explicitly rather than assuming a deployment model."
+    )
+    pass19_user = (
+        f"Top level structure: {scan_result.get('top_level_structure', [])}\n"
+        f"Manifests: {json.dumps(scan_result.get('manifests', {}), indent=2)[:2000]}"
+    )
+    print("\n=== Pass 19: Deployment Architecture ===")
+    pass19_output = call_nim(api_key, args.model, pass19_system, pass19_user, max_tokens=1500)
+    passed19, issues19 = standards_engineer_gate(api_key, args.model, pass19_output, "Deployment Architecture")
+    log.append({"artefact": "Deployment Architecture", "pass": passed19, "issues": issues19})
+    with open(f"{platform_dir}/DEPLOYMENT_ARCHITECTURE.md", "w") as f:
+        f.write(pass19_output)
+    print(f"Standards Engineer verdict: {'PASS' if passed19 else 'FAIL'} — {issues19}")
+
     # Master Technical Specification — synthesis of all passes so far
     mts_system = (
         f"You are the Master Spec Author persona in the SeierTech EMS. "
         f"GOVERNED BY:\n{constitution}\n\n"
         "Synthesise the following persona outputs into a Master Technical Specification, "
-        "conformant to STD-000003. Cite which pass each section draws from. This is a v2 "
-        "expanded-depth MTS (10 source passes, up from 5) — state that explicitly in the "
-        "Executive Summary, and explicitly name any of the 15 doctrine-specified MTS sections "
-        "that still have no source material (Frontend/Backend/Deployment Specification, etc) "
-        "rather than inventing content for them."
+        "conformant to STD-000003 and covering all 15 doctrine-specified sections "
+        "(Executive Summary, Architecture, Data Model, API, Integration, Frontend, Backend, "
+        "Security, Deployment, AI Capability, Test, Knowledge Architecture, Technical Debt "
+        "Schedule, Proposition Summary, Mission Readiness Declaration). Cite which pass each "
+        "section draws from. This is a v3 expanded-depth MTS (19 source passes, up from 10 in "
+        "v2 and 5 in v1) — state that explicitly in the Executive Summary. If any section "
+        "genuinely still has no source material, name it explicitly rather than inventing content."
     )
     mts_user = (
-        f"Use Case Register:\n{pass1_output[:1200]}\n\n"
-        f"Architecture/Data Model:\n{pass2_output[:1200]}\n\n"
-        f"Security Posture:\n{pass3_output[:1200]}\n\n"
-        f"Technical Debt Register:\n{pass4_output[:1200]}\n\n"
-        f"Knowledge Graph:\n{pass5_output[:1200]}\n\n"
-        f"Data Model:\n{pass6_output[:1200]}\n\n"
-        f"API Register:\n{pass7_output[:1200]}\n\n"
-        f"Requirements Register:\n{pass8_output[:1200]}\n\n"
-        f"AI Capability Map:\n{pass9_output[:1200]}\n\n"
-        f"Test Strategy:\n{pass10_output[:1200]}"
+        f"Use Case Register:\n{pass1_output[:1000]}\n\n"
+        f"Architecture/Data Model:\n{pass2_output[:1000]}\n\n"
+        f"Security Posture:\n{pass3_output[:1000]}\n\n"
+        f"Technical Debt Register:\n{pass4_output[:1000]}\n\n"
+        f"Knowledge Graph:\n{pass5_output[:1000]}\n\n"
+        f"Data Model:\n{pass6_output[:800]}\n\n"
+        f"API Register:\n{pass7_output[:800]}\n\n"
+        f"Requirements Register:\n{pass8_output[:800]}\n\n"
+        f"AI Capability Map:\n{pass9_output[:800]}\n\n"
+        f"Test Strategy:\n{pass10_output[:800]}\n\n"
+        f"Integration Map:\n{pass11_output[:800]}\n\n"
+        f"Enterprise Architecture Context:\n{pass12_output[:800]}\n\n"
+        f"Frontend Engineering Assessment:\n{pass13_output[:800]}\n\n"
+        f"Backend Engineering Assessment:\n{pass14_output[:800]}\n\n"
+        f"UX Assessment:\n{pass15_output[:800]}\n\n"
+        f"Domain Vocabulary:\n{pass16_output[:800]}\n\n"
+        f"Documentation Assessment:\n{pass17_output[:800]}\n\n"
+        f"Proposition Document:\n{pass18_output[:800]}\n\n"
+        f"Deployment Architecture:\n{pass19_output[:800]}"
     )
-    print("\n=== Synthesis: Master Technical Specification (v2 — 10 sources, up from 5) ===")
+    print("\n=== Synthesis: Master Technical Specification (v3 — 19 sources, up from 10 in v2) ===")
     mts_output = call_nim(api_key, args.model, mts_system, mts_user, max_tokens=4000)
     passed_mts, issues_mts = standards_engineer_gate(api_key, args.model, mts_output, "Master Technical Specification")
     log.append({"artefact": "Master Technical Specification", "pass": passed_mts, "issues": issues_mts})
@@ -506,12 +702,13 @@ produced and Standards Engineer assessed (see INTAKE_RUN_LOG.md for full per-art
 
 ## Known Gaps — Honestly Disclosed, Not Hidden
 
-This is a v2 intake (10 of the doctrine-specified ~17+ Layer 1 artefacts). The following
-remain unproduced and Team 2 personas depending on them should treat that input as absent,
-not assume it silently exists: Integration Map, Enterprise Architecture Context, Frontend
-Assessment, Backend Assessment, UX Assessment, Domain Vocabulary, Documentation Assessment,
-Proposition Document, Deployment Architecture. See LES-000018 and DAM-000010 for the full
-gap analysis this handoff is a partial resolution of.
+This is a v3 intake (19 of the doctrine-specified ~17+ Layer 1 artefacts, plus 3 Layer 3
+synthesis artefacts — per DAM-000010 and its follow-up, this resolves all 16 of the original
+Team 2 persona input gaps identified in LES-000018). Remaining honest gaps, system-wide, not
+specific to this platform: Founder Questions mechanism (RG-008) does not exist yet; the .ems/
+folder is not created in the target platform repo as part of intake; full 25-persona individual
+depth (this is 19 grouped passes, not 25 individual calls). See LES-000018 and DAM-000010 for
+the original gap analysis and its resolution history.
 
 ## Team 2 Authorisation
 
@@ -531,14 +728,14 @@ synthesises them. Team 1 stands down.
     overall_status = gate_result.get("overall_status", "UNKNOWN")
     print(f"Overall readiness status: {overall_status}")
 
-    readiness_note = f"""# {platform_name} — Intake Run Log (v3 — 10 source passes, closes the LES-000018 gap)
+    readiness_note = f"""# {platform_name} — Intake Run Log (v4 — 19 source passes, closes all 16 LES-000018 gaps)
 
 | Field | Value |
 |---|---|
 | Platform | {platform_name} |
 | Repo | {args.repo_url} |
 | Issue | #{args.issue_number} |
-| Chain Version | v3 — 10 grouped persona passes + MTS synthesis + Handoff Artefact + real code scan + real gate check |
+| Chain Version | v4 — 19 grouped persona passes + MTS synthesis + Handoff Artefact + real code scan + real gate check |
 | Code Scan Status | {scan_result.get('scan_status', 'UNKNOWN')} |
 | Overall Readiness | {overall_status} |
 
@@ -551,31 +748,37 @@ synthesises them. Team 1 stands down.
 5. Pass 3: Security Posture (grounded in real dependency manifests)
 6. Pass 4: Technical Debt Register (grounded in real test/governance file counts)
 7. Pass 5: Knowledge Graph (derived from passes 1-2)
-8. Pass 6: Data Model — separated as its own artefact (was previously bundled only in pass 2)
+8. Pass 6: Data Model — separated as its own artefact
 9. Pass 7: API Register — grounded in real route detection evidence
 10. Pass 8: Requirements Register — traced to Use Case Register
 11. Pass 9: AI Capability Map — grounded in Use Case Register + Architecture
 12. Pass 10: Test Strategy — grounded in real test file counts
-13. Synthesis: Master Technical Specification (v2 — 10 sources, up from 5)
-14. Handoff Artefact — closes the Executive Director / Mission Control Director input gap
-15. Real deterministic readiness gate check (RG-001 to RG-010) — not LLM self-assessment
+13. Pass 11: Integration Map — grounded in real manifest evidence
+14. Pass 12: Enterprise Architecture Context — portfolio relationship, honest if standalone
+15. Pass 13: Frontend Engineering Assessment — grounded in real scan evidence
+16. Pass 14: Backend Engineering Assessment — grounded in Data Model + API Register
+17. Pass 15: UX Assessment — traced to Use Case Register + Frontend Assessment
+18. Pass 16: Domain Vocabulary — grounded in Knowledge Graph + Use Case Register
+19. Pass 17: Documentation Assessment — grounded in real governance file evidence
+20. Pass 18: Proposition Document — as-is only, every claim traced, no speculation
+21. Pass 19: Deployment Architecture — grounded in real IaC/CI evidence
+22. Synthesis: Master Technical Specification (v3 — 19 sources, up from 10 then 5)
+23. Handoff Artefact — closes the Executive Director / Mission Control Director input gap
+24. Real deterministic readiness gate check (RG-001 to RG-010) — not LLM self-assessment
 
-## Why v3 Exists (LES-000018 / DAM-000010)
+## Why v4 Exists (LES-000018 / DAM-000010 / DAM-000011)
 
 A direct founder check found the v2 chain (5 passes) produced only 6 of doctrine's claimed
 24+ artefacts, leaving 16 of 25 Team 2 personas (64%) with at least one unsatisfiable stated
-input. v3 closes the highest-leverage 5 of those 16 (Data Model, API Register, Requirements
-Register, AI Capability Map, Test Strategy) plus the Handoff Artefact gap blocking both
-top-level Team 2 governance personas. This was a deliberate priority choice, not full closure
-— see "Still NOT Done" below for what remains.
+input. v3 (DAM-000010) closed the highest-leverage 5. v4 (DAM-000011, this version) closes the
+remaining 9, resolving all 16 of the original gaps from LES-000018.
 
-## Still NOT Done (see IMPLEMENTATION_STATUS.md and DAM-000010 for full list)
+## Still NOT Done (see IMPLEMENTATION_STATUS.md and DAM-000011 for full list)
 
-- Full 25-persona individual depth (this is 10 grouped passes, up from 5, still not 25)
-- Integration Map, Enterprise Architecture Context, Frontend Assessment, Backend Assessment,
-  UX Assessment, Domain Vocabulary, Documentation Assessment, Proposition Document,
-  Deployment Architecture — still unproduced, still block their respective Team 2 personas
-- .ems/ folder creation in the TARGET platform repo (cross-repo write not yet wired for this)
+- Full 25-persona individual depth (this is 19 grouped passes, real progress, still not 25
+  individual NIM calls per the doctrine's literal description)
+- .ems/ folder creation in the TARGET platform repo (cross-repo write not yet wired for this —
+  separate concern from artefact production, see DAM-000006 for what IS wired)
 - Founder Questions mechanism (RG-008 will show N/A — not yet implemented)
 - Team 2 REHAB/STRATEGIC/AGENTIC_INSERTION/SPEC/PROPOSAL mission executors
 

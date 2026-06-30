@@ -43,12 +43,15 @@ Progression differs by origin and is governed by which team is active — this i
 MISSION-001 issued
   → OPR-000002 Platform Intake Operation
   → Team 1 (25 baseline-establishment personas) activates
-  → 10 grouped persona passes (v3 chain, expanded from v2's 5 per DAM-000010): Use Case+
-    Requirements, Architecture+Data Model, Security Posture, Technical Debt Register,
-    Knowledge Graph, Data Model, API Register, Requirements Register, AI Capability Map,
-    Test Strategy
+  → 19 grouped persona passes (v4 chain, expanded from v3's 10 per DAM-000011, v2's 5 per
+    DAM-000010): Use Case+Requirements, Architecture+Data Model, Security Posture, Technical
+    Debt Register, Knowledge Graph, Data Model, API Register, Requirements Register, AI
+    Capability Map, Test Strategy, Integration Map, Enterprise Architecture Context, Frontend
+    Engineering Assessment, Backend Engineering Assessment, UX Assessment, Domain Vocabulary,
+    Documentation Assessment, Proposition Document, Deployment Architecture
   → Each pass gated by a real Standards Engineer NIM call (PASS/FAIL, not simulated)
-  → Master Technical Specification synthesised (from all 10 passes)
+  → Master Technical Specification synthesised (from all 19 passes, covering all 15
+    doctrine-specified MTS sections)
   → Handoff Artefact written directly by the intake chain (HANDOFF_ARTEFACT.md — a real,
     simplified instance; the full TPL-000011/HAR-000001 template shape is the doctrine target,
     not yet what the script produces verbatim)
@@ -137,17 +140,17 @@ A platform reaching READY status (the end of intake or genesis) is a milestone, 
 
 ---
 
-## 6. The Honest Imbalance — LES-000009, Updated 2026-06-30 (Third Pass)
+## 6. The Honest Imbalance — LES-000009, Updated 2026-06-30 (Fourth Pass)
 
 When this section was first written, the EMS had zero closed Team 2 forward missions and no path across the repo boundary. Two amendments since have narrowed that considerably: `DAM-000005` produced the first real BUILD executor (Proposal through Release, gated, tested against a fixture up to the live-call boundary). `DAM-000006` produced cross-repo delivery — a RELEASE decision now results in a real branch and Pull Request inside the actual target platform repository, tested end to end against a local fixture using genuine `git` operations.
 
 What remains true, stated precisely rather than left vague: the Pull Request `DAM-000006` produces contains a *proposal* — the Engineering Delivery Package committed as a markdown document — not applied code. No source file in any target repository has ever been modified by this system. The gap is no longer "nothing happens in the target repo" — something real and visible now happens. The gap is now specifically: nothing yet *reads* that committed proposal and writes working code against it. Additionally, REHAB, STRATEGIC, AGENTIC_INSERTION, SPEC, and PROPOSAL mission types still have no executor, and the Founder Questions mechanism (RG-008) is still absent system-wide.
 
-A second, distinct dimension of the same imbalance surfaced when a direct founder question — "is the intake exhaustive enough for Team 2 to actually use" — was checked precisely rather than assumed: `DAM-000010` found 16 of 25 Team 2 personas (64%) had at least one stated input the intake chain never produced. That amendment closed 7 of the 16, narrowing the gap to roughly 36%, not to zero. The remaining 9 (Integration Map, Enterprise Architecture Context, Frontend/Backend Assessment, UX Assessment, Domain Vocabulary, Documentation Assessment, Proposition Document, Deployment Architecture) are named precisely in `DAM-000010` Section 4, not glossed over here.
+A second, distinct dimension of the same imbalance surfaced when a direct founder question — "is the intake exhaustive enough for Team 2 to actually use" — was checked precisely rather than assumed: `DAM-000010` found 16 of 25 Team 2 personas (64%) had at least one stated input the intake chain never produced. `DAM-000010` closed 7 of the 16; `DAM-000011`, fired in direct response to "proceed with the rest," closed the remaining 9. This dimension of the imbalance is now fully closed — every Team 2 persona has a real, gated, scan-grounded source artefact for every input it was originally missing. This is the first dimension of this section's tracked imbalance to reach genuine zero, not just narrowed.
 
 This continues to be stated plainly per Loop Engineering's own premise that a finding which doesn't change what happens next is not a finding.
 
-**What follows from this, concretely:** three live options exist now, founder's call — (a) wire an actual builder (Kiro or equivalent) to read the committed EDP from a delivered PR and produce real code changes, closing the proposal-to-applied-code gap precisely, (b) make a real live NIM call against an actual platform to validate that the content these chains produce is good enough to be worth building against in the first place, since every test to date has validated orchestration logic, never content quality, or (c) close the remaining 9 of 16 intake depth gaps from `DAM-000010` Section 4. Recorded as binding guidance per the same `OPR-000012` discipline as before.
+**What follows from this, concretely:** two live options remain, founder's call — (a) wire an actual builder (Kiro or equivalent) to read the committed EDP from a delivered PR and produce real code changes, closing the proposal-to-applied-code gap precisely, or (b) make a real live NIM call against an actual platform to validate that the content these chains produce is good enough to be worth building against in the first place, since every test to date — including all 19 intake passes now in place — has validated orchestration logic and structural correctness, never actual content quality. Recorded as binding guidance per the same `OPR-000012` discipline as before.
 
 ---
 
@@ -179,3 +182,4 @@ This is not a new Operation, Authority, or Standard, and it does not supersede a
 | 1.2.0 | 2026-06-30 | Updated Section 6 following DAM-000006 — cross-repo delivery built, a RELEASE decision now produces a real PR in the target repo; gap re-stated precisely as proposal-to-applied-code, not "nothing happens" | SeierTech EMS |
 | 1.3.0 | 2026-06-30 | DAM-000007 — corrected a false self-citation in Section 8 (claimed all 10 authorities/registers cited, actually only 6 of each); genuinely wove in the missing 4+4 at their substantively correct points in Sections 2 and 4, found during a full doctrine sweep | SeierTech EMS |
 | 1.4.0 | 2026-06-30 | DAM-000010 — Section 2.1 lifecycle diagram updated to the real 10-pass v3 intake chain (was 5); Section 6 updated with the intake-depth dimension of the imbalance, found by directly checking intake output against all 25 Team 2 personas' stated inputs (64% had a gap, now ~36%); fixed a duplicate Handoff Artefact line introduced during the same edit | SeierTech EMS |
+| 1.5.0 | 2026-06-30 | DAM-000011 — Section 2.1 lifecycle diagram updated to the real 19-pass v4 intake chain (was 10); Section 6 updated — the intake-depth dimension of the imbalance is now fully closed, the first tracked dimension to reach genuine zero rather than just narrowed | SeierTech EMS |

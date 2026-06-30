@@ -161,6 +161,11 @@ def main():
     data_model = read_file_safe(f"{platform_dir}/DATA_MODEL.md")
     api_register = read_file_safe(f"{platform_dir}/API_REGISTER.md")
     requirements = read_file_safe(f"{platform_dir}/REQUIREMENTS_REGISTER.md")
+    # Added per DAM-000011: closes the remaining intake depth gaps. Same
+    # defensive read_file_safe pattern — degrades gracefully for any
+    # platform onboarded before this fix existed.
+    test_strategy = read_file_safe(f"{platform_dir}/TEST_STRATEGY.md")
+    deployment_architecture = read_file_safe(f"{platform_dir}/DEPLOYMENT_ARCHITECTURE.md")
     constitution = read_file_safe("authorities/AUTH-001_ENGINEERING_CONSTITUTION.md")
 
     print(f"=== Confirming {platform_name} is genuinely READY before proceeding ===")
@@ -199,9 +204,11 @@ def main():
     )
     pass1_user = (
         f"Platform: {platform_name}\nMission instruction: {args.instruction}\n\n"
-        f"MTS:\n{mts[:3500]}\n\n"
+        f"MTS:\n{mts[:3000]}\n\n"
         f"Requirements Register (if available — degrades gracefully if this platform was "
-        f"onboarded before DAM-000010):\n{requirements[:1500]}"
+        f"onboarded before DAM-000010):\n{requirements[:1200]}\n\n"
+        f"Deployment Architecture (if available — degrades gracefully if onboarded before "
+        f"DAM-000011): {deployment_architecture[:800]}"
     )
     print("\n=== Pass 1: Engineering Proposal (OPR-000003) ===")
     proposal_output = call_nim(api_key, args.model, pass1_system, pass1_user, max_tokens=2000)
@@ -251,13 +258,17 @@ def main():
         f"SeierTech EMS, executing OPR-000005 Engineering Delivery Operation. GOVERNED BY:\n{constitution}\n\n"
         "Produce an Engineering Delivery Package conformant to STD-000003 (TPL-000004 shape): build "
         "instructions, standards applied, and explicit test assertions for each acceptance criterion. "
+        "If a Test Strategy is provided below, align test assertions to its existing coverage approach "
+        "rather than inventing a separate testing philosophy. "
         "The EDP must be specific enough that a builder could act on it — not a restatement of the proposal."
     )
     pass3_user = (
-        f"Approved Engineering Proposal:\n{proposal_output[:1800]}\n\n"
-        f"TDA Rationale:\n{tda_result.get('rationale', '')[:400]}\n\n"
-        f"Data Model (if available):\n{data_model[:1200]}\n\n"
-        f"API Register (if available):\n{api_register[:1200]}"
+        f"Approved Engineering Proposal:\n{proposal_output[:1500]}\n\n"
+        f"TDA Rationale:\n{tda_result.get('rationale', '')[:300]}\n\n"
+        f"Data Model (if available):\n{data_model[:1000]}\n\n"
+        f"API Register (if available):\n{api_register[:1000]}\n\n"
+        f"Test Strategy (if available — degrades gracefully if onboarded before "
+        f"DAM-000011): {test_strategy[:800]}"
     )
     print("\n=== Pass 3: Engineering Delivery Package (OPR-000005) ===")
     edp_output = call_nim(api_key, args.model, pass3_system, pass3_user, max_tokens=2500)
