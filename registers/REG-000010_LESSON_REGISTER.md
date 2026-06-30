@@ -6,7 +6,7 @@
 | Artefact Class | Register |
 | Title | Lesson Register |
 | Status | ACTIVE |
-| Version | 1.9.0 |
+| Version | 2.0.0 |
 | Classification | OPERATIONAL |
 | Owner | Documentation and Knowledge Curator (PER-000018 / T2-PER-000018) |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -93,6 +93,7 @@ CAPTURED → SUPERSEDED (a later, more complete lesson replaces this one)
 | LES-000017 | HOW_TO_FIRE_A_MISSION.md, requested by a founder asking for a real walkthrough, was found to have gone stale: it still stated Genesis had no executor (DAM-000005 gave it one) and never mentioned the BUILD format at all (didn't exist when the doc was written) — a document explicitly checked for accuracy only when someone tried to actually use it | DOCTRINE_GAP | DAM-000009 | AMENDED |
 | LES-000018 | The real v2 intake chain produces 6 artefacts against doctrine's claimed 24+, leaving 16 of 25 Team 2 personas (64%) with at least one stated input that intake never produces — including Data Architect, every engineering lead, the AI Architect, and Verification. The MTS synthesis pass draws from only 5 sources against a 15-section doctrine spec, with real content for roughly 6 sections and nothing for 9 (API, Integration, Frontend, Backend, Deployment, AI Capability, Test, Proposition). The BUILD chain executes without error only because it deliberately reads just 2 artefacts (MTS, Architecture), not because the gap doesn't exist | DOCTRINE_GAP | DAM-000010, DAM-000011 | AMENDED — FULLY RESOLVED |
 | LES-000019 | A specific str_replace pattern — inserting a new section immediately before an existing header by matching only the header text as old_str — silently dropped that header 4 separate times across this session, always in IMPLEMENTATION_STATUS.md, always requiring a follow-up fix. The mistake is structural (old_str matching only the target line, new_str needing to re-include it verbatim and easy to forget), not coincidental | STRUCTURAL_BUG | DAM-000011 | AMENDED |
+| LES-000020 | A direct founder question ("are you happy with the quality of the personas") surfaced that all 50 personas had passed structural completeness checks earlier this session but had never been checked for CONTENT depth — most AI Reasoning Profiles were generic procedural bullets ("flag CVEs above MEDIUM severity") rather than encoded domain expertise (which CVE characteristics actually matter, what a genuinely insecure auth pattern looks like, etc). Structure and content depth are different claims and were being conflated | DOCTRINE_GAP | DAM-000012 | AMENDED |
 
 See full detail for each in `memory/lessons/LES-NNNNNN.md` (one file per lesson, created as part of this same change).
 
@@ -132,3 +133,4 @@ Continuous — updated as lessons are found. Audited at the start of every signi
 | 1.7.0 | 2026-06-30 | Added LES-000018 — founder-requested direct check of intake exhaustiveness against Team 2's actual stated needs found a major, precisely-quantified gap: 6 of 24+ claimed artefacts produced, 64% of Team 2 personas with unsatisfiable inputs | SeierTech EMS |
 | 1.8.0 | 2026-06-30 | LES-000018 updated to FULLY RESOLVED — DAM-000011 closed the remaining 9 of 16 original gaps, following DAM-000010's partial closure of 7. All 16 original Team 2 persona input gaps now closed | SeierTech EMS |
 | 1.9.0 | 2026-06-30 | Added LES-000019 — a specific str_replace editing pattern dropped the same document header 4 times across this session; logged with concrete, actionable reuse guidance since it's a recognisable structural mistake, not coincidence | SeierTech EMS |
+| 2.0.0 | 2026-06-30 | Added LES-000020 — persona content depth gap, distinct from the earlier structural completeness fix. 20 of 50 personas (10 highest-leverage role-areas, both teams) upgraded with concrete domain-expert detection/judgment criteria | SeierTech EMS |

@@ -141,6 +141,8 @@ Clean — `agents/` has no legacy duplication. Full detail in `agents/README.md`
 
 **Note:** A full structural sense-check was run across all 50 personas on 2026-06-29 — see `PERSONA_SENSE_CHECK_REPORT.md`. Found and fixed an 8-persona depth gap in Team 1 (these 8 had been written at roughly a third the depth of their siblings), fixed 2 folder naming inconsistencies between the teams, and confirmed Team 2's uniformly lighter template is intentional design rather than a defect.
 
+**Note:** A separate content-depth sweep (distinct from structural completeness) was run on 2026-06-30 — see `DAM-000012` / `LES-000020`. Structural completeness does not guarantee content quality; sampling found most AI Reasoning Profiles were generic procedural bullets rather than encoded domain expertise. 10 of 25 role-areas (both teams, 20 files) were upgraded with concrete, falsifiable domain-expert detection/judgment criteria, prioritised by decision-gating significance. The remaining 15 role-areas have not yet been upgraded to this same bar — named explicitly, not silently partial.
+
 | Team | Count | Purpose | Activates On |
 |---|---|---|---|
 | Team 1 — Baseline Establishment Force | 25 | Forensic intake, one-time per platform | MISSION-001 only |
@@ -206,3 +208,4 @@ See `REG-000010` for the live register, `memory/lessons/` for individual lesson 
 | 1.2.0 | 2026-06-29 | Lesson/Doctrine Amendment mechanism built — REG-000010, TPL-000011, OPR-000012 — closing the gap where OPR-000008 instructed lesson capture with no register to receive it. 7 lessons from this build session backfilled and resolved via 3 Doctrine Amendments, including the mechanism's own lesson resolving itself | SeierTech EMS |
 | 1.3.0 | 2026-06-30 | EMS_OPERATING_MODEL.md produced via DAM-000004, in direct response to an external review's primary finding (no single document explains how autonomous engineering work flows end to end). First lessons sourced from an external document rather than internal audit (LES-000008, LES-000009) | SeierTech EMS |
 | 1.4.0 | 2026-06-30 | run_build_chain.py built — first Team 2 forward mission executor (BUILD), executing the binding resequencing guidance from DAM-000004. Found and fixed a real gap in a prior amendment (DAM-000001's GITHUB_OUTPUT fix was script-level only, never got the required job-level outputs: mapping) — logged as LES-000010, resolved via DAM-000005 | SeierTech EMS |
+| 1.5.0 | 2026-06-30 | Persona content depth sweep (DAM-000012) — distinct from the earlier structural completeness fix, this addressed whether persona reasoning instructions encode genuine domain expertise. 10 of 25 role-areas (20 files, both teams) upgraded with concrete detection/judgment criteria | SeierTech EMS |
