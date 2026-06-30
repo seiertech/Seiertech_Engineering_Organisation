@@ -31,6 +31,27 @@ Following an audit identifying that v1 had only 2 grouped persona passes, README
 
 ---
 
+## v3 Update Summary — Brownfield/Greenfield Simulation Exercise
+
+A founder request to "run a simulation for brownfield intake and one for greenfield intake and test" led to building real local fixture repos and running the actual scripts against them (not just unit tests against synthetic fixtures, and not hand-waved walkthroughs) — this surfaced three genuine bugs that would otherwise have shipped silently:
+
+| Bug found | Where | Fix |
+|---|---|---|
+| Route detection regex never matched Flask's actual `@app.route()` decorator syntax — only matched FastAPI-style `@app.get()`/`@app.post()` | `scan_repo.py` (both the `.github/scripts/` and `ems_engine/scan/` copies) | Added the correct Flask pattern plus Django markers; re-ran the scan against the fixture and confirmed detection now works |
+| Readiness gate checker only recognised brownfield evidence files (`SCAN_RESULT.json`, `INTAKE_RUN_LOG.md`) for RG-001/002/004/Standards-Engineer-gate — meaning **a greenfield platform could never reach READY status regardless of how complete its genesis run was** | `check_readiness_gates.py` (both copies) | Extended gate definitions to accept genesis-equivalent evidence (`GENESIS_RUN_LOG.md`, architecture doc as tech-stack evidence). Re-tested both brownfield and greenfield fixtures after the fix — both now converge on the same honest ceiling (only RG-008 blocks). Added a permanent regression test (`test_genesis_origin_platform_can_reach_same_ceiling_as_brownfield`) so this bug class cannot silently return |
+| The issue parser correctly extracted the genesis `brief` field into its JSON output but never wrote it to `GITHUB_OUTPUT` — meaning even once a genesis executor existed, the workflow would have had no way to pass the brief through to it | `issue_parser.py` | Added the missing `brief=` line; tested against both a genesis title and a regression check on intake titles, plus an edge case (brief containing an `=` character) |
+
+**Additionally built during this exercise:** `run_genesis_chain.py` — the first real executor for MISSION-000 (previously genesis issues were correctly detected but the workflow only posted an honest "not yet built" comment, with no executor at all). Same validated pattern as the intake chain: real NIM calls via `json.dumps()`-built payloads, Standards Engineer gating per artefact, the same deterministic gate checker at the end. Wired into the live workflow, replacing the prior honest-decline-only job.
+
+**What was tested and how:**
+- A realistic brownfield fixture repo was built locally (Flask + Postgres app, with deliberately-included governance drift files — `MEMORY.md`, `ERRORS.md`, `.kiro_rules.md` — mirroring exactly the kind of accumulated doctrine the EMS is designed to find and reconcile)
+- `scan_repo.py` was run against it via a real `git clone` (using `file://` to avoid needing network/GitHub access for the test) — not mocked
+- The orchestrator's no-API-key failure path was confirmed clean (clear message, exit code 1, no stack trace, no partial state) for both intake and genesis chains
+- Simulated-but-clearly-labelled intake/genesis artefact sets were used to exercise the gate checker's full range: empty → all-fail, deliberately-incomplete → specific named failures, complete → only the known RG-008 gap blocks
+- The existing 9-test unit suite was re-run after every fix to confirm no regressions; a 10th test was added specifically for the bug found
+
+**What this exercise did NOT do:** make any live NIM API call (no key available in this environment) — so the actual *content quality* of what NIM would produce for either chain remains unverified. It tested the orchestration, evidence-gathering, and gate-checking logic around those calls, which is exactly where the three real bugs were found — none of them were about prompt quality, all three were structural/plumbing bugs that would have affected every run regardless of what NIM returned.
+
 ## What Actually Works Today (v2)
 
 | Component | Status |
@@ -52,7 +73,7 @@ Following an audit identifying that v1 had only 2 grouped persona passes, README
 | Full 25-persona Team 1 sequence | 5 grouped passes now (up from 2), still not 25 individual gated steps. Next increment if more depth is wanted. |
 | .ems/ folder creation in TARGET platform repo | NOT implemented. Requires a separate token with write access to the target repo (e.g. Commander) — `GITHUB_TOKEN` in this workflow only has EMS repo access by default. |
 | Founder Questions mechanism (RG-008) | NOT implemented. Gate checker honestly reports this as N/A rather than silently passing it. |
-| Genesis (MISSION-000) execution | NOT implemented. Workflow detects GENESIS issues and posts an honest "not yet built" comment. |
+| Genesis (MISSION-000) execution | v1 IMPLEMENTED (2026-06-29) — `run_genesis_chain.py`, 3 grouped DESIGN-mode persona passes + MTS synthesis + the same real gate check used for brownfield. No actual GitHub repo created yet for the new platform — writes into the EMS repo's `platforms/[NAME]/` only, same limitation as intake's `.ems/` gap. |
 | Verification / Release loop (OPR-000006, OPR-000007) | NOT implemented as automation. |
 | Handoff Artefact (HAR) auto-generation | NOT implemented. Template exists; nothing populates it automatically yet. |
 | Build Governance Auditor archaeology as automation | The scan now DOES detect governance files (MEMORY.md, ERRORS.md, etc.) and surfaces them in `SCAN_RESULT.json`, but does not yet classify/reconcile them per PER-000025's full doctrine — that classification pass is not yet a dedicated NIM call. |
@@ -96,3 +117,4 @@ Each increment is additive — the v2 chain keeps working while these are built.
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial honest disclosure — created in response to founder audit identifying doctrine/execution gap | SeierTech EMS |
 | 2.0.0 | 2026-06-29 | v2 fixes: real repo scanning, 5 persona passes (up from 2), deterministic readiness gate checker, accurate issue status reporting | SeierTech EMS |
+| 3.0.0 | 2026-06-29 | v3 — brownfield/greenfield simulation exercise. Built real local fixture repos, ran actual scripts (not mocks) against them. Found and fixed 3 real bugs: Flask route detection regex gap, gate checker structurally unable to ever pass a greenfield platform, issue parser not passing the genesis brief through GITHUB_OUTPUT. Built and wired in run_genesis_chain.py — genesis (MISSION-000) now has a real v1 executor, was previously detection-only | SeierTech EMS |

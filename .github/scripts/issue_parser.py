@@ -87,6 +87,11 @@ def main():
             f.write(f"mission_type={result['mission_type']}\n")
             f.write(f"platform_name={result['platform_name']}\n")
             f.write(f"repo_url={result.get('repo_url', '')}\n")
+            # 'brief' is only present for GENESIS missions. Without this line
+            # the workflow's genesis job has no way to receive the brief
+            # text — found and fixed before the genesis job was ever wired
+            # into the live workflow.
+            f.write(f"brief={result.get('brief', '')}\n")
 
     print(json.dumps(result, indent=2))
 

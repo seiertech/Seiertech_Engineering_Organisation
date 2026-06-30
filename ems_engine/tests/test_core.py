@@ -115,5 +115,56 @@ class TestReadinessGatesUnchangedBehaviour(unittest.TestCase):
         self.assertIn("RG-008", result["failing_gates"])  # always N/A currently
 
 
+    def test_genesis_origin_platform_can_reach_same_ceiling_as_brownfield(self):
+        """
+        Regression test for a real bug found during a brownfield/greenfield
+        simulation exercise: the gate checker originally only recognised
+        INTAKE_RUN_LOG.md and SCAN_RESULT.json as evidence for RG-001/002/004,
+        which meant a greenfield (MISSION-000 Genesis) platform could NEVER
+        pass those gates regardless of how complete its genesis run was —
+        genesis has no repo to scan, so SCAN_RESULT.json never exists for it.
+
+        This test builds a genesis-origin fixture (GENESIS_RUN_LOG.md instead
+        of INTAKE_RUN_LOG.md, no SCAN_RESULT.json, architecture doc serving
+        as the tech-stack evidence) and confirms it reaches the same honest
+        ceiling as the brownfield case: only RG-008 (Founder Questions,
+        not yet implemented for either origin) blocks it.
+        """
+        spine_dir = os.path.join(self.tmpdir, "spine")
+        os.makedirs(spine_dir, exist_ok=True)
+        filler = "x" * 300
+
+        for fname in (
+            "USE_CASE_REGISTER.md",
+            "ARCHITECTURE_DOCUMENT.md",
+            "KNOWLEDGE_GRAPH.md",
+            "MASTER_TECHNICAL_SPECIFICATION.md",
+        ):
+            with open(os.path.join(self.tmpdir, fname), "w") as f:
+                f.write(filler)
+
+        with open(os.path.join(spine_dir, "test.md"), "w") as f:
+            f.write("spine content")
+
+        # GENESIS_RUN_LOG.md instead of INTAKE_RUN_LOG.md — no SCAN_RESULT.json
+        # at all, since genesis has no repo to scan, by design.
+        with open(os.path.join(self.tmpdir, "GENESIS_RUN_LOG.md"), "w") as f:
+            f.write('"pass": true\n"pass": true\n' + filler)
+
+        result = check_readiness(self.tmpdir, "TEST_GENESIS", reduced_scope=True)
+
+        self.assertNotIn("RG-001", result["failing_gates"])
+        self.assertNotIn("RG-002", result["failing_gates"])
+        self.assertNotIn("RG-003", result["failing_gates"])
+        self.assertNotIn("RG-004", result["failing_gates"])
+        self.assertNotIn("RG-005", result["failing_gates"])
+        self.assertNotIn("RG-006", result["failing_gates"])
+        self.assertNotIn("RG-007", result["failing_gates"])
+        self.assertNotIn("RG-009", result["failing_gates"])
+        self.assertNotIn("STANDARDS_ENGINEER_GATE", result["failing_gates"])
+        self.assertIn("RG-008", result["failing_gates"])  # always N/A currently, both origins
+        self.assertEqual(len(result["failing_gates"]), 1)  # ONLY RG-008 should block genesis, same as brownfield
+
+
 if __name__ == "__main__":
     unittest.main()

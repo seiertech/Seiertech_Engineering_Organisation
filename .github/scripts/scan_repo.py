@@ -67,9 +67,12 @@ TEST_PATTERNS = [
 ]
 
 ROUTE_HINT_PATTERNS = [
-    re.compile(r"@(app|router)\.(get|post|put|delete|patch)\(", re.IGNORECASE),  # FastAPI/Flask
+    re.compile(r"@(app|router)\.(get|post|put|delete|patch)\(", re.IGNORECASE),  # FastAPI
+    re.compile(r"@(app|blueprint|bp)\.route\(", re.IGNORECASE),  # Flask — found missing entirely during brownfield simulation test; @app.route() is Flask's actual decorator, not .get()/.post()
     re.compile(r"router\.(get|post|put|delete|patch)\(", re.IGNORECASE),  # Express
     re.compile(r"@(Get|Post|Put|Delete|Patch)Mapping", re.IGNORECASE),  # Spring
+    re.compile(r"path\(['\"].*['\"],\s*\w+\.as_view\(\)", re.IGNORECASE),  # Django class-based views
+    re.compile(r"urlpatterns\s*=", re.IGNORECASE),  # Django urls.py file marker
 ]
 
 MAX_FILE_READ_BYTES = 50_000

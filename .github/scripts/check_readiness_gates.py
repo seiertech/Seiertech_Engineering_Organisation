@@ -17,10 +17,10 @@ import os
 import sys
 
 REQUIRED_ARTEFACTS = {
-    "RG-001": ("Platform Record / metadata", ["PLATFORM_RECORD.md", "INTAKE_RUN_LOG.md"]),
-    "RG-002": ("Repo scan completed", ["SCAN_RESULT.json"]),
+    "RG-001": ("Platform Record / metadata", ["PLATFORM_RECORD.md", "INTAKE_RUN_LOG.md", "GENESIS_RUN_LOG.md"]),
+    "RG-002": ("Origin process completed (repo scan for brownfield, brief-driven design for greenfield)", ["SCAN_RESULT.json", "GENESIS_RUN_LOG.md"]),
     "RG-003": ("Data model extracted or created", ["DATA_MODEL.md", "ARCHITECTURE_DOCUMENT.md"]),
-    "RG-004": ("Tech stack identified", ["SCAN_RESULT.json"]),
+    "RG-004": ("Tech stack identified (from scan for brownfield, designed for greenfield)", ["SCAN_RESULT.json", "ARCHITECTURE_DOCUMENT.md"]),
     "RG-005": ("Use case register populated", ["USE_CASE_REGISTER.md"]),
     "RG-006": ("Knowledge graph created or addressed", ["KNOWLEDGE_GRAPH.md"]),
     "RG-007": ("Persona spine files present", ["spine"]),  # directory check
@@ -48,15 +48,24 @@ def check_artefact_exists_and_nonempty(platform_dir, filename):
 
 
 def check_standards_engineer_log(platform_dir):
-    """RG checks should also confirm Standards Engineer actually ran and passed."""
-    log_path = os.path.join(platform_dir, "INTAKE_RUN_LOG.md")
-    if not os.path.exists(log_path):
-        return False, []
-    with open(log_path, "r", encoding="utf-8") as f:
-        content = f.read()
-    fail_count = content.count('"pass": false')
-    pass_count = content.count('"pass": true')
-    return fail_count == 0 and pass_count > 0, {"pass_count": pass_count, "fail_count": fail_count}
+    """RG checks should also confirm Standards Engineer actually ran and passed.
+
+    Checks both possible log filenames — INTAKE_RUN_LOG.md (brownfield,
+    MISSION-001) and GENESIS_RUN_LOG.md (greenfield, MISSION-000). This was
+    a real bug found during a brownfield/greenfield simulation test: this
+    function originally only checked INTAKE_RUN_LOG.md, which meant every
+    greenfield platform would permanently fail this gate regardless of how
+    complete or correct its genesis run was.
+    """
+    for filename in ("INTAKE_RUN_LOG.md", "GENESIS_RUN_LOG.md"):
+        log_path = os.path.join(platform_dir, filename)
+        if os.path.exists(log_path):
+            with open(log_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            fail_count = content.count('"pass": false')
+            pass_count = content.count('"pass": true')
+            return fail_count == 0 and pass_count > 0, {"pass_count": pass_count, "fail_count": fail_count, "source_file": filename}
+    return False, {"pass_count": 0, "fail_count": 0, "source_file": None}
 
 
 def main():

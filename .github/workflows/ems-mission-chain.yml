@@ -1,14 +1,26 @@
 name: EMS Mission Chain
 
 # HONEST STATUS (see IMPLEMENTATION_STATUS.md for full ledger):
-# v2 — intake chain now does: real shallow clone + file walk (scan_repo.py),
-# 5 grouped persona passes (up from 2), MTS synthesis, and a REAL
+# v2 — intake chain (brownfield, MISSION-001) does: real shallow clone + file
+# walk (scan_repo.py), 5 grouped persona passes, MTS synthesis, and a REAL
 # deterministic readiness gate check (check_readiness_gates.py) — not an
 # LLM self-assessment. Sets DRAFT/READY status based on actual gate results.
 #
-# STILL NOT DONE: full 25-persona individual depth, .ems/ creation in the
-# TARGET platform repo (needs separate cross-repo write token), Founder
-# Questions mechanism (RG-008), and all Team 2 / forward mission executors.
+# v1 — genesis chain (greenfield, MISSION-000) added after a brownfield/
+# greenfield simulation exercise found and fixed two real bugs: (1) the
+# gate checker only recognised brownfield evidence files, which meant a
+# greenfield platform could never reach READY regardless of completeness;
+# (2) the issue parser extracted the genesis 'brief' field but never wrote
+# it to GITHUB_OUTPUT, so the workflow had no way to receive it. Both fixed
+# before this job went live. Genesis does 3 grouped DESIGN-mode persona
+# passes (fewer than intake's 5, since there's no repo to scan) + MTS
+# synthesis + the same real gate check used for brownfield.
+#
+# STILL NOT DONE: full 25-persona individual depth for either chain, .ems/
+# creation in the TARGET platform repo (brownfield) or actual GitHub repo
+# creation for the new platform (greenfield) — both need additional token
+# scope, Founder Questions mechanism (RG-008, both origins), and all Team 2
+# forward mission executors (BUILD/REHAB/STRATEGIC/etc).
 
 on:
   issues:
@@ -169,7 +181,12 @@ jobs:
       - name: Checkout EMS repo
         uses: actions/checkout@v4
 
-      - name: Comment — genesis not yet operationalised
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Label issue as genesis mission
         uses: actions/github-script@v7
         with:
           script: |
@@ -177,11 +194,82 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              labels: ['mission:genesis', 'status:not-yet-implemented']
+              labels: ['mission:genesis', 'status:in-progress', 'chain:v1']
             })
+
+      - name: Run Team 2 genesis chain (v1)
+        id: genesis
+        env:
+          NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
+        run: |
+          python3 .github/scripts/run_genesis_chain.py \
+            --platform-name "${{ needs.detect-mission.outputs.platform_name }}" \
+            --brief "${{ needs.detect-mission.outputs.brief }}" \
+            --issue-number "${{ needs.detect-mission.outputs.issue_number }}" \
+            2>&1 | tee genesis_run_output.log
+
+      - name: Read gate check result
+        id: gates
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+        run: |
+          GATE_FILE="platforms/${PLATFORM_NAME}/READINESS_GATE_RESULT.json"
+          if [ -f "$GATE_FILE" ]; then
+            STATUS=$(python3 -c "import json; print(json.load(open('$GATE_FILE')).get('overall_status','UNKNOWN'))")
+            FAILING=$(python3 -c "import json; print(','.join(json.load(open('$GATE_FILE')).get('failing_gates',[])))")
+          else
+            STATUS="UNKNOWN — gate check did not run"
+            FAILING="N/A"
+          fi
+          echo "status=${STATUS}" >> $GITHUB_OUTPUT
+          echo "failing=${FAILING}" >> $GITHUB_OUTPUT
+
+      - name: Commit artefacts
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+          GATE_STATUS: ${{ steps.gates.outputs.status }}
+        run: |
+          git config user.name "SeierTech EMS"
+          git config user.email "ems@seiertech.com"
+          git add "platforms/${PLATFORM_NAME}" || true
+          git commit -m "EMS: v1 genesis run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — gate status: ${GATE_STATUS}" || echo "Nothing to commit"
+          git push
+
+      - name: Comment honest status on issue
+        uses: actions/github-script@v7
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          GATE_STATUS: ${{ steps.gates.outputs.status }}
+          FAILING_GATES: ${{ steps.gates.outputs.failing }}
+        with:
+          script: |
+            const platformName = process.env.PLATFORM_NAME;
+            const gateStatus = process.env.GATE_STATUS;
+            const failingGates = process.env.FAILING_GATES;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              body: "MISSION-000 Genesis chain is designed (OPR-000011, MSN-000000, Team 2 personas) but the executable GitHub Actions job for genesis is **not yet built** — only the intake chain (v2) has a working executor.\n\nThis issue is correctly classified as GENESIS but no automated chain ran. Genesis execution is the next workflow to build.\n\n*SeierTech EMS — honest status reporting*"
+              body: `## EMS v1 Genesis Chain — Result\n\n**Platform:** ${platformName}\n**Origin:** MISSION-000 Platform Genesis (greenfield — designed forward from brief, no prior codebase)\n**Readiness Status:** ${gateStatus}\n**Failing/incomplete gates:** ${failingGates}\n\nThis ran the v1 genesis chain: 3 grouped DESIGN-mode persona passes, MTS synthesis, and the same real deterministic readiness gate check used for brownfield intake. See \`platforms/${platformName}/GENESIS_RUN_LOG.md\` and \`READINESS_GATE_RESULT.json\` for full detail.\n\nKnown gaps (RG-008 Founder Questions, no actual GitHub repo created yet, full 25-persona depth) are tracked in IMPLEMENTATION_STATUS.md.\n\n*SeierTech EMS — Loop Engineering*`
             })
+
+      - name: Update status label
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+                name: 'status:in-progress'
+              });
+            } catch (e) { console.log('Label removal skipped:', e.message); }
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+              labels: ['status:draft-needs-review']
+            });
