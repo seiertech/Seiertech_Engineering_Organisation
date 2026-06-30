@@ -6,7 +6,7 @@
 | Artefact Class | Register |
 | Title | Lesson Register |
 | Status | ACTIVE |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Classification | OPERATIONAL |
 | Owner | Documentation and Knowledge Curator (PER-000018 / T2-PER-000018) |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -83,6 +83,7 @@ CAPTURED → SUPERSEDED (a later, more complete lesson replaces this one)
 | LES-000007 | Lessons captured in commit messages and session audit docs are not load-bearing — no register existed to make them reusable doctrine | DOCTRINE_GAP | DAM-000003 | AMENDED |
 | LES-000008 | No single authoritative document defines how autonomous engineering work actually flows end to end — the operating model exists only as the sum of 12 separate Operations documents, inferred by reading all of them | DOCTRINE_GAP | DAM-000004 | AMENDED |
 | LES-000009 | The system has produced substantially more governance documentation than executed work — doctrine depth and execution throughput are out of balance, consistent with the "best in class scaffold, not yet best in class loop" verdict given prior to this review | DOCTRINE_GAP | DAM-000004 | AMENDED |
+| LES-000010 | GITHUB_OUTPUT writes a value for the current job's own steps only — it does not automatically become visible to other jobs without an explicit job-level `outputs:` mapping. DAM-000001 fixed issue_parser.py's GITHUB_OUTPUT write for `brief` but never added the corresponding job-level mapping, so the genesis job's `${{ needs.detect-mission.outputs.brief }}` reference had been resolving to an empty string the entire time, undetected because no live run had ever exercised it | STRUCTURAL_BUG | DAM-000005 | AMENDED |
 
 See full detail for each in `memory/lessons/LES-NNNNNN.md` (one file per lesson, created as part of this same change).
 
@@ -114,3 +115,4 @@ Continuous — updated as lessons are found. Audited at the start of every signi
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation — closes the doctrine gap where OPR-000008 instructed lesson capture but no conformant register existed to receive it. Backfilled 7 lessons from this session's actual findings | SeierTech EMS |
 | 1.1.0 | 2026-06-30 | Added LES-000008/009 — first lessons sourced from an external review document rather than an internal audit, proving the mechanism accepts founder-supplied findings on equal footing with self-discovered ones | SeierTech EMS |
+| 1.2.0 | 2026-06-30 | Added LES-000010 — found while building the BUILD chain executor, confirming a prior amendment (DAM-000001) had been incomplete: GITHUB_OUTPUT writes alone do not expose a value to other jobs without an explicit job-level mapping, so the genesis chain's brief had never actually been working despite the prior fix | SeierTech EMS |

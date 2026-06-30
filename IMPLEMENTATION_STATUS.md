@@ -52,6 +52,18 @@ A founder request to "run a simulation for brownfield intake and one for greenfi
 
 **What this exercise did NOT do:** make any live NIM API call (no key available in this environment) — so the actual *content quality* of what NIM would produce for either chain remains unverified. It tested the orchestration, evidence-gathering, and gate-checking logic around those calls, which is exactly where the three real bugs were found — none of them were about prompt quality, all three were structural/plumbing bugs that would have affected every run regardless of what NIM returned.
 
+## v4 Update Summary — First Team 2 Loop-Closing Executor
+
+Triggered directly by `EMS_OPERATING_MODEL.md` Section 6's binding resequencing guidance (itself produced in response to an external review's findings, logged as LES-000008/009, resolved via DAM-000004): build a real Team 2 forward mission executor before further governance expansion.
+
+**Built:** `run_build_chain.py` — the first executor for OPR-000003 through OPR-000008. Confirms platform readiness (tolerating only the known RG-008 gap), then runs Proposal → TDA → EDP → Verification → Release → Knowledge Capture as 5 NIM-gated passes. TDA is enforced as a genuine halt — a REJECTED or REVISION_REQUIRED verdict stops the chain at that point, matching doctrine exactly rather than soft-warning past it. A hard script-level check prevents a FAIL verification result from ever producing a RELEASE decision, regardless of what the model itself returns — doctrine enforced in code, not just in the prompt.
+
+**Found while building it:** a real bug in a prior amendment. `DAM-000001` had fixed `issue_parser.py` to write `brief=` to `GITHUB_OUTPUT` for genesis missions and marked the fix verified — but verification had only checked the script in isolation. GitHub Actions requires a separate, explicit job-level `outputs:` mapping for a value to flow between jobs, and that mapping was never added. The genesis chain's brief had therefore never actually worked in a live run, undetected because no live run had ever exercised it. Logged as LES-000010, fixed via DAM-000005 (this same amendment) alongside the new BUILD job, applying the same fix pattern correctly to `instruction` from the start.
+
+**Design basis:** NVIDIA NIM is assumed wired and working — this work deliberately did not touch the actual API integration, per explicit founder direction ("leave NVIDIA out but design as if it's in"). Every design decision with no prior doctrine precedent is recorded inline in the script's own comments, not left implicit.
+
+---
+
 ## What Actually Works Today (v2)
 
 | Component | Status |
@@ -77,7 +89,7 @@ A founder request to "run a simulation for brownfield intake and one for greenfi
 | Verification / Release loop (OPR-000006, OPR-000007) | NOT implemented as automation. |
 | Handoff Artefact (HAR) auto-generation | NOT implemented. Template exists; nothing populates it automatically yet. |
 | Build Governance Auditor archaeology as automation | The scan now DOES detect governance files (MEMORY.md, ERRORS.md, etc.) and surfaces them in `SCAN_RESULT.json`, but does not yet classify/reconcile them per PER-000025's full doctrine — that classification pass is not yet a dedicated NIM call. |
-| Team 2 forward mission chains (BUILD/REHAB/STRATEGIC/etc) | NOT implemented. No GitHub Actions job exists for any Team 2 mission type yet. |
+| Team 2 forward mission chains (BUILD/REHAB/STRATEGIC/etc) | BUILD v1 IMPLEMENTED (2026-06-30) — `run_build_chain.py`, 5 NIM-gated passes (Proposal, TDA, EDP, Verification, Release), TDA enforced as a real halt point, hard script-level safety check preventing FAIL-verification-to-RELEASE. No actual Git branch/builder execution consumes the EDP yet. REHAB/STRATEGIC/AGENTIC_INSERTION/SPEC/PROPOSAL still have no executor. |
 | kiro-sync/ generation | NOT implemented. |
 
 ---
@@ -118,3 +130,4 @@ Each increment is additive — the v2 chain keeps working while these are built.
 | 1.0.0 | 2026-06-29 | Initial honest disclosure — created in response to founder audit identifying doctrine/execution gap | SeierTech EMS |
 | 2.0.0 | 2026-06-29 | v2 fixes: real repo scanning, 5 persona passes (up from 2), deterministic readiness gate checker, accurate issue status reporting | SeierTech EMS |
 | 3.0.0 | 2026-06-29 | v3 — brownfield/greenfield simulation exercise. Built real local fixture repos, ran actual scripts (not mocks) against them. Found and fixed 3 real bugs: Flask route detection regex gap, gate checker structurally unable to ever pass a greenfield platform, issue parser not passing the genesis brief through GITHUB_OUTPUT. Built and wired in run_genesis_chain.py — genesis (MISSION-000) now has a real v1 executor, was previously detection-only | SeierTech EMS |
+| 4.0.0 | 2026-06-30 | v4 — first Team 2 loop-closing executor. Built run_build_chain.py (BUILD missions, OPR-000003 through OPR-000008, TDA enforced as a real halt, hard FAIL-verification-to-RELEASE prevention in code). Found and fixed a real gap in a prior amendment: v3's brief fix was script-level only and never got the required GitHub Actions job-level outputs: mapping, so it had never actually worked end to end — logged as LES-000010, fixed here alongside applying the same pattern correctly for the new instruction field | SeierTech EMS |

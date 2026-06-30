@@ -35,6 +35,8 @@ jobs:
       mission_type: ${{ steps.parse.outputs.mission_type }}
       platform_name: ${{ steps.parse.outputs.platform_name }}
       repo_url: ${{ steps.parse.outputs.repo_url }}
+      brief: ${{ steps.parse.outputs.brief }}
+      instruction: ${{ steps.parse.outputs.instruction }}
       issue_number: ${{ github.event.issue.number }}
 
     steps:
@@ -252,6 +254,106 @@ jobs:
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
               body: `## EMS v1 Genesis Chain — Result\n\n**Platform:** ${platformName}\n**Origin:** MISSION-000 Platform Genesis (greenfield — designed forward from brief, no prior codebase)\n**Readiness Status:** ${gateStatus}\n**Failing/incomplete gates:** ${failingGates}\n\nThis ran the v1 genesis chain: 3 grouped DESIGN-mode persona passes, MTS synthesis, and the same real deterministic readiness gate check used for brownfield intake. See \`platforms/${platformName}/GENESIS_RUN_LOG.md\` and \`READINESS_GATE_RESULT.json\` for full detail.\n\nKnown gaps (RG-008 Founder Questions, no actual GitHub repo created yet, full 25-persona depth) are tracked in IMPLEMENTATION_STATUS.md.\n\n*SeierTech EMS — Loop Engineering*`
+            })
+
+      - name: Update status label
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+                name: 'status:in-progress'
+              });
+            } catch (e) { console.log('Label removal skipped:', e.message); }
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+              labels: ['status:draft-needs-review']
+            });
+
+  execute-build:
+    needs: detect-mission
+    if: needs.detect-mission.outputs.mission_type == 'BUILD'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout EMS repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Label issue as build mission
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+              labels: ['mission:build', 'status:in-progress', 'chain:v1']
+            })
+
+      - name: Run Team 2 BUILD chain (v1)
+        id: build
+        env:
+          NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
+        run: |
+          python3 .github/scripts/run_build_chain.py \
+            --platform-name "${{ needs.detect-mission.outputs.platform_name }}" \
+            --instruction "${{ needs.detect-mission.outputs.instruction }}" \
+            --issue-number "${{ needs.detect-mission.outputs.issue_number }}" \
+            2>&1 | tee build_run_output.log
+
+      - name: Read build result
+        id: result
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+        run: |
+          LOG_FILE="platforms/${PLATFORM_NAME}/BUILD_RUN_LOG_${ISSUE_NUMBER}.md"
+          if [ -f "$LOG_FILE" ]; then
+            STATUS=$(grep -m1 "Final Status" "$LOG_FILE" | sed 's/.*| //;s/ |//')
+          else
+            STATUS="UNKNOWN — run log not produced"
+          fi
+          echo "status=${STATUS}" >> $GITHUB_OUTPUT
+
+      - name: Commit artefacts
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+          BUILD_STATUS: ${{ steps.result.outputs.status }}
+        run: |
+          git config user.name "SeierTech EMS"
+          git config user.email "ems@seiertech.com"
+          git add "platforms/${PLATFORM_NAME}" "memory/missions" || true
+          git commit -m "EMS: v1 BUILD run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — status: ${BUILD_STATUS}" || echo "Nothing to commit"
+          git push
+
+      - name: Comment honest status on issue
+        uses: actions/github-script@v7
+        env:
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          BUILD_STATUS: ${{ steps.result.outputs.status }}
+          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+        with:
+          script: |
+            const platformName = process.env.PLATFORM_NAME;
+            const buildStatus = process.env.BUILD_STATUS;
+            const issueNumber = process.env.ISSUE_NUMBER;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ needs.detect-mission.outputs.issue_number }},
+              body: `## EMS v1 BUILD Chain — Result\n\n**Platform:** ${platformName}\n**Final Status:** ${buildStatus}\n\nThis ran the first Team 2 forward mission executor — Proposal, Technical Design Authority, Engineering Delivery Package, Verification, and Release Scorecard, each gated by a real Standards Engineer call. See \`platforms/${platformName}/BUILD_RUN_LOG_${issueNumber}.md\` for full detail.\n\nA TDA verdict of REJECTED or REVISION_REQUIRED halts the chain at that point — this is doctrine working correctly, not a script failure.\n\nNo actual code changes were produced — the Engineering Delivery Package is generated but nothing yet executes it (no Git branch, no builder). See IMPLEMENTATION_STATUS.md and EMS_OPERATING_MODEL.md.\n\n*SeierTech EMS — Loop Engineering*`
             })
 
       - name: Update status label

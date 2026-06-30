@@ -82,7 +82,7 @@ Mission issued (BUILD / REHAB / STRATEGIC / AGENTIC_INSERTION / SPEC / PROPOSAL)
   → OPR-000009 Baseline Operation (if a baseline-worthy milestone was reached)
 ```
 
-**Honest status note, not theory:** Section 2.1 and 2.2 are executed by real scripts today (`run_intake_chain.py` v2, `run_genesis_chain.py` v1), validated in a brownfield/greenfield simulation exercise that found and fixed three real bugs. Section 2.3 exists fully as governed doctrine but has **no executor yet** — no BUILD, REHAB, or other Team 2 forward mission has ever run end to end against a real platform. This is precisely the imbalance LES-000009 names. See Section 6.
+**Honest status note, not theory:** Section 2.1 and 2.2 are executed by real scripts today (`run_intake_chain.py` v2, `run_genesis_chain.py` v1), validated in a brownfield/greenfield simulation exercise that found and fixed three real bugs. Section 2.3's BUILD path now also has a real v1 executor (`run_build_chain.py`, see `DAM-000005`) — TDA, EDP, Verification, and Release are genuinely executed and gated, not just described. REHAB, STRATEGIC, AGENTIC_INSERTION, SPEC, and PROPOSAL still have no executor. No actual Git branch or builder (Kiro) execution yet consumes a produced EDP for any mission type — the loop reaches a real Release decision but does not yet produce real code changes. This is a narrower, more precise version of the imbalance LES-000009 named; see Section 6, updated accordingly.
 
 ---
 
@@ -129,13 +129,15 @@ A platform reaching READY status (the end of intake or genesis) is a milestone, 
 
 ---
 
-## 6. The Honest Imbalance — LES-000009, Stated Plainly
+## 6. The Honest Imbalance — LES-000009, Updated 2026-06-30
 
-The EMS currently has: 10 Standards, 10 Authorities, 10 Registers, 50 fully-specified personas across two teams, 12 Operations, a working provider abstraction with one validated provider — and zero closed Team 2 forward missions. Every real test performed against this system has exercised intake or genesis (the entry ramp), never a BUILD, REHAB, or other forward mission (the rest of the loop). The system can establish a baseline. It has never yet built forward from one.
+When this section was first written, the EMS had 10 Standards, 10 Authorities, 10 Registers, 50 personas, 12 Operations, and zero closed Team 2 forward missions — every real test had exercised only intake or genesis. That imbalance is now narrower, not closed: `DAM-000005` produced `run_build_chain.py`, the first real BUILD executor, exercised against a real fixture platform up to the live-call boundary (network access to the actual NIM API was not available to verify content quality, only the orchestration logic around it — see `DAM-000005` Section 5).
 
-This is not a hidden problem — it was independently named by an external review and by a prior session verdict before this document existed. Stating it here, inside the operating model itself, is what makes Loop Engineering's own premise apply to itself: a finding that doesn't change what happens next is not a finding.
+What remains true: no actual code change has ever been produced by this system. The loop now reaches a real, gated Release decision — but nothing yet consumes the Engineering Delivery Package to act on it. REHAB, STRATEGIC, AGENTIC_INSERTION, SPEC, and PROPOSAL mission types still have no executor at all. The system can establish a baseline and now reach a release decision against one. It has never produced a line of shipped code.
 
-**What follows from this, concretely:** the next major build effort against this EMS should be a real Team 2 BUILD mission executor — TDA, EDP, Verification, Release, Knowledge Capture, run end to end against a READY platform — before any further governance breadth is added. This is the resequencing LES-000009 calls for, and it is binding guidance, not a suggestion: per `OPR-000012`, this lesson is AMENDED, not CAPTURED-and-dropped, and the amendment's content is this statement.
+This continues to be stated plainly rather than left implicit, per Loop Engineering's own premise that a finding which doesn't change what happens next is not a finding.
+
+**What follows from this, concretely:** the next priority is closing the gap between "Release decision reached" and "code actually changed" — either building the Git branch/builder consumption of the EDP, or making a real live NIM call against an actual Commander mission to validate content quality (not just orchestration), whichever the founder judges higher value. This is recorded as binding guidance, not a suggestion, per the same `OPR-000012` discipline applied to the prior version of this section.
 
 ---
 
@@ -162,3 +164,4 @@ This is not a new Operation, Authority, or Standard, and it does not supersede a
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-30 | Initial creation — produced by DAM-000004 in direct response to an external review identifying the absence of this document as the primary architectural finding | SeierTech EMS |
+| 1.1.0 | 2026-06-30 | Updated Section 2.3 and Section 6 following DAM-000005 — BUILD now has a real v1 executor, narrowing but not closing the imbalance; new binding guidance recorded pointing at the gap between Release decision and actual shipped code | SeierTech EMS |

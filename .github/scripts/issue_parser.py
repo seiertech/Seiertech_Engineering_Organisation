@@ -48,6 +48,21 @@ def parse_deterministic(title, body):
             "brief": genesis_match.group(2).strip(),
         }
 
+    # BUILD pattern: "Build for [NAME] — [instruction]"
+    # Mirrors the GENESIS pattern's shape deliberately, for consistency.
+    build_match = re.search(
+        r"build\s+for\s+([A-Za-z0-9_\-]+)\s*[—\-]\s*(.+)",
+        text,
+        re.IGNORECASE,
+    )
+    if build_match:
+        return {
+            "mission_type": "BUILD",
+            "platform_name": build_match.group(1).strip().upper().replace("-", "_"),
+            "repo_url": "",
+            "instruction": build_match.group(2).strip(),
+        }
+
     return None
 
 
@@ -90,8 +105,12 @@ def main():
             # 'brief' is only present for GENESIS missions. Without this line
             # the workflow's genesis job has no way to receive the brief
             # text — found and fixed before the genesis job was ever wired
-            # into the live workflow.
+            # into the live workflow. See LES-000003.
             f.write(f"brief={result.get('brief', '')}\n")
+            # 'instruction' is only present for BUILD missions. Written
+            # immediately alongside brief this time — LES-000003 is the
+            # explicit reuse guidance being applied here, not rediscovered.
+            f.write(f"instruction={result.get('instruction', '')}\n")
 
     print(json.dumps(result, indent=2))
 
