@@ -136,6 +136,8 @@ Clean — `agents/` has no legacy duplication. Full detail in `agents/README.md`
 
 **Note:** PER-000016 / T2-PER-000016 was renamed from "QA and Governance Director" to "Verification and Governance Director" on 2026-06-29, resolving a confirmed STD-000004 prohibited-vocabulary violation (see `EMS_VOCABULARY_AUDIT.md`). Folder names, persona titles, and all ~21 cross-references across both teams, three authorities, the relationship graph, both missions, and four operations were updated consistently.
 
+**Note:** A full structural sense-check was run across all 50 personas on 2026-06-29 — see `PERSONA_SENSE_CHECK_REPORT.md`. Found and fixed an 8-persona depth gap in Team 1 (these 8 had been written at roughly a third the depth of their siblings), fixed 2 folder naming inconsistencies between the teams, and confirmed Team 2's uniformly lighter template is intentional design rather than a defect.
+
 | Team | Count | Purpose | Activates On |
 |---|---|---|---|
 | Team 1 — Baseline Establishment Force | 25 | Forensic intake, one-time per platform | MISSION-001 only |
