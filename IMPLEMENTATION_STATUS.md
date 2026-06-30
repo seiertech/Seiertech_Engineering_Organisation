@@ -64,6 +64,22 @@ Triggered directly by `EMS_OPERATING_MODEL.md` Section 6's binding resequencing 
 
 ---
 
+## v5 Update Summary — Cross-Repo Delivery (The Second Fundamental)
+
+Direct response to the founder's question "how do we solve [the thing that changes code] and [cross-repo write capability] now" — the two fundamentals named as highest-leverage besides NVIDIA integration itself.
+
+**Built:** `deliver_to_target_repo.py` — clones the target platform repo using a new, separate `TARGET_REPO_TOKEN` credential (the EMS repo's own `GITHUB_TOKEN` cannot write elsewhere, a platform limit not a doctrine choice), creates a branch, commits the Engineering Delivery Package to a fixed path (`.ems/missions/MSN-{issue}_EDP.md`), and opens a real Pull Request. Wired into `execute-build`, firing only on a RELEASE decision, failing gracefully (not blocking the rest of the job) if `TARGET_REPO_TOKEN` isn't configured yet.
+
+**Honest scope, stated as plainly here as everywhere else this session:** this delivers a structured proposal, not applied code. The EDP today is markdown describing intended changes, not a diff — there is no patch for any script to apply yet. The PR and the committed file both say this explicitly. The gap between "Release decision reached" and "code actually shipped" is now narrower (a real PR exists in the target repo) but not closed.
+
+**Found while building it:** another real doctrine gap, same class as LES-000010 — `run_intake_chain.py` receives the target repo URL directly but never persisted it anywhere for later missions to read. Fixed by writing a one-line marker file during intake. Logged as LES-000011.
+
+**Tested:** real `git` clone/branch/commit/push mechanics exercised against a local fixture repo (not mocked) — confirmed the committed content lands at the correct path with correct framing. The GitHub-API-specific PR creation step correctly degrades gracefully when tested against a `file://` fixture that has no real owner/repo to parse — the honest limit of what's verifiable without a real GitHub repo and token.
+
+---
+
+
+
 ## What Actually Works Today (v2)
 
 | Component | Status |
@@ -110,14 +126,16 @@ You will **still not** get `.ems/` created in the Commander repo itself, a Found
 
 ---
 
-## Recommended Next Build Increments (in priority order)
+## Recommended Next Build Increments (in priority order, updated 2026-06-30)
 
-1. **Cross-repo write token** — add a `TARGET_REPO_TOKEN` secret scoped to Commander, wire it into a new `.ems/` creation step
-2. **Founder Questions mechanism** — when scan evidence is insufficient for a claim, accumulate structured questions and post them as an issue comment, track resolution
-3. **Expand to remaining ~20 persona passes** — same pattern as the 5 already built, incremental and additive
-4. **Build Governance Auditor classification pass** — take the governance files `scan_repo.py` already finds and run the FOUND/CONFLICTING/ABSORBED/ORPHANED classification as a dedicated gated pass
-5. **Build the Genesis executor** — mirror the intake pattern for MISSION-000
-6. **Build one Team 2 mission executor** — start with BUILD, prove TDA → EDP → Verification → Release end to end
+1. **Provide `TARGET_REPO_TOKEN`** — the one remaining piece a human must do for cross-repo delivery (`DAM-000006`) to actually run against a real platform. Fine-grained PAT scoped to the target repo, `contents:write` + `pull-requests:write`. See `COMMANDER_ONBOARDING_CHECKLIST.md`.
+2. **Close the proposal-to-applied-code gap** — `DAM-000006` delivers the EDP as a committed proposal and PR, not applied code. The next increment is either wiring an actual builder (Kiro) to read the committed EDP and write real code, or making a real live NIM call to validate the EDP's content quality is good enough to act on in the first place.
+3. **Founder Questions mechanism** — when scan or build evidence is insufficient for a claim, accumulate structured questions and post them as an issue comment, track resolution. Still the one gate (RG-008) blocking every platform from full certification, currently worked around rather than fixed.
+4. **REHAB mission executor** — same grouped-pass pattern as BUILD, targeting the Technical Debt Register a completed intake already produces.
+5. **Expand to remaining ~20 persona passes** — same pattern as the 5 already built per chain, incremental and additive.
+6. **Build Governance Auditor classification pass** — take the governance files `scan_repo.py` already finds and run the FOUND/CONFLICTING/ABSORBED/ORPHANED classification as a dedicated gated pass.
+
+**Done, no longer pending:** Genesis executor (`DAM-000001`), one Team 2 mission executor — BUILD (`DAM-000005`), cross-repo write mechanics (`DAM-000006`, scoped as committed-proposal delivery, not applied code).
 
 Each increment is additive — the v2 chain keeps working while these are built.
 
@@ -131,3 +149,4 @@ Each increment is additive — the v2 chain keeps working while these are built.
 | 2.0.0 | 2026-06-29 | v2 fixes: real repo scanning, 5 persona passes (up from 2), deterministic readiness gate checker, accurate issue status reporting | SeierTech EMS |
 | 3.0.0 | 2026-06-29 | v3 — brownfield/greenfield simulation exercise. Built real local fixture repos, ran actual scripts (not mocks) against them. Found and fixed 3 real bugs: Flask route detection regex gap, gate checker structurally unable to ever pass a greenfield platform, issue parser not passing the genesis brief through GITHUB_OUTPUT. Built and wired in run_genesis_chain.py — genesis (MISSION-000) now has a real v1 executor, was previously detection-only | SeierTech EMS |
 | 4.0.0 | 2026-06-30 | v4 — first Team 2 loop-closing executor. Built run_build_chain.py (BUILD missions, OPR-000003 through OPR-000008, TDA enforced as a real halt, hard FAIL-verification-to-RELEASE prevention in code). Found and fixed a real gap in a prior amendment: v3's brief fix was script-level only and never got the required GitHub Actions job-level outputs: mapping, so it had never actually worked end to end — logged as LES-000010, fixed here alongside applying the same pattern correctly for the new instruction field | SeierTech EMS |
+| 5.0.0 | 2026-06-30 | v5 — cross-repo delivery. Built deliver_to_target_repo.py, wired into execute-build on RELEASE, requires a new TARGET_REPO_TOKEN secret (not yet provided). Delivers the EDP as a committed proposal + real PR, explicitly NOT applied code — that gap is named precisely as the next increment. Found and fixed a related doctrine gap: the target repo URL was never persisted anywhere for forward missions to read after intake — logged as LES-000011, fixed by writing PLATFORM_REPO_URL.txt during intake | SeierTech EMS |

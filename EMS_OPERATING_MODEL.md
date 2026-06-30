@@ -129,15 +129,15 @@ A platform reaching READY status (the end of intake or genesis) is a milestone, 
 
 ---
 
-## 6. The Honest Imbalance — LES-000009, Updated 2026-06-30
+## 6. The Honest Imbalance — LES-000009, Updated 2026-06-30 (Second Pass)
 
-When this section was first written, the EMS had 10 Standards, 10 Authorities, 10 Registers, 50 personas, 12 Operations, and zero closed Team 2 forward missions — every real test had exercised only intake or genesis. That imbalance is now narrower, not closed: `DAM-000005` produced `run_build_chain.py`, the first real BUILD executor, exercised against a real fixture platform up to the live-call boundary (network access to the actual NIM API was not available to verify content quality, only the orchestration logic around it — see `DAM-000005` Section 5).
+When this section was first written, the EMS had zero closed Team 2 forward missions and no path across the repo boundary. Two amendments since have narrowed that considerably: `DAM-000005` produced the first real BUILD executor (Proposal through Release, gated, tested against a fixture up to the live-call boundary). `DAM-000006` produced cross-repo delivery — a RELEASE decision now results in a real branch and Pull Request inside the actual target platform repository, tested end to end against a local fixture using genuine `git` operations.
 
-What remains true: no actual code change has ever been produced by this system. The loop now reaches a real, gated Release decision — but nothing yet consumes the Engineering Delivery Package to act on it. REHAB, STRATEGIC, AGENTIC_INSERTION, SPEC, and PROPOSAL mission types still have no executor at all. The system can establish a baseline and now reach a release decision against one. It has never produced a line of shipped code.
+What remains true, stated precisely rather than left vague: the Pull Request `DAM-000006` produces contains a *proposal* — the Engineering Delivery Package committed as a markdown document — not applied code. No source file in any target repository has ever been modified by this system. The gap is no longer "nothing happens in the target repo" — something real and visible now happens. The gap is now specifically: nothing yet *reads* that committed proposal and writes working code against it. Additionally, REHAB, STRATEGIC, AGENTIC_INSERTION, SPEC, and PROPOSAL mission types still have no executor, and the Founder Questions mechanism (RG-008) is still absent system-wide.
 
-This continues to be stated plainly rather than left implicit, per Loop Engineering's own premise that a finding which doesn't change what happens next is not a finding.
+This continues to be stated plainly per Loop Engineering's own premise that a finding which doesn't change what happens next is not a finding.
 
-**What follows from this, concretely:** the next priority is closing the gap between "Release decision reached" and "code actually changed" — either building the Git branch/builder consumption of the EDP, or making a real live NIM call against an actual Commander mission to validate content quality (not just orchestration), whichever the founder judges higher value. This is recorded as binding guidance, not a suggestion, per the same `OPR-000012` discipline applied to the prior version of this section.
+**What follows from this, concretely:** the next priority is one of two things, founder's call — (a) wire an actual builder (Kiro or equivalent) to read the committed EDP from a delivered PR and produce real code changes, closing the proposal-to-applied-code gap precisely, or (b) make a real live NIM call against an actual platform to validate that the content these chains produce is good enough to be worth building against in the first place, since every test to date has validated orchestration logic, never content quality. Recorded as binding guidance per the same `OPR-000012` discipline as before.
 
 ---
 
@@ -165,3 +165,4 @@ This is not a new Operation, Authority, or Standard, and it does not supersede a
 |---|---|---|---|
 | 1.0.0 | 2026-06-30 | Initial creation — produced by DAM-000004 in direct response to an external review identifying the absence of this document as the primary architectural finding | SeierTech EMS |
 | 1.1.0 | 2026-06-30 | Updated Section 2.3 and Section 6 following DAM-000005 — BUILD now has a real v1 executor, narrowing but not closing the imbalance; new binding guidance recorded pointing at the gap between Release decision and actual shipped code | SeierTech EMS |
+| 1.2.0 | 2026-06-30 | Updated Section 6 following DAM-000006 — cross-repo delivery built, a RELEASE decision now produces a real PR in the target repo; gap re-stated precisely as proposal-to-applied-code, not "nothing happens" | SeierTech EMS |

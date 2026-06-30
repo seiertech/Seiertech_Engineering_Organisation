@@ -209,6 +209,15 @@ def main():
               f"overwrite it. Platform isolation confirmed — directory is name-scoped "
               f"and will not affect any other platform's directory.", file=sys.stderr)
 
+    # Persist the target repo URL for later forward missions (e.g. BUILD via
+    # deliver_to_target_repo.py) to read. Intake is the only point in the
+    # lifecycle that is handed this URL directly — without writing it here,
+    # every subsequent mission would have no way to know where to deliver
+    # to. No prior doctrine specified where this should live; introduced
+    # here as a single-line marker file, easy to inspect or correct by hand.
+    with open(f"{platform_dir}/PLATFORM_REPO_URL.txt", "w") as f:
+        f.write(args.repo_url.strip() + "\n")
+
     constitution = read_file_safe("authorities/AUTH-001_ENGINEERING_CONSTITUTION.md")
     vocab = read_file_safe("standards/STD-000004_ENGINEERING_VOCABULARY_STANDARD.md")
 

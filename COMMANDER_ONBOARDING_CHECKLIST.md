@@ -39,14 +39,18 @@ Across this build session, several prerequisites for running intake against Comm
 
 ---
 
-## 3. Cross-Repo Write Access (only needed once you're past the first test run)
+## 3. Cross-Repo Write Access — `TARGET_REPO_TOKEN`
 
-This is **not required for the first intake run** — the current v2 chain writes all output into the EMS repo (`platforms/COMMANDER_C2/`), not into Commander itself. It becomes required later for:
+**Status update (2026-06-30):** this is now built and live-wired (`deliver_to_target_repo.py`, `DAM-000006`), not just anticipated. It is **still not required for a first intake run** — intake only writes inside the EMS repo. It becomes required the first time a BUILD mission reaches a real RELEASE decision and the system attempts to deliver a proposal into Commander.
 
-- [ ] `.ems/` folder creation **inside the Commander repo** (OPR-000010 Platform Baseline Sync) — needs a token with **write** access to Commander specifically
-- [ ] Kiro-sync file delivery into Commander
+- [ ] Generate a **fine-grained Personal Access Token** scoped specifically to the Commander repository
+- [ ] Required scopes: `contents: write`, `pull-requests: write`
+- [ ] Add it to the **EMS repo's** GitHub Actions secrets as `TARGET_REPO_TOKEN` (same location as `NIM_API_KEY` — Settings → Secrets and variables → Actions)
+- [ ] Do **not** reuse the EMS repo's own token here — it cannot write to Commander, that's a GitHub platform limit, and `TARGET_REPO_TOKEN` is deliberately a separate credential
 
-Flagged here so it's not forgotten, but **do not block the first test run on this** — it's a later step.
+**What this token enables once present:** a successful BUILD mission's RELEASE decision triggers a real branch, commit, and Pull Request against Commander, containing the Engineering Delivery Package. **This is a committed proposal, not applied code** — no source file in Commander is modified by this step. See `DAM-000006` for full honest scope.
+
+**What happens if this token is missing:** the BUILD mission still completes normally — `deliver_to_target_repo.py` fails cleanly with a clear message and does not block the rest of the BUILD chain (`continue-on-error: true` in the workflow). You will simply not get a PR in Commander until this token is added.
 
 ---
 

@@ -326,6 +326,26 @@ jobs:
           fi
           echo "status=${STATUS}" >> $GITHUB_OUTPUT
 
+      - name: Deliver to target repo (only if RELEASE)
+        # Cross-repo delivery only makes sense if the mission actually
+        # reached a RELEASE decision — HOLD/REJECT/halted-at-TDA correctly
+        # have nothing to deliver. TARGET_REPO_TOKEN may not be configured
+        # yet (it is a separate credential the founder provides, same as
+        # NIM_API_KEY) — this step fails cleanly and does not block the
+        # rest of the job if it's missing, since cross-repo delivery is an
+        # additive capability, not a precondition for BUILD itself to run.
+        if: steps.result.outputs.status == 'RELEASE'
+        continue-on-error: true
+        env:
+          TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+          PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
+          ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+        run: |
+          python3 .github/scripts/deliver_to_target_repo.py \
+            --platform-name "${PLATFORM_NAME}" \
+            --issue-number "${ISSUE_NUMBER}" \
+            2>&1 | tee delivery_output.log
+
       - name: Commit artefacts
         env:
           PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
