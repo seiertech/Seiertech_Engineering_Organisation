@@ -35,7 +35,7 @@ No work enters through any other channel. There is deliberately no separate tick
 
 ## 2. How Autonomous Work Progresses
 
-Progression differs by origin and is governed by which team is active — this is the most structurally important distinction in the whole model, and it is the answer the review's question most directly needs.
+Progression differs by origin and is governed by which team is active — this is the most structurally important distinction in the whole model, and it is the answer the review's question most directly needs. All 50 personas across both teams, and the rule that they never operate simultaneously on the same platform, are governed by `AUTH-004` Workforce Authority.
 
 ### 2.1 Brownfield (existing platform)
 
@@ -47,7 +47,8 @@ MISSION-001 issued
     Security Posture, Technical Debt Register, Knowledge Graph
   → Each pass gated by a real Standards Engineer NIM call (PASS/FAIL, not simulated)
   → Master Technical Specification synthesised
-  → OPR-000010 Platform Baseline Sync Operation
+  → OPR-000010 Platform Baseline Sync Operation (Build Governance Auditor classifies all found
+    governance artefacts into REG-000007 Build Governance Register)
   → Handoff Artefact (HAR-NNNNNN) produced — the formal baton
   → Team 1 stands down
   → Team 2 (25 forward-build personas) takes over, permanently
@@ -70,16 +71,18 @@ MISSION-000 issued
 
 ```
 Mission issued (BUILD / REHAB / STRATEGIC / AGENTIC_INSERTION / SPEC / PROPOSAL)
-  → OPR-000003 Engineering Proposal Operation
+  → OPR-000003 Engineering Proposal Operation (writes REG-000003 Proposal Register)
   → OPR-000004 Technical Design Authority (Chief Architect chairs — APPROVED/REJECTED/REVISION_REQUIRED)
-  → OPR-000005 Engineering Delivery Operation (Engineering Delivery Package produced, builder executes)
+  → OPR-000005 Engineering Delivery Operation (Engineering Delivery Package produced, builder executes;
+    writes REG-000004 Delivery Package Register)
   → OPR-000006 Verification Operation (QA & Governance Director — now Verification & Governance
     Director, per LES-000005 — chairs; real test execution against acceptance criteria, not
     self-assessment)
   → OPR-000007 Release Operation (Scorecard, RELEASE/HOLD/REJECT decision)
   → OPR-000008 Knowledge Capture Operation (memory written back, REG-000010 checked for lessons,
     OPR-000012 triggered if a doctrine amendment is warranted)
-  → OPR-000009 Baseline Operation (if a baseline-worthy milestone was reached)
+  → OPR-000009 Baseline Operation (if a baseline-worthy milestone was reached; writes
+    REG-000005 Foundation Baseline Register)
 ```
 
 **Honest status note, not theory:** Section 2.1 and 2.2 are executed by real scripts today (`run_intake_chain.py` v2, `run_genesis_chain.py` v1), validated in a brownfield/greenfield simulation exercise that found and fixed three real bugs. Section 2.3's BUILD path now also has a real v1 executor (`run_build_chain.py`, see `DAM-000005`) — TDA, EDP, Verification, and Release are genuinely executed and gated, not just described. REHAB, STRATEGIC, AGENTIC_INSERTION, SPEC, and PROPOSAL still have no executor. No actual Git branch or builder (Kiro) execution yet consumes a produced EDP for any mission type — the loop reaches a real Release decision but does not yet produce real code changes. This is a narrower, more precise version of the imbalance LES-000009 named; see Section 6, updated accordingly.
@@ -94,8 +97,9 @@ Decision authority is distributed by domain, not centralised in a single role, a
 |---|---|---|
 | Architectural approval (TDA) | Chief Architect, `OPR-000004` | `REG-000009` Decision Register |
 | Security veto (CRITICAL findings) | Security Architect, `AUTH-007` | `REG-000008` Risk Register — absolute, cannot be overridden by Release Manager or Executive Director |
-| Release decision (RELEASE/HOLD/REJECT) | Release Manager, `OPR-000007` | `REG-000006` Release Register |
-| Standards conformance (PASS/FAIL) | Standards Engineer, `STD-000001` | Per-artefact, logged in mission run logs |
+| Data classification (PII/SENSITIVE/INTERNAL/PUBLIC) | Data Architect, `AUTH-006` | Data Model artefacts per platform |
+| Release decision (RELEASE/HOLD/REJECT) | Release Manager, `OPR-000007`, governed by `AUTH-009` | `REG-000006` Release Register |
+| Standards conformance (PASS/FAIL) | Standards Engineer, `STD-000001`, governed by `AUTH-005` | Per-artefact, logged in mission run logs |
 | Constitutional alignment / final escalation | Executive Director, `AUTH-001` | — |
 | Doctrine change (does a finding become permanent doctrine) | Whichever domain persona owns the affected artefact, via `OPR-000012` | `REG-000010` Lesson Register + `DAM-NNNNNN` |
 
@@ -152,10 +156,11 @@ This is not a new Operation, Authority, or Standard, and it does not supersede a
 | Relationship | Artefact ID | Title |
 |---|---|---|
 | Produced By | DAM-000004 | Doctrine Amendment |
+| Updated By | DAM-000005, DAM-000006 | Subsequent amendments |
 | Governed By | AUTH-001 | Engineering Constitution |
 | Synthesises | OPR-000001 through OPR-000012 | All current Operations |
-| Cites | AUTH-001 through AUTH-010 | All current Authorities |
-| Cites | REG-000001 through REG-000010 | All current Registers |
+| Cites | AUTH-001, 002, 003, 004, 005, 006, 007, 008, 009, 010 | All 10 current Authorities |
+| Cites | REG-000001, 002, 003, 004, 005, 006, 007, 008, 009, 010 | All 10 current Registers |
 
 ---
 
@@ -166,3 +171,4 @@ This is not a new Operation, Authority, or Standard, and it does not supersede a
 | 1.0.0 | 2026-06-30 | Initial creation — produced by DAM-000004 in direct response to an external review identifying the absence of this document as the primary architectural finding | SeierTech EMS |
 | 1.1.0 | 2026-06-30 | Updated Section 2.3 and Section 6 following DAM-000005 — BUILD now has a real v1 executor, narrowing but not closing the imbalance; new binding guidance recorded pointing at the gap between Release decision and actual shipped code | SeierTech EMS |
 | 1.2.0 | 2026-06-30 | Updated Section 6 following DAM-000006 — cross-repo delivery built, a RELEASE decision now produces a real PR in the target repo; gap re-stated precisely as proposal-to-applied-code, not "nothing happens" | SeierTech EMS |
+| 1.3.0 | 2026-06-30 | DAM-000007 — corrected a false self-citation in Section 8 (claimed all 10 authorities/registers cited, actually only 6 of each); genuinely wove in the missing 4+4 at their substantively correct points in Sections 2 and 4, found during a full doctrine sweep | SeierTech EMS |

@@ -7,7 +7,7 @@
 | Title | Documentation and Knowledge Curator |
 | Team | Team 2 — Forward Build Force |
 | Status | ACTIVE |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Classification | FOUNDATIONAL |
 | Owner | SeierTech Engineering Organisation |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -64,6 +64,7 @@ The Handoff Artefact provides Team 1 context and confidence levels.
 ## 6. Activation
 
 All missions — Knowledge Capture after every one (OPR-000008)
+Initiates OPR-000012 Doctrine Amendment when a mission surfaces a genuine lesson, per AUTH-010 KNW-006
 
 ---
 
@@ -84,3 +85,4 @@ All missions — Knowledge Capture after every one (OPR-000008)
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation — Team 2 Forward Build Force | SeierTech EMS |
+| 1.1.0 | 2026-06-30 | Added OPR-000012 Doctrine Amendment to Activation — full-repo sweep found this persona, whose entire job is lesson curation, never referenced the operation built specifically to govern that activity | SeierTech EMS |

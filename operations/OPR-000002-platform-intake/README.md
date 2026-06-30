@@ -6,7 +6,7 @@
 | Artefact Class | Operation |
 | Title | Platform Intake Operation |
 | Status | ACTIVE |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Classification | FOUNDATIONAL |
 | Owner | Mission Control Director |
 | Approval Authority | AUTH-002 Platform Governance Authority |
@@ -45,7 +45,8 @@ GitHub Issue containing: "Complete intake for [PLATFORM_NAME] — repo: [REPO_UR
 | 1.3 | Label GitHub Issue: mission:intake, status:in-progress | Mission Control Director | — |
 | 1.4 | Create platform directory: platforms/[PLATFORM_NAME]/ | Mission Control Director | — |
 | 1.5 | Create spine directory: platforms/[PLATFORM_NAME]/spine/ | Mission Control Director | — |
-| 1.6 | Clone/read target repo | NIM Chain | Repo accessible |
+| 1.6 | Persist target repo URL to platforms/[PLATFORM_NAME]/PLATFORM_REPO_URL.txt — the only mechanism later forward missions (e.g. BUILD via deliver_to_target_repo.py) have to know where to deliver | Mission Control Director | — |
+| 1.7 | Clone/read target repo | NIM Chain | Repo accessible |
 
 ### Phase 2 — Repo Scan
 | Step | Action | Persona | Gate |
@@ -202,3 +203,4 @@ If any Layer 1 artefact does not exist in the platform repo, the chain MUST crea
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation — EF-1.5 | SeierTech EMS |
+| 1.1.0 | 2026-06-30 | Added Phase 1 Step 1.6 — persist target repo URL to PLATFORM_REPO_URL.txt (renumbered the clone step to 1.7) — full-repo sweep found run_intake_chain.py's DAM-000006 fix had never been reflected back into this operation's own step table | SeierTech EMS |

@@ -29,39 +29,14 @@ import json
 import os
 import subprocess
 import sys
-import urllib.request
-import urllib.error
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-
-def call_nim(api_key, model, system_content, user_content, max_tokens=4000):
-    url = "https://integrate.api.nvidia.com/v1/chat/completions"
-    payload = {
-        "model": model,
-        "max_tokens": max_tokens,
-        "messages": [
-            {"role": "system", "content": system_content},
-            {"role": "user", "content": user_content},
-        ],
-    }
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=data,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=180) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
-            return result["choices"][0]["message"]["content"]
-    except urllib.error.HTTPError as e:
-        print(f"NIM HTTP error {e.code}: {e.read().decode('utf-8', errors='replace')}", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"NIM call failed: {e}", file=sys.stderr)
-        sys.exit(1)
+sys.path.insert(0, SCRIPT_DIR)
+from call_nim import call_nim  # noqa: E402 — see LES-000014: this was previously
+# duplicated identically in three places (this file, run_genesis_chain.py,
+# run_build_chain.py). Consolidated to import the single canonical
+# implementation per DAM-000007, so a future fix here can never silently
+# fail to propagate to the other two chains.
 
 
 def read_file_safe(path):

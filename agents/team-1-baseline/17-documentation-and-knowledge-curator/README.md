@@ -6,7 +6,7 @@
 | Artefact Class | Persona |
 | Title | Documentation and Knowledge Curator |
 | Status | ACTIVE |
-| Version | 3.0.0 |
+| Version | 3.1.0 |
 | Classification | FOUNDATIONAL |
 | Owner | SeierTech Engineering Organisation |
 | Approval Authority | AUTH-001 |
@@ -82,6 +82,7 @@ STD-000004 vocabulary compliance across all documentation
 
 MISSION-001 Platform Intake (Layer 1 — runs last)
 OPR-000008 Knowledge Capture (every mission)
+OPR-000012 Doctrine Amendment (initiates when a mission surfaces a genuine lesson, per AUTH-010 KNW-006)
 
 ---
 
@@ -155,3 +156,4 @@ Layer 1 persona — runs last. Curates all outputs into memory layer. Produces D
 | 1.0.0 | 2026-06-01 | Initial stub | SeierTech EMS |
 | 2.0.0 | 2026-06-29 | Full EF-1.4 rewrite with genesis mode | SeierTech EMS |
 | 3.0.0 | 2026-06-29 | Brought to full depth — added Purpose, Authority, Decision Rights, Inputs, Required Evidence, Registers Read/Updated, Standards Governed, Operations Participated, Deliverables, Success Measures, KPIs, Escalation Rules (sense-check identified this and 7 sibling personas at roughly a third the depth of properly-built siblings) | SeierTech EMS |
+| 3.1.0 | 2026-06-30 | Added OPR-000012 Doctrine Amendment to Operations Participated — full-repo sweep found this persona, whose entire job is lesson curation, never referenced the operation built specifically to govern that activity | SeierTech EMS |

@@ -37,7 +37,7 @@ def read_files(file_list_str):
     return "\n\n".join(parts)
 
 
-def call_nim(api_key, model, system_content, user_content, max_tokens):
+def call_nim(api_key, model, system_content, user_content, max_tokens=4000):
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
 
     payload = {

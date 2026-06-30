@@ -80,12 +80,27 @@ Direct response to the founder's question "how do we solve [the thing that chang
 
 
 
+## v6 Update Summary — Full Doctrine Sweep
+
+Founder-requested sweep "right to left and back again" across all active doctrine — read forward in build-dependency order, then backward verifying every cross-reference resolves. Version/changelog consistency, ID uniqueness, and reference resolution all checked programmatically across authorities, standards, registers, operations, templates, missions, and all 50 personas — all passed cleanly.
+
+**Four real findings, all resolved via `DAM-000007`:**
+
+1. `EMS_OPERATING_MODEL.md`'s own relationships table claimed to cite all 10 authorities and all 10 registers — it actually cited 6 of each. Fixed by genuinely weaving the missing 4+4 into substantive content at the points they belong, not by padding.
+2. Both Documentation and Knowledge Curator personas (the persona whose entire job is lesson curation) never referenced `OPR-000012`, because they were written before that operation existed and were never retrofitted.
+3. `OPR-000002`'s own step table had never been updated to reflect `DAM-000006`'s `PLATFORM_REPO_URL.txt` mechanism, despite that operation being the actual point in the lifecycle where it's written.
+4. `call_nim.py` existed as a standalone file but was imported by nothing — all three chain scripts (`run_intake_chain.py`, `run_genesis_chain.py`, `run_build_chain.py`) carried an identical inline copy instead. Consolidated to a single import. Caught and fixed a genuine `IndentationError` introduced mid-consolidation before it shipped, by validating immediately after every edit rather than batching.
+
+---
+
+
+
 ## What Actually Works Today (v2)
 
 | Component | Status |
 |---|---|
 | Issue parsing (INTAKE / GENESIS detection) | WORKING — deterministic regex, tested against 3 real format cases |
-| NIM API call mechanism | FIXED — Python `json.dumps()` construction, immune to content-based quoting failures |
+| NIM API call mechanism | FIXED — Python `json.dumps()` construction, immune to content-based quoting failures. As of DAM-000007, consolidated to a single canonical implementation (`call_nim.py`), imported by all three chain scripts rather than triplicated |
 | Real repo scanning | WORKING — shallow clone, file walk, schema/manifest/governance/test file detection and content extraction |
 | Intake chain — v2 (5 passes + MTS) | WORKING — 5 grouped persona passes + synthesis, each gated by a real Standards Engineer NIM call |
 | Readiness gate check | WORKING — deterministic, tested to correctly FAIL on empty/missing artefacts and correctly PASS on populated ones |
@@ -150,3 +165,4 @@ Each increment is additive — the v2 chain keeps working while these are built.
 | 3.0.0 | 2026-06-29 | v3 — brownfield/greenfield simulation exercise. Built real local fixture repos, ran actual scripts (not mocks) against them. Found and fixed 3 real bugs: Flask route detection regex gap, gate checker structurally unable to ever pass a greenfield platform, issue parser not passing the genesis brief through GITHUB_OUTPUT. Built and wired in run_genesis_chain.py — genesis (MISSION-000) now has a real v1 executor, was previously detection-only | SeierTech EMS |
 | 4.0.0 | 2026-06-30 | v4 — first Team 2 loop-closing executor. Built run_build_chain.py (BUILD missions, OPR-000003 through OPR-000008, TDA enforced as a real halt, hard FAIL-verification-to-RELEASE prevention in code). Found and fixed a real gap in a prior amendment: v3's brief fix was script-level only and never got the required GitHub Actions job-level outputs: mapping, so it had never actually worked end to end — logged as LES-000010, fixed here alongside applying the same pattern correctly for the new instruction field | SeierTech EMS |
 | 5.0.0 | 2026-06-30 | v5 — cross-repo delivery. Built deliver_to_target_repo.py, wired into execute-build on RELEASE, requires a new TARGET_REPO_TOKEN secret (not yet provided). Delivers the EDP as a committed proposal + real PR, explicitly NOT applied code — that gap is named precisely as the next increment. Found and fixed a related doctrine gap: the target repo URL was never persisted anywhere for forward missions to read after intake — logged as LES-000011, fixed by writing PLATFORM_REPO_URL.txt during intake | SeierTech EMS |
+| 6.0.0 | 2026-06-30 | v6 — full doctrine sweep (DAM-000007). Found and fixed a false self-citation in EMS_OPERATING_MODEL.md, two stale persona references to a since-built operation, an un-updated step table in OPR-000002, and triplicated dead-letter code (call_nim.py never imported, copied identically into three chain scripts). Consolidated to a single import; caught and fixed an IndentationError introduced mid-consolidation before it shipped | SeierTech EMS |

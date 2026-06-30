@@ -6,7 +6,7 @@
 | Artefact Class | Register |
 | Title | Lesson Register |
 | Status | ACTIVE |
-| Version | 1.3.0 |
+| Version | 1.4.0 |
 | Classification | OPERATIONAL |
 | Owner | Documentation and Knowledge Curator (PER-000018 / T2-PER-000018) |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -85,6 +85,9 @@ CAPTURED → SUPERSEDED (a later, more complete lesson replaces this one)
 | LES-000009 | The system has produced substantially more governance documentation than executed work — doctrine depth and execution throughput are out of balance, consistent with the "best in class scaffold, not yet best in class loop" verdict given prior to this review | DOCTRINE_GAP | DAM-000004 | AMENDED |
 | LES-000010 | GITHUB_OUTPUT writes a value for the current job's own steps only — it does not automatically become visible to other jobs without an explicit job-level `outputs:` mapping. DAM-000001 fixed issue_parser.py's GITHUB_OUTPUT write for `brief` but never added the corresponding job-level mapping, so the genesis job's `${{ needs.detect-mission.outputs.brief }}` reference had been resolving to an empty string the entire time, undetected because no live run had ever exercised it | STRUCTURAL_BUG | DAM-000005 | AMENDED |
 | LES-000011 | No persona pass or operation ever specified where a platform's target repo URL should be persisted for forward missions to read — MISSION-001 intake receives the URL directly but never wrote it anywhere, meaning every later BUILD/REHAB/etc mission against that platform would have had no way to know where to deliver to | DOCTRINE_GAP | DAM-000006 | AMENDED |
+| LES-000012 | EMS_OPERATING_MODEL.md's own Section 8 Relationships table claimed to cite "AUTH-001 through AUTH-010" and "REG-000001 through REG-000010" but actually only referenced 6 of 10 authorities and 6 of 10 registers — a false self-claim caught only by a full left-to-right/right-to-left sweep checking every cited ID against what actually exists | DOCTRINE_GAP | DAM-000007 | AMENDED |
+| LES-000013 | The Documentation and Knowledge Curator personas (both teams) — whose entire job is lesson curation — never referenced OPR-000012 Doctrine Amendment, because the persona files were written before that operation existed and were never retrofitted when it was built | DOCTRINE_GAP | DAM-000007 | AMENDED |
+| LES-000014 | call_nim.py exists as a standalone provider wrapper but every real chain script (run_intake_chain.py, run_genesis_chain.py, run_build_chain.py) defines its own identical inline copy of the same function rather than importing it — currently undrifted by luck, not by structure, and a latent risk that a future edit to one copy silently fails to propagate to the others | STRUCTURAL_BUG | DAM-000007 | AMENDED |
 
 See full detail for each in `memory/lessons/LES-NNNNNN.md` (one file per lesson, created as part of this same change).
 
@@ -118,3 +121,4 @@ Continuous — updated as lessons are found. Audited at the start of every signi
 | 1.1.0 | 2026-06-30 | Added LES-000008/009 — first lessons sourced from an external review document rather than an internal audit, proving the mechanism accepts founder-supplied findings on equal footing with self-discovered ones | SeierTech EMS |
 | 1.2.0 | 2026-06-30 | Added LES-000010 — found while building the BUILD chain executor, confirming a prior amendment (DAM-000001) had been incomplete: GITHUB_OUTPUT writes alone do not expose a value to other jobs without an explicit job-level mapping, so the genesis chain's brief had never actually been working despite the prior fix | SeierTech EMS |
 | 1.3.0 | 2026-06-30 | Added LES-000011 — found while solving the cross-repo delivery fundamental: no prior doctrine specified where a platform's target repo URL persists for later forward missions to read, despite intake being handed that URL directly | SeierTech EMS |
+| 1.4.0 | 2026-06-30 | Added LES-000012/013/014 — found during a full left-to-right/right-to-left sweep across all doctrine: EMS_OPERATING_MODEL.md's own relationships table made a false citation claim, the Documentation Curator personas never referenced OPR-000012 despite owning lesson curation, and call_nim.py is dead/duplicated code | SeierTech EMS |
