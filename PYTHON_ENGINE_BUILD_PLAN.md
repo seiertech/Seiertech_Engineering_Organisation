@@ -39,31 +39,58 @@ Two things converged in the same session:
 
 ## The Build Plan — 6 Steps, In Dependency Order
 
-### Step 1 — Package skeleton (mechanical, low risk)
+### Step 1 — Package skeleton (mechanical, low risk) — ✅ DONE
 ```
 ems_engine/
 ├── __init__.py
-├── cli.py
 ├── providers/
-├── rag/
+├── rag/          (placeholder — see Step 4 notes below)
 ├── scan/
 ├── gates/
-└── personas/
+├── personas/     (placeholder — see Step 5 notes below)
+└── tests/
 ```
-Pure restructure of existing working scripts into an installable package. No new logic.
+Built and validated. All modules import cleanly (`python3 -c "from ems_engine... import ..."` succeeds).
 
-### Step 2 — Provider abstraction (real new code — the multi-model capability)
+### Step 2 — Provider abstraction (real new code — the multi-model capability) — ✅ DONE
 ```
-providers/base.py       # abstract call(system, user, max_tokens) -> str
-providers/nim.py        # existing logic, moved in
-providers/claude.py     # new — Anthropic API adapter
-providers/openai.py     # new — stub, same interface shape
-providers/router.py     # selects provider per persona/platform from config
+providers/base.py       # AIProvider ABC, ProviderResponse, ProviderError
+providers/nim.py        # relocated from call_nim.py logic, same behaviour
+providers/claude.py     # new — Anthropic SDK adapter
+providers/openai.py     # new — OpenAI SDK adapter, STUB STATUS (see below)
+providers/router.py     # selects provider per explicit arg > platform config > env var > fallback (nim)
 ```
-This is the actual deliverable for "use different AI models." Provider selection should be config-driven (per platform or per persona), not hardcoded.
 
-### Step 3 — Move scan + gates logic into the package
-Mechanical relocation of `scan_repo.py` and `check_readiness_gates.py` logic. Already tested — no behaviour change, just placement.
+**Validated (9 unit tests, all passing, in `ems_engine/tests/test_core.py`):**
+- Explicit provider argument wins over all other selection methods
+- Fallback default is `nim` when nothing else specified
+- `EMS_DEFAULT_PROVIDER` env var respected when no explicit/platform override
+- Explicit argument beats env var (correct precedence order)
+- Unknown provider name raises `ProviderError` clearly — does not silently do nothing
+- Unconfigured provider (no API key) raises `ProviderError` clearly — does **not** silently fall back to a different provider, which would be worse than a loud failure
+- All three providers (`nim`, `claude`, `openai`) confirmed registered
+
+**Honest caveat — NOT validated:** no live API call has been made to ANY provider through this new code yet (no API keys available in this build environment). `NIMProvider` reuses logic from `call_nim.py` which WAS validated live in earlier sessions, so it's lower-risk. `ClaudeProvider` and `OpenAIProvider` are written to the documented SDK shapes but have zero live-call confirmation — **treat as unverified until a real call succeeds.**
+
+Per-platform provider override mechanism built: `platforms/[NAME]/PROVIDER_CONFIG.json` with a `{"provider": "claude"}` shape, read by the router if present. Not yet used anywhere — no such file exists yet for Commander or any platform.
+
+### Step 3 — Move scan + gates logic into the package — ✅ DONE
+- `ems_engine/scan/scanner.py` — relocated from `.github/scripts/scan_repo.py`. Original CLI behaviour preserved exactly (the standalone script still works unmodified); added an importable `scan_repository(repo_url, github_token)` function for the persona executor to use later.
+- `ems_engine/gates/checker.py` — relocated from `.github/scripts/check_readiness_gates.py`. Core logic extracted into an importable `check_readiness(platform_dir, platform_name, reduced_scope)` function, with `main()` now calling it rather than duplicating the logic.
+
+**Validated:** Re-ran the exact same empty-dir and populated-dir fixture tests used to validate the original CLI version against the new importable function — **identical results** (empty dir: BLOCKED, 10 failing gates; populated dir: passes RG-001/005/006/007/009, correctly still flags RG-008 as N/A). Confirms relocation was behaviour-preserving, not a silent regression. These are now permanent tests in `ems_engine/tests/test_core.py`, not one-off manual checks.
+
+**Important: the original `.github/scripts/*.py` files were left completely untouched.** The existing GitHub Actions workflow (`ems-mission-chain.yml`) still calls them directly and is confirmed still valid (YAML parses, scripts still compile). Nothing about the live/working chain changed — the package is a parallel, additive structure, not yet wired into the workflow. That wiring is Step 6.
+
+`requirements.txt` added at repo root — documents that NIM/scan/gates need no extra dependencies (stdlib only, though `scan` requires the `git` CLI to be on PATH), while `anthropic` and `openai` packages are needed only if those providers are actually selected.
+
+---
+
+## ⏸️ Stopped Here — Steps 4 and 5 Require Founder Input Before Proceeding
+
+Steps 1-3 above were completed without supervision because they were mechanical (restructuring) or had a single well-understood correct interface (provider abstraction pattern). Steps 4 (Chroma RAG) and 5 (persona executor) both involve real architectural decisions — collection structure, chunking strategy, concurrency/dependency graph correctness — that should be confirmed before building, per the original plan. Placeholder `__init__.py` files exist in `ems_engine/rag/` and `ems_engine/personas/` explaining exactly this and what's blocked on what.
+
+
 
 ### Step 4 — Chroma RAG layer (new architecture)
 ```
@@ -138,9 +165,14 @@ Revisit when running 3+ platforms or hitting genuine throughput limits — not b
 
 ## Immediate Next Action On Return
 
-Start at Step 1 (package skeleton) — confirmed as the next step before this session paused. Proceed in order through Step 6. Do not skip the Step 4 standalone-retrieval proof before coupling RAG into the persona executor in Step 5.
+**Steps 1, 2, and 3 are complete** (package skeleton, provider abstraction, scan+gates relocation) — built and validated without supervision while paused, per the agreed boundary (mechanical work + well-understood interface patterns only). See the "✅ DONE" sections above for exactly what was built and what was/wasn't validated.
 
-Confirm the real Commander repo URL and its visibility (public/private) before any live test run — this was flagged as unresolved (an earlier stated URL was incorrect and was not used).
+**Next decision needed from founder before Step 4 starts:** confirm the RAG collection structure (per-platform namespacing — recommended in this plan — vs a single shared collection) and chunking strategy before any Chroma code is written. See `ems_engine/rag/__init__.py` for the specific open questions.
+
+Also still outstanding from before, unrelated to the Python engine work:
+- Confirm the real Commander repo URL and its visibility (public/private) before any live test run
+- A live API call has never succeeded through any of the new provider adapters — first real test should confirm at least one provider end-to-end before building further on top of the abstraction
+- Step 6 (wiring `ems_engine` into the GitHub Actions workflow, replacing direct calls to `.github/scripts/*.py`) has NOT been done — the original scripts are still what the live workflow runs today
 
 ---
 
@@ -149,3 +181,4 @@ Confirm the real Commander repo URL and its visibility (public/private) before a
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial build plan — banked at end of session for continuation | SeierTech EMS |
+| 1.1.0 | 2026-06-29 | Steps 1-3 completed in background (package skeleton, provider abstraction with 9 passing unit tests, scan+gates relocation confirmed behaviour-identical to validated originals). Stopped at Step 4 boundary per agreed scope — RAG/persona executor require founder decisions before building. | SeierTech EMS |

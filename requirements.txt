@@ -1,0 +1,17 @@
+# EMS Engine requirements
+#
+# Core (no extra deps required — uses stdlib urllib for NIM):
+#   - ems_engine.providers.nim     -> stdlib only
+#   - ems_engine.scan              -> stdlib only (git CLI must be available on PATH)
+#   - ems_engine.gates             -> stdlib only
+#
+# Optional, only required if the corresponding provider is selected:
+#   - ems_engine.providers.claude  -> requires anthropic
+#   - ems_engine.providers.openai  -> requires openai
+#
+# RAG (Step 4, not yet built) will require chromadb — added when that
+# step starts, not before, to keep this file accurate to what's actually
+# used today.
+
+anthropic>=0.40.0
+openai>=1.0.0
