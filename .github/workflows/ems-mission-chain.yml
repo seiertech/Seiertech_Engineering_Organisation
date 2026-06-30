@@ -2,25 +2,51 @@ name: EMS Mission Chain
 
 # HONEST STATUS (see IMPLEMENTATION_STATUS.md for full ledger):
 # v2 — intake chain (brownfield, MISSION-001) does: real shallow clone + file
-# walk (scan_repo.py), 5 grouped persona passes, MTS synthesis, and a REAL
-# deterministic readiness gate check (check_readiness_gates.py) — not an
-# LLM self-assessment. Sets DRAFT/READY status based on actual gate results.
+# walk (scan_repo.py), grouped persona passes (19 as of DAM-000011), MTS
+# synthesis, and a REAL deterministic readiness gate check
+# (check_readiness_gates.py) — not an LLM self-assessment.
 #
-# v1 — genesis chain (greenfield, MISSION-000) added after a brownfield/
-# greenfield simulation exercise found and fixed two real bugs: (1) the
-# gate checker only recognised brownfield evidence files, which meant a
-# greenfield platform could never reach READY regardless of completeness;
-# (2) the issue parser extracted the genesis 'brief' field but never wrote
-# it to GITHUB_OUTPUT, so the workflow had no way to receive it. Both fixed
-# before this job went live. Genesis does 3 grouped DESIGN-mode persona
-# passes (fewer than intake's 5, since there's no repo to scan) + MTS
+# v1 — genesis chain (greenfield, MISSION-000): grouped DESIGN-mode persona
+# passes (fewer than intake's, since there's no repo to scan) + MTS
 # synthesis + the same real gate check used for brownfield.
 #
-# STILL NOT DONE: full 25-persona individual depth for either chain, .ems/
-# creation in the TARGET platform repo (brownfield) or actual GitHub repo
-# creation for the new platform (greenfield) — both need additional token
-# scope, Founder Questions mechanism (RG-008, both origins), and all Team 2
-# forward mission executors (BUILD/REHAB/STRATEGIC/etc).
+# v1 — BUILD chain (forward, any platform that has reached READY): Proposal
+# -> TDA -> EDP -> Verification -> Release, each gated. A RELEASE decision
+# triggers cross-repo delivery (a real PR in the target repo containing the
+# EDP as a committed proposal, NOT applied code).
+#
+# TERMINAL STATE MODEL (per DAM-000013, responding to external feedback that
+# every distinct outcome — READY, BLOCKED, halted-at-TDA, HOLD, REJECT,
+# delivered, delivery-failed, ambiguous — was collapsing into one flat
+# 'status:draft-needs-review' label, making the issue tracker unable to
+# distinguish a genuine success from a genuine dead end at a glance):
+#
+#   status:ambiguous-mission      — parse failed, issue needs reformatting
+#   status:blocked                — chain ran, platform genuinely not ready
+#                                    (a gate beyond the known RG-008 ceiling failed)
+#   status:draft-needs-review     — chain ran, hit the honest current ceiling
+#                                    (only RG-008 failing — the expected best
+#                                    outcome until Founder Questions exists)
+#   status:halted-at-tda          — BUILD stopped because TDA returned
+#                                    REJECTED or REVISION_REQUIRED
+#   status:release-hold           — BUILD reached Release, decision was HOLD
+#   status:release-rejected       — BUILD reached Release, decision was REJECT
+#   status:released-not-delivered — BUILD reached RELEASE but cross-repo
+#                                    delivery failed or TARGET_REPO_TOKEN
+#                                    is not configured
+#   status:delivered-to-target    — BUILD reached RELEASE and a real PR now
+#                                    exists in the target platform repo
+#
+# Deliberately NOT included: status:complete. Per EMS_OPERATING_MODEL.md
+# Section 5, a mission is only formally COMPLETE once OPR-000008 Knowledge
+# Capture has executed — that operation has no executor yet (it remains a
+# human/founder-driven step today). Labelling something status:complete
+# here would overclaim a closure this workflow cannot actually back up.
+#
+# STILL NOT DONE: full 25-persona individual depth for any chain, .ems/
+# creation in the TARGET platform repo, Founder Questions mechanism
+# (RG-008, all origins), and REHAB/STRATEGIC/AGENTIC_INSERTION/SPEC/
+# PROPOSAL mission executors.
 
 on:
   issues:
@@ -59,16 +85,22 @@ jobs:
             --body "$ISSUE_BODY" \
             --output-file parsed_mission.json
 
-      - name: Fail loudly if mission type is ambiguous
+      - name: Label and comment if mission type is ambiguous
         if: steps.parse.outputs.mission_type == 'AMBIGUOUS'
         uses: actions/github-script@v7
         with:
           script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['status:ambiguous-mission']
+            })
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "Could not deterministically parse this issue as a known mission type.\n\nExpected formats:\n- `Complete intake for [NAME] — repo: [URL]`\n- `Genesis: [NAME] — [brief]`\n\nNo chain has been activated. Please reformat and reopen, or edit this issue."
+              body: "Could not deterministically parse this issue as a known mission type.\n\nExpected formats:\n- `Complete intake for [NAME] — repo: [URL]`\n- `Genesis: [NAME] — [brief]`\n- `Build for [NAME] — [instruction]`\n\nNo chain has been activated. This issue has been labelled `status:ambiguous-mission` so it doesn't silently sit unlabelled — please reformat and reopen, or edit this issue and it will be re-parsed."
             })
 
   execute-intake:
@@ -96,7 +128,7 @@ jobs:
               labels: ['mission:intake', 'status:in-progress', 'chain:v2']
             })
 
-      - name: Run Team 1 intake chain (v2 — real scan + 5 passes + gate check)
+      - name: Run Team 1 intake chain
         id: intake
         env:
           NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
@@ -133,7 +165,7 @@ jobs:
           git config user.name "SeierTech EMS"
           git config user.email "ems@seiertech.com"
           git add "platforms/${PLATFORM_NAME}" || true
-          git commit -m "EMS: v2 intake run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — gate status: ${GATE_STATUS}" || echo "Nothing to commit"
+          git commit -m "EMS: intake run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — gate status: ${GATE_STATUS}" || echo "Nothing to commit"
           git push
 
       - name: Comment honest status on issue
@@ -151,12 +183,14 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              body: `## EMS v2 Intake Chain — Result\n\n**Platform:** ${platformName}\n**Readiness Status:** ${gateStatus}\n**Failing/incomplete gates:** ${failingGates}\n\nThis ran the v2 chain: real shallow clone + file walk, 5 grouped persona passes, MTS synthesis, and a real deterministic readiness gate check (not LLM self-assessment). See \`platforms/${platformName}/INTAKE_RUN_LOG.md\` and \`READINESS_GATE_RESULT.json\` for full detail.\n\nKnown gaps (RG-008 Founder Questions, .ems/ creation in target repo, full 25-persona depth) are tracked in IMPLEMENTATION_STATUS.md and will correctly show as N/A or failing rather than being silently skipped.\n\n*SeierTech EMS — Loop Engineering*`
+              body: `## EMS Intake Chain — Result\n\n**Platform:** ${platformName}\n**Readiness Status:** ${gateStatus}\n**Failing/incomplete gates:** ${failingGates}\n\nThis ran a real shallow clone + file walk, grouped persona passes, MTS synthesis, and a real deterministic readiness gate check (not LLM self-assessment). See \`platforms/${platformName}/INTAKE_RUN_LOG.md\` and \`READINESS_GATE_RESULT.json\` for full detail.\n\nKnown gaps (RG-008 Founder Questions, .ems/ creation in target repo, full 25-persona depth) are tracked in IMPLEMENTATION_STATUS.md and will correctly show as N/A or failing rather than being silently skipped.\n\n*SeierTech EMS — Loop Engineering*`
             })
 
       - name: Update status label
         if: always()
         uses: actions/github-script@v7
+        env:
+          FAILING_GATES: ${{ steps.gates.outputs.failing }}
         with:
           script: |
             try {
@@ -167,11 +201,16 @@ jobs:
                 name: 'status:in-progress'
               });
             } catch (e) { console.log('Label removal skipped:', e.message); }
+            const raw = process.env.FAILING_GATES || '';
+            const failingGates = raw.split(',').map(g => g.trim()).filter(g => g && g !== 'N/A');
+            const onlyRG008 = failingGates.length === 1 && failingGates[0] === 'RG-008';
+            const noFailures = failingGates.length === 0;
+            const label = (noFailures || onlyRG008) ? 'status:draft-needs-review' : 'status:blocked';
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              labels: ['status:draft-needs-review']
+              labels: [label]
             });
 
   execute-genesis:
@@ -199,7 +238,7 @@ jobs:
               labels: ['mission:genesis', 'status:in-progress', 'chain:v1']
             })
 
-      - name: Run Team 2 genesis chain (v1)
+      - name: Run Team 2 genesis chain
         id: genesis
         env:
           NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
@@ -235,7 +274,7 @@ jobs:
           git config user.name "SeierTech EMS"
           git config user.email "ems@seiertech.com"
           git add "platforms/${PLATFORM_NAME}" || true
-          git commit -m "EMS: v1 genesis run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — gate status: ${GATE_STATUS}" || echo "Nothing to commit"
+          git commit -m "EMS: genesis run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — gate status: ${GATE_STATUS}" || echo "Nothing to commit"
           git push
 
       - name: Comment honest status on issue
@@ -253,12 +292,14 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              body: `## EMS v1 Genesis Chain — Result\n\n**Platform:** ${platformName}\n**Origin:** MISSION-000 Platform Genesis (greenfield — designed forward from brief, no prior codebase)\n**Readiness Status:** ${gateStatus}\n**Failing/incomplete gates:** ${failingGates}\n\nThis ran the v1 genesis chain: 3 grouped DESIGN-mode persona passes, MTS synthesis, and the same real deterministic readiness gate check used for brownfield intake. See \`platforms/${platformName}/GENESIS_RUN_LOG.md\` and \`READINESS_GATE_RESULT.json\` for full detail.\n\nKnown gaps (RG-008 Founder Questions, no actual GitHub repo created yet, full 25-persona depth) are tracked in IMPLEMENTATION_STATUS.md.\n\n*SeierTech EMS — Loop Engineering*`
+              body: `## EMS Genesis Chain — Result\n\n**Platform:** ${platformName}\n**Origin:** MISSION-000 Platform Genesis (greenfield — designed forward from brief, no prior codebase)\n**Readiness Status:** ${gateStatus}\n**Failing/incomplete gates:** ${failingGates}\n\nThis ran grouped DESIGN-mode persona passes, MTS synthesis, and the same real deterministic readiness gate check used for brownfield intake. See \`platforms/${platformName}/GENESIS_RUN_LOG.md\` and \`READINESS_GATE_RESULT.json\` for full detail.\n\nKnown gaps (RG-008 Founder Questions, no actual GitHub repo created yet, full 25-persona depth) are tracked in IMPLEMENTATION_STATUS.md.\n\n*SeierTech EMS — Loop Engineering*`
             })
 
       - name: Update status label
         if: always()
         uses: actions/github-script@v7
+        env:
+          FAILING_GATES: ${{ steps.gates.outputs.failing }}
         with:
           script: |
             try {
@@ -269,11 +310,16 @@ jobs:
                 name: 'status:in-progress'
               });
             } catch (e) { console.log('Label removal skipped:', e.message); }
+            const raw = process.env.FAILING_GATES || '';
+            const failingGates = raw.split(',').map(g => g.trim()).filter(g => g && g !== 'N/A');
+            const onlyRG008 = failingGates.length === 1 && failingGates[0] === 'RG-008';
+            const noFailures = failingGates.length === 0;
+            const label = (noFailures || onlyRG008) ? 'status:draft-needs-review' : 'status:blocked';
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              labels: ['status:draft-needs-review']
+              labels: [label]
             });
 
   execute-build:
@@ -301,7 +347,7 @@ jobs:
               labels: ['mission:build', 'status:in-progress', 'chain:v1']
             })
 
-      - name: Run Team 2 BUILD chain (v1)
+      - name: Run Team 2 BUILD chain
         id: build
         env:
           NIM_API_KEY: ${{ secrets.NIM_API_KEY }}
@@ -327,14 +373,8 @@ jobs:
           echo "status=${STATUS}" >> $GITHUB_OUTPUT
 
       - name: Deliver to target repo (only if RELEASE)
-        # Cross-repo delivery only makes sense if the mission actually
-        # reached a RELEASE decision — HOLD/REJECT/halted-at-TDA correctly
-        # have nothing to deliver. TARGET_REPO_TOKEN may not be configured
-        # yet (it is a separate credential the founder provides, same as
-        # NIM_API_KEY) — this step fails cleanly and does not block the
-        # rest of the job if it's missing, since cross-repo delivery is an
-        # additive capability, not a precondition for BUILD itself to run.
         if: steps.result.outputs.status == 'RELEASE'
+        id: deliver
         continue-on-error: true
         env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
@@ -355,7 +395,7 @@ jobs:
           git config user.name "SeierTech EMS"
           git config user.email "ems@seiertech.com"
           git add "platforms/${PLATFORM_NAME}" "memory/missions" || true
-          git commit -m "EMS: v1 BUILD run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — status: ${BUILD_STATUS}" || echo "Nothing to commit"
+          git commit -m "EMS: BUILD run for ${PLATFORM_NAME} [Issue #${ISSUE_NUMBER}] — status: ${BUILD_STATUS}" || echo "Nothing to commit"
           git push
 
       - name: Comment honest status on issue
@@ -364,21 +404,32 @@ jobs:
           PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
           BUILD_STATUS: ${{ steps.result.outputs.status }}
           ISSUE_NUMBER: ${{ needs.detect-mission.outputs.issue_number }}
+          DELIVER_OUTCOME: ${{ steps.deliver.outcome }}
         with:
           script: |
             const platformName = process.env.PLATFORM_NAME;
             const buildStatus = process.env.BUILD_STATUS;
             const issueNumber = process.env.ISSUE_NUMBER;
+            const deliverOutcome = process.env.DELIVER_OUTCOME || 'skipped';
+            let deliveryNote = '';
+            if (buildStatus === 'RELEASE') {
+              deliveryNote = deliverOutcome === 'success'
+                ? '\n\n**Delivery:** a real branch and Pull Request were created in the target platform repo, containing the Engineering Delivery Package as a committed proposal — not applied code. See `_BUILD_DELIVERY_LATEST.md`.'
+                : '\n\n**Delivery:** RELEASE was reached but cross-repo delivery did not complete (TARGET_REPO_TOKEN missing or the delivery step failed). The mission output exists in this repo but nothing was pushed to the target platform yet — see PLATFORM_ONBOARDING_CHECKLIST.md.';
+            }
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              body: `## EMS v1 BUILD Chain — Result\n\n**Platform:** ${platformName}\n**Final Status:** ${buildStatus}\n\nThis ran the first Team 2 forward mission executor — Proposal, Technical Design Authority, Engineering Delivery Package, Verification, and Release Scorecard, each gated by a real Standards Engineer call. See \`platforms/${platformName}/BUILD_RUN_LOG_${issueNumber}.md\` for full detail.\n\nA TDA verdict of REJECTED or REVISION_REQUIRED halts the chain at that point — this is doctrine working correctly, not a script failure.\n\nNo actual code changes were produced — the Engineering Delivery Package is generated but nothing yet executes it (no Git branch, no builder). See IMPLEMENTATION_STATUS.md and EMS_OPERATING_MODEL.md.\n\n*SeierTech EMS — Loop Engineering*`
+              body: `## EMS BUILD Chain — Result\n\n**Platform:** ${platformName}\n**Final Status:** ${buildStatus}${deliveryNote}\n\nThis ran the Team 2 forward mission executor — Proposal, Technical Design Authority, Engineering Delivery Package, Verification, and Release Scorecard, each gated by a real Standards Engineer call. See \`platforms/${platformName}/BUILD_RUN_LOG_${issueNumber}.md\` for full detail.\n\nA TDA verdict of REJECTED or REVISION_REQUIRED halts the chain at that point — this is doctrine working correctly, not a script failure.\n\n*SeierTech EMS — Loop Engineering*`
             })
 
       - name: Update status label
         if: always()
         uses: actions/github-script@v7
+        env:
+          BUILD_STATUS: ${{ steps.result.outputs.status }}
+          DELIVER_OUTCOME: ${{ steps.deliver.outcome }}
         with:
           script: |
             try {
@@ -389,9 +440,25 @@ jobs:
                 name: 'status:in-progress'
               });
             } catch (e) { console.log('Label removal skipped:', e.message); }
+
+            const buildStatus = process.env.BUILD_STATUS || '';
+            const deliverOutcome = process.env.DELIVER_OUTCOME || '';
+            let label;
+            if (buildStatus.startsWith('HALTED_AT_TDA')) {
+              label = 'status:halted-at-tda';
+            } else if (buildStatus === 'HOLD') {
+              label = 'status:release-hold';
+            } else if (buildStatus === 'REJECT') {
+              label = 'status:release-rejected';
+            } else if (buildStatus === 'RELEASE') {
+              label = (deliverOutcome === 'success') ? 'status:delivered-to-target' : 'status:released-not-delivered';
+            } else {
+              label = 'status:blocked';
+            }
+
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ needs.detect-mission.outputs.issue_number }},
-              labels: ['status:draft-needs-review']
+              labels: [label]
             });
