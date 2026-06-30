@@ -6,7 +6,7 @@
 | Artefact Class | Authority |
 | Title | Knowledge Governance Authority |
 | Status | ACTIVE |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Classification | FOUNDATIONAL |
 | Owner | SeierTech Engineering Organisation |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -33,6 +33,8 @@ Applies to all knowledge artefacts across all platforms and the EMS memory layer
 - KNW-003 — Domain vocabulary SHALL be aligned to STD-000004 for every platform.
 - KNW-004 — Memory is persistent — mission learnings accumulate across all loop cycles.
 - KNW-005 — The Master Technical Specification is the living knowledge record of every platform — it must be kept current.
+- KNW-006 — A lesson that does not change doctrine is not a lesson, it is an anecdote. Every genuine finding SHALL be recorded in REG-000010 and SHALL produce a Doctrine Amendment (DAM-NNNNNN) or an explicit, recorded reason why none is needed.
+- KNW-007 — No significant work session SHALL begin while REG-000010 contains a lesson at status CAPTURED with no amendment from a prior session. This is a hard stop, not a recommendation.
 
 ---
 
@@ -47,6 +49,8 @@ Applies to all knowledge artefacts across all platforms and the EMS memory layer
 | KNW-REQ-005 | Master Technical Specification SHALL be updated after every mission that changes platform state |
 | KNW-REQ-006 | memory/ SHALL accumulate mission learnings across all loop cycles |
 | KNW-REQ-007 | Knowledge Graph SHALL be created from codebase evidence if it does not exist |
+| KNW-REQ-008 | Every lesson recorded in REG-000010 SHALL have a specific, non-vague Finding and actionable Reuse Guidance, per the quality rules in REG-000010 itself |
+| KNW-REQ-009 | OPR-000012 Doctrine Amendment SHALL be the only governed path by which a lesson changes EMS doctrine — ad hoc undocumented fixes to standards, authorities, or operations are not permitted regardless of how small the change appears |
 
 ---
 
@@ -114,6 +118,7 @@ Knowledge Capture is mandatory — it cannot be skipped. MTS must be updated aft
 
 - Knowledge Graphs per platform
 - Domain Vocabularies per platform
+- REG-000010 Lesson Register
 
 ---
 
@@ -121,6 +126,7 @@ Knowledge Capture is mandatory — it cannot be skipped. MTS must be updated aft
 
 - OPR-000008 Knowledge Capture Operation
 - OPR-000002 Platform Intake Operation
+- OPR-000012 Doctrine Amendment Operation
 
 ---
 
@@ -132,7 +138,7 @@ Annually or on significant change to knowledge architecture.
 
 ## 16. Verification
 
-Audit: every READY platform has a Knowledge Graph and Domain Vocabulary. Every COMPLETE mission has a memory entry. MTS updated within 24 hours of mission completion.
+Audit: every READY platform has a Knowledge Graph and Domain Vocabulary. Every COMPLETE mission has a memory entry. MTS updated within 24 hours of mission completion. No lesson in REG-000010 sits at CAPTURED for more than one work session without an amendment or documented rationale.
 
 ---
 
@@ -141,3 +147,4 @@ Audit: every READY platform has a Knowledge Graph and Domain Vocabulary. Every C
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation — EF-1.2 | SeierTech EMS |
+| 1.1.0 | 2026-06-29 | Added KNW-006/007 principles and KNW-REQ-008/009 requirements establishing REG-000010 Lesson Register and OPR-000012 Doctrine Amendment as the governed mechanism by which findings become permanent doctrine — see DAM-000003 | SeierTech EMS |

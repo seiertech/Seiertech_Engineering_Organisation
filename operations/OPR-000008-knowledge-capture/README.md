@@ -6,7 +6,7 @@
 | Artefact Class | Operation |
 | Title | Knowledge Capture Operation |
 | Status | ACTIVE |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Classification | FOUNDATIONAL |
 | Owner | Documentation & Knowledge Curator |
 | Approval Authority | AUTH-010 Knowledge Governance Authority |
@@ -31,7 +31,7 @@ Release decision issued in OPR-000007 (RELEASE, HOLD, or REJECT — all trigger 
 | Step | Action | Persona | Gate |
 |---|---|---|---|
 | 1 | Documentation & Knowledge Curator reviews all mission outputs | Documentation & Knowledge Curator | — |
-| 2 | Extract lessons learned from mission execution | Documentation & Knowledge Curator | — |
+| 2 | Extract lessons learned from mission execution and record any genuine finding in REG-000010, triggering OPR-000012 if a doctrine amendment is warranted | Documentation & Knowledge Curator | — |
 | 3 | Update platform Knowledge Graph with any new entities or relationships introduced | Knowledge Graph Architect | — |
 | 4 | Update platform Data Model if schema changed | Data Architect | — |
 | 5 | Update platform Architecture Document if architecture changed | Chief Architect | — |
@@ -75,6 +75,8 @@ Knowledge Capture is what separates Loop Engineering from one-shot agentic tools
 | Follows | OPR-000007 | Release Operation |
 | Followed By | OPR-000009 | Baseline Operation (if triggered) |
 | Updates | memory/ | Platform memory layer |
+| Updates | REG-000010 | Lesson Register |
+| May Trigger | OPR-000012 | Doctrine Amendment Operation |
 
 ---
 
@@ -83,3 +85,4 @@ Knowledge Capture is what separates Loop Engineering from one-shot agentic tools
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial creation — EF-1.5 | SeierTech EMS |
+| 1.1.0 | 2026-06-29 | Step 2 (lesson extraction) now points at REG-000010 and OPR-000012 — previously instructed lesson extraction with no conformant destination, see DAM-000003 | SeierTech EMS |

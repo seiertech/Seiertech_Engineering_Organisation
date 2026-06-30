@@ -49,7 +49,7 @@ Clean — no legacy duplicates found in `authorities/`.
 
 ---
 
-## Registers — 9 active (REG-NNNNNN), 0 unprefixed remaining (archived)
+## Registers — 10 active (REG-NNNNNN), 0 unprefixed remaining (archived)
 
 ### Active — use these
 
@@ -64,6 +64,7 @@ Clean — no legacy duplicates found in `authorities/`.
 | REG-000007 | Build Governance Register |
 | REG-000008 | Risk Register — **new**, closes a gap that existed at the time of the original audit |
 | REG-000009 | Decision Register — **new**, closes a gap that existed at the time of the original audit |
+| REG-000010 | Lesson Register — **new**, closes the gap where OPR-000008 instructed lesson capture but no register existed to receive it. Paired with TPL-000011 Doctrine Amendment Template and OPR-000012 Doctrine Amendment Operation — together these are the mechanism by which a finding becomes permanent, reusable doctrine rather than a one-off fix |
 
 ### Archived — `registers/legacy/`
 
@@ -71,7 +72,7 @@ All 19 originally-flagged unprefixed draft registers have been moved to `registe
 
 ---
 
-## Operations (OPR-NNNNNN) — 11 active, 0 unprefixed remaining (archived)
+## Operations (OPR-NNNNNN) — 12 active, 0 unprefixed remaining (archived)
 
 ### Active — use these
 
@@ -88,6 +89,7 @@ All 19 originally-flagged unprefixed draft registers have been moved to `registe
 | OPR-000009 | Baseline Operation |
 | OPR-000010 | Platform Baseline Sync Operation |
 | OPR-000011 | Platform Genesis Operation |
+| OPR-000012 | Doctrine Amendment Operation — **new**, governs the capture-amend-verify-close cycle that turns a lesson into a permanent doctrine change; includes a hard session-start gate against dangling unresolved lessons |
 
 ### Archived — `operations/legacy/`
 
@@ -106,7 +108,7 @@ All 19 originally-flagged unprefixed draft registers have been moved to `registe
 
 ---
 
-## Templates (TPL-NNNNNN + HAR) — 11 active, 0 unprefixed remaining (archived)
+## Templates (TPL-NNNNNN + HAR) — 12 active, 0 unprefixed remaining (archived)
 
 ### Active — use these
 
@@ -122,6 +124,7 @@ All 19 originally-flagged unprefixed draft registers have been moved to `registe
 | TPL-000008 | Persona Template |
 | TPL-000009 | Authority Template |
 | TPL-000010 | Register Template |
+| TPL-000011 | Doctrine Amendment Template — **new** |
 | HAR-000001 | Platform Handoff Artefact Template (Team 1 → Team 2 baton) |
 
 ### Archived — `templates/legacy/`
@@ -178,9 +181,20 @@ Originally flagged as 26 unactioned legacy files/dirs requiring a decision. **Re
 
 ---
 
+## Lessons and Doctrine Amendments — How the EMS Actually Learns
+
+Every real finding across this EMS's build — a bug, a gap, a wrong assumption, a good pattern worth repeating — is governed by `REG-000010` Lesson Register, `TPL-000011` Doctrine Amendment Template, and `OPR-000012` Doctrine Amendment Operation. This is not optional process overhead; it's the mechanism that prevents this project from being a series of disconnected fix-it sessions. The rule is simple: a lesson that doesn't change doctrine is not a lesson, it's an anecdote.
+
+The discipline is enforced by `OPR-000012` Step 0 — a hard gate at the start of any significant work session that checks for any `REG-000010` entry sitting at status CAPTURED with no `DAM-NNNNNN` reference from a prior session. As of this inventory's last update, 7 lessons from the same session that built this mechanism have already been backfilled and resolved (`LES-000001` through `LES-000007`, resolved by `DAM-000001` through `DAM-000003`) — including the lesson about the mechanism itself not existing yet, which is its own first self-application.
+
+See `REG-000010` for the live register, `memory/lessons/` for individual lesson detail, and `memory/amendments/` for individual amendment detail.
+
+---
+
 ## Change History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 1.0.0 | 2026-06-29 | Initial inventory compiled — surfaced 26 legacy/superseded artefacts and a real gap (no formal Risk/Decision/Knowledge registers at EMS level) requiring a founder decision | SeierTech EMS |
 | 1.1.0 | 2026-06-29 | QA persona rename completed (21 references fixed across both teams). Legacy cleanup resolved: REG-000008 Risk Register and REG-000009 Decision Register built to close real doctrine gaps; remaining 17 registers + 4 templates + 2 operations + 1 mission archived to legacy/ subfolders, confirmed zero live references before archiving | SeierTech EMS |
+| 1.2.0 | 2026-06-29 | Lesson/Doctrine Amendment mechanism built — REG-000010, TPL-000011, OPR-000012 — closing the gap where OPR-000008 instructed lesson capture with no register to receive it. 7 lessons from this build session backfilled and resolved via 3 Doctrine Amendments, including the mechanism's own lesson resolving itself | SeierTech EMS |
