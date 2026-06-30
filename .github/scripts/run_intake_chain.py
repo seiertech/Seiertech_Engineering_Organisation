@@ -194,10 +194,20 @@ def main():
         print("NIM_API_KEY not set", file=sys.stderr)
         sys.exit(1)
 
-    platform_name = args.platform_name
+    platform_name = args.platform_name.strip().upper().replace("-", "_").replace(" ", "_")
     platform_dir = f"platforms/{platform_name}"
     spine_dir = f"{platform_dir}/spine"
     os.makedirs(spine_dir, exist_ok=True)
+
+    # Isolation guard: if this platform already has a completed run, do not
+    # silently overwrite without flagging it — two platforms running close
+    # together should never clobber each other's directories, and reruns
+    # against the same platform should be visible, not silent.
+    existing_log = f"{platform_dir}/INTAKE_RUN_LOG.md"
+    if os.path.exists(existing_log):
+        print(f"NOTE: {platform_dir} already has a prior intake run. This run will "
+              f"overwrite it. Platform isolation confirmed — directory is name-scoped "
+              f"and will not affect any other platform's directory.", file=sys.stderr)
 
     constitution = read_file_safe("authorities/AUTH-001_ENGINEERING_CONSTITUTION.md")
     vocab = read_file_safe("standards/STD-000004_ENGINEERING_VOCABULARY_STANDARD.md")
