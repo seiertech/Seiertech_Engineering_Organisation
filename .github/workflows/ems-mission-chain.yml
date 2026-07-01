@@ -51,8 +51,13 @@ name: EMS Mission Chain
 on:
   issues:
     types: [opened, edited]
-  issue_comment:
-    types: [created]
+  # NOTE: issue_comment trigger deliberately EXCLUDED.
+  # Adding it would re-fire the full chain on every comment posted on a mission
+  # issue — including the bot's own status comments, creating an infinite loop.
+  # The safer upgrade path: add it back with a condition like
+  #   github.actor != 'github-actions[bot]' and github.actor != 'SeierTech-EMS'
+  # once a bot actor name is established. For now, issues can be re-edited to
+  # re-trigger re-parsing, which is sufficient for v1 baseline.
 
 jobs:
   detect-mission:
@@ -142,6 +147,7 @@ jobs:
 
       - name: Read gate check result
         id: gates
+        if: always()
         env:
           PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
         run: |
@@ -205,7 +211,18 @@ jobs:
             const failingGates = raw.split(',').map(g => g.trim()).filter(g => g && g !== 'N/A');
             const onlyRG008 = failingGates.length === 1 && failingGates[0] === 'RG-008';
             const noFailures = failingGates.length === 0;
-            const label = (noFailures || onlyRG008) ? 'status:draft-needs-review' : 'status:blocked';
+            // If gates step produced N/A (chain failed, file never written),
+            // noFailures is true — but raw being 'N/A' is filtered out, so
+            // failingGates.length === 0, which normally means "all passed."
+            // Distinguish: if raw is exactly 'N/A' or empty, chain may have failed.
+            // Map that to status:blocked, not status:draft-needs-review.
+            const chainFailed = !raw || raw.trim() === 'N/A';
+            let label;
+            if (chainFailed) {
+              label = 'status:blocked';
+            } else {
+              label = (noFailures || onlyRG008) ? 'status:draft-needs-review' : 'status:blocked';
+            }
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -251,6 +268,7 @@ jobs:
 
       - name: Read gate check result
         id: gates
+        if: always()
         env:
           PLATFORM_NAME: ${{ needs.detect-mission.outputs.platform_name }}
         run: |
@@ -314,7 +332,13 @@ jobs:
             const failingGates = raw.split(',').map(g => g.trim()).filter(g => g && g !== 'N/A');
             const onlyRG008 = failingGates.length === 1 && failingGates[0] === 'RG-008';
             const noFailures = failingGates.length === 0;
-            const label = (noFailures || onlyRG008) ? 'status:draft-needs-review' : 'status:blocked';
+            const chainFailed = !raw || raw.trim() === 'N/A';
+            let label;
+            if (chainFailed) {
+              label = 'status:blocked';
+            } else {
+              label = (noFailures || onlyRG008) ? 'status:draft-needs-review' : 'status:blocked';
+            }
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,

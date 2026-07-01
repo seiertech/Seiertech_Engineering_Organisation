@@ -6,7 +6,7 @@
 | Artefact Class | Register |
 | Title | Lesson Register |
 | Status | ACTIVE |
-| Version | 2.1.0 |
+| Version | 2.2.0 |
 | Classification | OPERATIONAL |
 | Owner | Documentation and Knowledge Curator (PER-000018 / T2-PER-000018) |
 | Approval Authority | AUTH-001 Engineering Constitution |
@@ -95,6 +95,8 @@ CAPTURED → SUPERSEDED (a later, more complete lesson replaces this one)
 | LES-000019 | A specific str_replace pattern — inserting a new section immediately before an existing header by matching only the header text as old_str — silently dropped that header 4 separate times across this session, always in IMPLEMENTATION_STATUS.md, always requiring a follow-up fix. The mistake is structural (old_str matching only the target line, new_str needing to re-include it verbatim and easy to forget), not coincidental | STRUCTURAL_BUG | DAM-000011 | AMENDED |
 | LES-000020 | A direct founder question ("are you happy with the quality of the personas") surfaced that all 50 personas had passed structural completeness checks earlier this session but had never been checked for CONTENT depth — most AI Reasoning Profiles were generic procedural bullets ("flag CVEs above MEDIUM severity") rather than encoded domain expertise (which CVE characteristics actually matter, what a genuinely insecure auth pattern looks like, etc). Structure and content depth are different claims and were being conflated | DOCTRINE_GAP | DAM-000012 | AMENDED |
 | LES-000021 | External review of the mission chain workflow found 5 real dead-end risks, all confirmed accurate: ambiguous missions got a comment but no label (could silently sit unactioned); every successful chain outcome (READY, BLOCKED, halted-at-TDA, HOLD, REJECT, delivered, undelivered) collapsed into one flat status:draft-needs-review label, making genuinely different outcomes indistinguishable at a glance; a RELEASE with failed cross-repo delivery looked identical to a fully delivered mission; TDA halts exited cleanly (correctly) but still got the generic review label, hiding that a real rejection occurred | STRUCTURAL_BUG | DAM-000013 | AMENDED |
+| LES-000022 | The issue_comment trigger on the workflow caused a re-fire loop: any comment posted on a mission issue (including the EMS bot's own status comments) would re-parse the original issue title and re-fire the full chain — an infinite loop waiting to happen on the first real run | STRUCTURAL_BUG | DAM-000014 | AMENDED |
+| LES-000023 | The gates step in intake/genesis ran by default (no if: always()) while the Update status label step had if: always(). If the chain crashed before the gate check, the gates step would be skipped, FAILING_GATES would be empty/N/A, and the crash would be incorrectly labelled status:draft-needs-review instead of status:blocked | STRUCTURAL_BUG | DAM-000014 | AMENDED |
 
 See full detail for each in `memory/lessons/LES-NNNNNN.md` (one file per lesson, created as part of this same change).
 
@@ -136,3 +138,4 @@ Continuous — updated as lessons are found. Audited at the start of every signi
 | 1.9.0 | 2026-06-30 | Added LES-000019 — a specific str_replace editing pattern dropped the same document header 4 times across this session; logged with concrete, actionable reuse guidance since it's a recognisable structural mistake, not coincidence | SeierTech EMS |
 | 2.0.0 | 2026-06-30 | Added LES-000020 — persona content depth gap, distinct from the earlier structural completeness fix. 20 of 50 personas (10 highest-leverage role-areas, both teams) upgraded with concrete domain-expert detection/judgment criteria | SeierTech EMS |
 | 2.1.0 | 2026-06-30 | Added LES-000021 — external review found the mission chain workflow had no real terminal state model, every outcome collapsing into one flat label. All 5 findings confirmed accurate and fixed | SeierTech EMS |
+| 2.2.0 | 2026-06-30 | Added LES-000022/023 — left-to-right/right-to-left workflow logic sweep found: (1) issue_comment trigger causes a re-fire loop on every comment including the bot's own; (2) chain crash labelled as draft-needs-review not blocked due to gates step ordering | SeierTech EMS |
