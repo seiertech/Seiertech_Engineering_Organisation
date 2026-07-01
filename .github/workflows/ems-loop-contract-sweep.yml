@@ -1,0 +1,45 @@
+name: EMS Loop Contract Sweep
+
+# Runs the deterministic left-to-right / right-to-left loop-contract wiring check.
+# This workflow does not replace ems-mission-chain.yml. It supports STD-000005
+# and OPR-000013 by checking that loop engineering remains wired across doctrine,
+# workflow and Python artefact classes.
+
+on:
+  pull_request:
+    paths:
+      - 'authorities/**'
+      - 'standards/**'
+      - 'registers/**'
+      - 'operations/**'
+      - 'templates/**'
+      - 'personas/**'
+      - 'agents/**'
+      - '.github/workflows/**'
+      - '.github/scripts/**'
+      - 'memory/**'
+      - 'reports/**'
+      - 'doctrine_amendments/**'
+  workflow_dispatch:
+
+jobs:
+  loop-contract-sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout EMS repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run loop contract sweep validator
+        run: |
+          python3 .github/scripts/validate_loop_contract_sweep.py
+
+      - name: Upload sweep report
+        uses: actions/upload-artifact@v4
+        with:
+          name: loop-contract-sweep-report
+          path: reports/LOOP_CONTRACT_SWEEP_REPORT.json
